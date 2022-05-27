@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include "InetAddress.h"
 #include "Socket.h"
-#include "Threadpool.h"
+#include "ThreadPool.h"
 #include "Channel.h"
 #include "EventLoop.h"
 #include "TcpConnection.h"
@@ -46,7 +46,7 @@ private:
     ThreadPool *threadPool_;
     Socket servSock_;
 
-    Channel::Ptr listenChannel_;
+    Channel::ptr listenChannel_;
     ConnectMap connects_;
     
     int evfd_;

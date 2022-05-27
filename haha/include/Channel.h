@@ -22,7 +22,7 @@ using CloseCallback = std::function<void()>;
 using ErrorCallback = std::function<void()>;
 
 public:
-    typedef std::shared_ptr<Channel> Ptr;
+    typedef std::shared_ptr<Channel> ptr;
 
     Channel(EventLoop* loop, int fd, bool BlockFd = true);
     ~Channel() {

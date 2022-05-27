@@ -1,4 +1,4 @@
-#include "Threadpool.h"
+#include "ThreadPool.h"
 
 
 namespace haha{
@@ -7,8 +7,8 @@ ThreadPool::~ThreadPool(){
     isRunning_ = false;
     cond_.notify_all();
     for(auto &t : threads_){
-        if(t.joinable()){
-            t.join();
+        if(t->joinable()){
+            t->join();
         }
     }
 }
@@ -17,7 +17,7 @@ void ThreadPool::addTask(const Task &task){
     if(!isRunning_)return;
 
     {
-        std::unique_lock<std::mutex> lock(mtx_);
+        LockGuard<MutexLock> lock(mtx_);
         taskPool_.emplace(task);
     }
     cond_.notify_one();
@@ -26,7 +26,8 @@ void ThreadPool::addTask(const Task &task){
 void ThreadPool::start(){
     isRunning_ = true;
     for(size_t i = 0; i < num_thread_; ++i){
-        threads_.emplace_back(std::thread(std::bind(&ThreadPool::run, this)));
+        Thread::ptr p = std::make_shared<Thread>(std::bind(&ThreadPool::run, this));
+        threads_.emplace_back(p);
     }
 }
 
@@ -34,9 +35,10 @@ void ThreadPool::run(){
     Task task;
     while(isRunning_){
         {
-            std::unique_lock<std::mutex> lock(mtx_);
+            // LockGuard<MutexLock> lock_gaurd(mtx_);
+            MutexLock::RallLock lock_gaurd(mtx_);
             while(isRunning_ && taskPool_.empty()){
-                cond_.wait(lock);
+                cond_.wait(mtx_);
             }
             if(!isRunning_)break;
             task = taskPool_.front();

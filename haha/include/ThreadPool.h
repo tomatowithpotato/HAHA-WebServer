@@ -1,13 +1,15 @@
 #ifndef __HAHA_THREADPOOL_H__
 #define __HAHA_THREADPOOL_H__
 
-#include <thread>
 #include <functional>
 #include <queue>
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
 #include "base/noncopyable.h"
+#include "base/Thread.h"
+#include "base/Mutex.h"
+#include "base/ConditionVariable.h"
 
 namespace haha{
 
@@ -31,11 +33,11 @@ private:
 
 private:
     std::queue<Task> taskPool_;
-    std::vector<std::thread> threads_;
+    std::vector<Thread::ptr> threads_;
     size_t num_thread_;
     std::atomic<bool> isRunning_;
-    std::mutex mtx_;
-    std::condition_variable cond_;
+    MutexLock mtx_;
+    ConditionVariable cond_;
 };
 
 }

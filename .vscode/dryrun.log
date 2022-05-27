@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/lighthouse/MyCode/linux/linux_network/HAHAWebServer'
+make: Leaving directory '/home/lighthouse/MyCode/linux/linux_network/HAHAWebServer'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+

@@ -47,13 +47,13 @@ public:
         inetAddress_ = inetAddress;
     }
 
-    void setChannel(Channel::Ptr channel) { channel_ = channel; }
+    void setChannel(Channel::ptr channel) { channel_ = channel; }
 
     std::string getIp() const noexcept { return inetAddress_.getIp(); }
     uint16_t getPort() const noexcept { return inetAddress_.getPort(); }
     sockaddr *getSockAddr() const noexcept { return inetAddress_.getSockAddr(); }
     int getFd() { return channel_->getFd(); }
-    Channel::Ptr getChannel() {return channel_;}
+    Channel::ptr getChannel() {return channel_;}
     void setEvents(uint32_t events) { channel_->setEvents(events); }
 
     bool isKeepAlive() const { return keep_alive_;}
@@ -74,7 +74,7 @@ public:
 private:
     Buffer recver_;
     Buffer sender_;
-    Channel::Ptr channel_;
+    Channel::ptr channel_;
     InetAddress inetAddress_;
     bool disconnected_;
 

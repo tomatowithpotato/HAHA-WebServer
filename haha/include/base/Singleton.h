@@ -2,18 +2,18 @@
 #define __HAHA_SINGLETON_H__
 
 #include "base/noncopyable.h"
+#include <memory>
 
 namespace haha{
 
 template<typename T>
-class SingleTon : noncopyable{
+class Singleton : noncopyable{
 
 public:
-    T* getInstance(){
+    static T& getInstance(){
         static T instance_;
-        return &instance_;
+        return instance_;
     }
-    
 };
 
 }
