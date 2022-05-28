@@ -14,6 +14,7 @@ void TimerQueue::push(const Timer& timer) {
 }
 
 void TimerQueue::adjust(const Timer& timer) {
+    HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "adjust";
     timerHeap_->adjust(timer);
 }
 
@@ -48,7 +49,7 @@ void TimerQueue::runForever(const TimeStamp &t) {
 }
 
 void TimerQueue::handleTimeout() {
-    std::cout << "timeout" << std::endl;
+    HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "timeout";
     
     uint64_t one;
     ::read(timeFd_, &one, sizeof(one));

@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) 启动",
+            "name": "(gdb) 启动tcpserverTest",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/tcpserver",
+            "program": "${workspaceFolder}/bin/tcpserverTest.out",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

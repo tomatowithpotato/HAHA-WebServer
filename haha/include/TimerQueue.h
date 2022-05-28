@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <memory>
 #include <sys/timerfd.h>
+#include "base/Log.h"
 #include "TimerHeap.h"
 
 namespace haha{

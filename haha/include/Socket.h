@@ -1,13 +1,15 @@
 #ifndef __HAHA_SOCKET_H__
 #define __HAHA_SOCKET_H__
 
-#include "InetAddress.h"
 #include <fcntl.h>
 #include <netinet/tcp.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <utility>
+#include <memory>
+#include "InetAddress.h"
+#include "base/Buffer.h"
 
 namespace haha{
 
@@ -29,20 +31,31 @@ InetAddress getSockName(int fd);
 
 class Socket{
 public:
+    typedef std::shared_ptr<Socket> ptr;
+
     enum FDTYPE{
         BLOCK,
         NONBLOCK,
     };
 
+    // 根据已有描述符创建一个socket
     explicit Socket(int fd):fd_(fd) {}
-    explicit Socket(FDTYPE fdtype);
+    // 新生成一个socket
+    explicit Socket(FDTYPE fdtype = FDTYPE::BLOCK);
     ~Socket();
     int getFd() const noexcept { return fd_; }
+    // 获取本地地址
+    InetAddress getLocalAddress();
+    // 获取远端地址
+    InetAddress getRemoteAddress();
+
+    // 设置非阻塞
+    void setNonBlocking();
     
     void bind(const InetAddress &address);
     void listen();
     // 接受连接
-    std::pair<int, InetAddress> accept();
+    Socket::ptr accept();
     // 开启地址复用
     void enableReuseAddr(bool on);
     // 开启端口复用
@@ -50,8 +63,19 @@ public:
     // 开启保活
     void enableKeepAlive(bool on);
 
+    // 把buff中的数据发到对端
+    virtual int send(Buffer::ptr buff);
+    // 从对端读取数据存到buff中
+    virtual int recv(Buffer::ptr buff);
+
 private:
     int fd_;
+    bool isBlocked_;
+};
+
+
+class SslSocket : Socket{
+
 };
 
 }

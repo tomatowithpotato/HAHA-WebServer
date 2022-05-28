@@ -26,17 +26,17 @@ void TcpServer::start(const InetAddress &address){
 }
 
 void TcpServer::handleServerAccept(){
-    const auto p = servSock_.accept();
-    int connfd = p.first;
-    if (connfd <= 0){
+    Socket::ptr sock = servSock_.accept();
+    if(sock == nullptr){
         return;
     }
-    handleConnected(connfd, p.second);
+    handleConnected(sock);
 }
 
-void TcpServer::handleConnected(int connfd, const InetAddress &inetAdress){
-    sockops::setNonBlocking(connfd);
-    connects_[connfd] = std::make_shared<TcpConnection>(inetAdress);
+void TcpServer::handleConnected(Socket::ptr sock){
+    sock->setNonBlocking();
+    int connfd = sock->getFd();
+    connects_[connfd] = std::make_shared<TcpConnection>(sock);
     auto connection = connects_[connfd];
     connection->setChannel(std::make_shared<Channel>(&eventLoop_, connfd, false));
     connection->setEvents(EPOLLIN | kConnectionEvent);
@@ -46,8 +46,12 @@ void TcpServer::handleConnected(int connfd, const InetAddress &inetAdress){
 
     onNewConntection(connection.get());
     
-    eventLoop_.addChannel(connection->getChannel().get());
-    eventLoop_.addTimer(Timer(
+    // 单loop模式下，就是eventLoop_
+    // 未来要扩展为one loop per thread，预留
+    auto loop = connection->getChannel()->getEventLoop();
+
+    loop->addChannel(connection->getChannel().get());
+    loop->addTimer(Timer(
         connfd,
         TimeStamp::nowSecond(TcpConnection::TimeOut),
         std::bind(&TcpServer::handleConnectionClose, this, connection.get())
@@ -57,15 +61,25 @@ void TcpServer::handleConnected(int connfd, const InetAddress &inetAdress){
 void TcpServer::handleConnectionRead(TcpConnection *conn) {
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
         return;
-
-    threadPool_->addTask(std::bind(&TcpServer::onRead, this, conn));
+    auto loop = conn->getChannel()->getEventLoop();
+    loop->adjustTimer(Timer(
+        conn->getFd(),
+        TimeStamp::nowSecond(TcpConnection::TimeOut),
+        std::bind(&TcpServer::handleConnectionClose, this, conn)
+    ));
+    threadPool_->addTask(std::bind(&TcpServer::onRecv, this, conn));
 }
 
 void TcpServer::handleConnectionWrite(TcpConnection *conn) {
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
         return;
-
-    threadPool_->addTask(std::bind(&TcpServer::onWrite, this, conn));
+    auto loop = conn->getChannel()->getEventLoop();
+    loop->adjustTimer(Timer(
+        conn->getFd(),
+        TimeStamp::nowSecond(TcpConnection::TimeOut),
+        std::bind(&TcpServer::handleConnectionClose, this, conn)
+    ));
+    threadPool_->addTask(std::bind(&TcpServer::onSend, this, conn));
 }
 
 void TcpServer::handleConnectionClose(TcpConnection *conn) {
@@ -73,12 +87,13 @@ void TcpServer::handleConnectionClose(TcpConnection *conn) {
         return;
     
     onCloseConntection(conn);
-
-    eventLoop_.delChannel(conn->getChannel().get());
+    
+    auto loop = conn->getChannel()->getEventLoop();
+    loop->delChannel(conn->getChannel().get());
     connects_.erase(conn->getFd());
 }
 
-void TcpServer::onRead(TcpConnection *conn){
+void TcpServer::onRecv(TcpConnection *conn){
     TcpConnection::status status = conn->read();
     if(status.type == status.CLOSED || status.type == status.ERROR){
         handleConnectionClose(conn);
@@ -93,14 +108,16 @@ void TcpServer::onRead(TcpConnection *conn){
         /* 数据不完整，接着读 */
         conn->setEvents(EPOLLIN | kConnectionEvent);
     }
-    eventLoop_.modChannel(conn->getChannel().get());
+
+    auto loop = conn->getChannel()->getEventLoop();
+    loop->modChannel(conn->getChannel().get());
 }
 
-void TcpServer::onWrite(TcpConnection *conn){
+void TcpServer::onSend(TcpConnection *conn){
     TcpConnection::status status = conn->write();
     if(status.type == status.CLOSED){
         if(conn->isKeepAlive()){
-            if(conn->getSender().ReadableBytes()){
+            if(conn->sendable()){
                 /* 还有数据，接着写 */
                 conn->setEvents(EPOLLOUT | kConnectionEvent);
             }
@@ -108,13 +125,15 @@ void TcpServer::onWrite(TcpConnection *conn){
                 /* 转为读 */
                 conn->setEvents(EPOLLIN | kConnectionEvent);
             }
-            eventLoop_.modChannel(conn->getChannel().get());
+            auto loop = conn->getChannel()->getEventLoop();
+            loop->modChannel(conn->getChannel().get());
         }
     }
     else if(status.type == status.AGAIN){
         /* 没写完，接着写 */
         conn->setEvents(EPOLLOUT | kConnectionEvent);
-        eventLoop_.modChannel(conn->getChannel().get());
+        auto loop = conn->getChannel()->getEventLoop();
+        loop->modChannel(conn->getChannel().get());
     }
     else{
         handleConnectionClose(conn);
@@ -122,17 +141,17 @@ void TcpServer::onWrite(TcpConnection *conn){
 }
 
 bool TcpServer::onMessage(TcpConnection *conn){
-    std::cout << "onMessage" << std::endl;
+    HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onMessage";
     return true;
 }
 
 bool TcpServer::onNewConntection(TcpConnection *conn){
-    std::cout << "onNewConntection" << std::endl;
+    HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onNewConntection";
     return true;
 }
 
 bool TcpServer::onCloseConntection(TcpConnection *conn){
-    std::cout << "onCloseConntection" << std::endl;
+    HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onCloseConntection";
     return true;
 }
 

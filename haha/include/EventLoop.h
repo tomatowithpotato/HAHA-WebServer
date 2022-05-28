@@ -19,6 +19,7 @@ public:
     void delChannel(Channel* channel);
 
     void addTimer(const Timer& timer);
+    void adjustTimer(const Timer& timer);
 
 private:
     int timeFd_;

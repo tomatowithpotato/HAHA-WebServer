@@ -9,6 +9,7 @@
 #include <string.h>
 #include <sys/uio.h>
 #include <assert.h>
+#include <memory>
 
 namespace haha{
 
@@ -25,6 +26,7 @@ class Buffer{
 /// @endcode
 
 public:
+    typedef std::shared_ptr<Buffer> ptr;
     // static const size_t kCheapPrepend = 8;
     static const size_t kInitialSize = 1024;
 

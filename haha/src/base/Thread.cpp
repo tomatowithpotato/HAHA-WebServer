@@ -43,7 +43,7 @@ void Thread::setDefaultName()
     if (name_.empty())
     {   
         int curThreadCnt = numThread_;
-        std::cout << curThreadCnt << std::endl;
+        // std::cout << curThreadCnt << std::endl;
         char buf[32];
         snprintf(buf, sizeof(buf), "Thread_%d", curThreadCnt);
         name_ = buf;

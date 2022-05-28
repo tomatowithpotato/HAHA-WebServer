@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include "base/Log.h"
 #include "InetAddress.h"
 #include "Socket.h"
 #include "ThreadPool.h"
@@ -29,13 +30,16 @@ private:
     void handleRead();
     void handleWrite();
     void handleClose();
-    void handleConnected(int, const InetAddress&);
+    void handleConnected(Socket::ptr);
     void handleConnectionRead(TcpConnection *);
     void handleConnectionWrite(TcpConnection *);
     void handleConnectionClose(TcpConnection *);
 
-    void onWrite(TcpConnection *);
-    void onRead(TcpConnection *);
+    // virtual bool keepSend();
+    // virtual bool keepRecv();
+
+    void onSend(TcpConnection *);
+    void onRecv(TcpConnection *);
 
     virtual bool onMessage(TcpConnection *);
     virtual bool onNewConntection(TcpConnection *);

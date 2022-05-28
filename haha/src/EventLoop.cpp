@@ -45,4 +45,8 @@ void EventLoop::addTimer(const Timer& timer){
     timerQueue_->push(timer);
 }
 
+void EventLoop::adjustTimer(const Timer& timer){
+    timerQueue_->adjust(timer);
+}
+
 }

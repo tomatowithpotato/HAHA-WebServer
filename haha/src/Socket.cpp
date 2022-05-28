@@ -43,9 +43,11 @@ InetAddress sockops::getSockName(int fd) {
 Socket::Socket(FDTYPE fdtype){
     if(fdtype == FDTYPE::BLOCK){
         fd_ = sockops::createSocket();
+        isBlocked_ = true;
     }
     else if(fdtype == FDTYPE::NONBLOCK){
         fd_ = sockops::createNBSocket();
+        isBlocked_ = false;
     }
 }
 
@@ -61,12 +63,19 @@ void Socket::listen() {
         ::exit(-1);
 }
 
-std::pair<int, InetAddress> Socket::accept() {
+Socket::ptr Socket::accept() {
     sockaddr_in addr;
     socklen_t len = sizeof(addr);
     int connfd = ::accept(fd_, (sockaddr *)&addr, &len);
-    InetAddress peer(addr);
-    return std::make_pair(connfd, peer);
+    if(connfd <= 0){
+        return nullptr;
+    }
+    return std::make_shared<Socket>(connfd);
+}
+
+void Socket::setNonBlocking(){
+    isBlocked_ = false;
+    sockops::setNonBlocking(fd_);
 }
 
 void Socket::enableReuseAddr(bool on) {
@@ -82,6 +91,40 @@ void Socket::enableReusePort(bool on) {
 void Socket::enableKeepAlive(bool on) {
     int optval = on ? 1 : 0;
     ::setsockopt(fd_, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval));
+}
+
+InetAddress Socket::getLocalAddress(){
+    return sockops::getSockName(fd_);
+}
+
+InetAddress Socket::getRemoteAddress(){
+    return sockops::getPeerName(fd_);
+}
+
+int Socket::send(Buffer::ptr buff){
+    int sendedBytes = 0;
+    int saveErrno;
+    do {
+        int len = buff->WriteFd(fd_, &saveErrno);
+        if (len <= 0) {
+            break;
+        }
+        sendedBytes += len;
+    } while (!isBlocked_);
+    return sendedBytes;
+}
+
+int Socket::recv(Buffer::ptr buff){
+    int receivedBytes = 0;
+    int saveErrno;
+    do {
+        int len = buff->ReadFd(fd_, &saveErrno);
+        if (len <= 0) {
+            break;
+        }
+        receivedBytes += len;
+    } while (!isBlocked_);
+    return receivedBytes;
 }
 
 }
