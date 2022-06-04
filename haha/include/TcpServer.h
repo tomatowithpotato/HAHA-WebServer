@@ -18,6 +18,12 @@ class TcpServer{
 public:
     typedef std::unordered_map<int, std::shared_ptr<TcpConnection>> ConnectMap;
 
+    enum MESSAGE_STATUS{
+        OK,
+        AGAIN,
+        CLOSE,
+    };
+
     TcpServer();
     void start(const InetAddress &address);
 private:
@@ -41,7 +47,7 @@ private:
     void onSend(TcpConnection *);
     void onRecv(TcpConnection *);
 
-    virtual bool onMessage(TcpConnection *);
+    virtual MESSAGE_STATUS onMessage(TcpConnection *);
     virtual bool onNewConntection(TcpConnection *);
     virtual bool onCloseConntection(TcpConnection *);
 private:

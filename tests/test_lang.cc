@@ -1,6 +1,8 @@
 #include <functional>
 #include <memory>
 #include <iostream>
+#include <string>
+#include <string_view>
 
 class Heyhey{
 public:
@@ -22,6 +24,7 @@ private:
 
 
 int main(){
+    std::string s("haha");
     Heyhey hey;
     Heyhey hey1(3);
     Heyhey hey2(true);
@@ -31,5 +34,10 @@ int main(){
     func();
     std::shared_ptr<Heyhey> hey3;
     std::cout << (hey3 == nullptr) << std::endl;
+
+    std::string_view view("   good good");
+    std::cout << view << std::endl;
+    view.remove_prefix(3);
+    std::cout << view << std::endl;
     return 0;
 }

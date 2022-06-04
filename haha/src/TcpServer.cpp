@@ -59,6 +59,7 @@ void TcpServer::handleConnected(Socket::ptr sock){
 }
 
 void TcpServer::handleConnectionRead(TcpConnection *conn) {
+    HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "handleConnectionRead";
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
         return;
     auto loop = conn->getChannel()->getEventLoop();
@@ -71,6 +72,7 @@ void TcpServer::handleConnectionRead(TcpConnection *conn) {
 }
 
 void TcpServer::handleConnectionWrite(TcpConnection *conn) {
+    HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "handleConnectionWrite";
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
         return;
     auto loop = conn->getChannel()->getEventLoop();
@@ -100,13 +102,17 @@ void TcpServer::onRecv(TcpConnection *conn){
         return;
     }
     /* 处理接收的数据 */
-    if(onMessage(conn)){
+    if(onMessage(conn) == MESSAGE_STATUS::OK){
         /* 处理完就准备写 */
         conn->setEvents(EPOLLOUT | kConnectionEvent);
     }
-    else{
+    else if(onMessage(conn) == MESSAGE_STATUS::AGAIN){
         /* 数据不完整，接着读 */
         conn->setEvents(EPOLLIN | kConnectionEvent);
+    }
+    else{
+        /* 出现问题，关闭 */
+        handleConnectionClose(conn);
     }
 
     auto loop = conn->getChannel()->getEventLoop();
@@ -122,11 +128,15 @@ void TcpServer::onSend(TcpConnection *conn){
                 conn->setEvents(EPOLLOUT | kConnectionEvent);
             }
             else{
+                conn->retriveSender();
                 /* 转为读 */
                 conn->setEvents(EPOLLIN | kConnectionEvent);
             }
             auto loop = conn->getChannel()->getEventLoop();
             loop->modChannel(conn->getChannel().get());
+        }
+        else{
+            handleConnectionClose(conn);
         }
     }
     else if(status.type == status.AGAIN){
@@ -140,13 +150,14 @@ void TcpServer::onSend(TcpConnection *conn){
     }
 }
 
-bool TcpServer::onMessage(TcpConnection *conn){
+TcpServer::MESSAGE_STATUS TcpServer::onMessage(TcpConnection *conn){
     HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onMessage";
-    return true;
+    return MESSAGE_STATUS::OK;
 }
 
 bool TcpServer::onNewConntection(TcpConnection *conn){
     HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onNewConntection";
+    conn->getSender()->Append("hahaha");
     return true;
 }
 

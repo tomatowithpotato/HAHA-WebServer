@@ -44,7 +44,26 @@ void TimerHeap::SwapNode_(size_t i, size_t j) {
     ref_[heap_[j].fd] = j;
 } 
 
+void TimerHeap::del_(size_t index) {
+    /* 删除指定位置的结点 */
+    assert(!heap_.empty() && index >= 0 && index < heap_.size());
+    /* 将要删除的结点换到队尾，然后调整堆 */
+    size_t i = index;
+    size_t n = heap_.size() - 1;
+    assert(i <= n);
+    if(i < n) {
+        SwapNode_(i, n);
+        if(!siftdown_(i, n)) {
+            siftup_(i);
+        }
+    }
+    /* 队尾元素删除 */
+    ref_.erase(heap_.back().fd);
+    heap_.pop_back();
+}
+
 void TimerHeap::push(const Timer& timer){
+    MutexLock::RallLock lock_gaurd(mtx_);
     assert(timer.fd >= 0);
     size_t i;
     auto x = ref_.find(timer.fd);
@@ -65,25 +84,8 @@ void TimerHeap::push(const Timer& timer){
     }
 }
 
-void TimerHeap::del_(size_t index) {
-    /* 删除指定位置的结点 */
-    assert(!heap_.empty() && index >= 0 && index < heap_.size());
-    /* 将要删除的结点换到队尾，然后调整堆 */
-    size_t i = index;
-    size_t n = heap_.size() - 1;
-    assert(i <= n);
-    if(i < n) {
-        SwapNode_(i, n);
-        if(!siftdown_(i, n)) {
-            siftup_(i);
-        }
-    }
-    /* 队尾元素删除 */
-    ref_.erase(heap_.back().fd);
-    heap_.pop_back();
-}
-
 void TimerHeap::adjust(const Timer& timer){
+    MutexLock::RallLock lock_gaurd(mtx_);
     auto x = ref_.find(timer.fd);
     if(x != ref_.end()){
         heap_[x->second].expire = timer.expire;
@@ -92,11 +94,13 @@ void TimerHeap::adjust(const Timer& timer){
 }
 
 void TimerHeap::pop() {
+    MutexLock::RallLock lock_gaurd(mtx_);
     assert(!heap_.empty());
     del_(0);
 }
 
 void TimerHeap::clear() {
+    MutexLock::RallLock lock_gaurd(mtx_);
     ref_.clear();
     heap_.clear();
 }

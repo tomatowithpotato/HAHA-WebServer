@@ -8,20 +8,27 @@ INCLUDE_DIR = -I ../haha/include
 BINARY_DIR = ../bin
 
 lang: test_lang.cc
-	g++ -ggdb test_lang.cc -o lang
+	g++ -std=c++2a -ggdb test_lang.cc -o lang
 
 timestamp: test_timeStamp.cc
-	g++ -ggdb test_timeStamp.cc -o timestamp
+	g++ -std=c++2a -ggdb test_timeStamp.cc -o timestamp
 
 tcpserver: test_tcpServer.cc
-	g++ -ggdb $(INCLUDE_DIR) test_tcpServer.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/tcpserverTest.out
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_tcpServer.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/tcpserverTest.out
 
 thread: test_thread.cc
-	g++ -ggdb $(INCLUDE_DIR) test_thread.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/threadTest.out
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_thread.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/threadTest.out
 
 
 threadpool: test_threadpool.cc
-	g++ -ggdb $(INCLUDE_DIR) test_threadpool.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/threadpoolTest.out
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_threadpool.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/threadpoolTest.out
 
 log: test_log.cc
-	g++ -ggdb $(INCLUDE_DIR) test_log.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/loglTest.out
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_log.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/loglTest.out
+
+stringview: test_stringview.cc
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_stringview.cc -o $(BINARY_DIR)/stringviewlTest.out
+
+
+httpRequest: test_httpRequest.cc $(SOURCE_FILES)
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_httpRequest.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/httpRequestTest.out

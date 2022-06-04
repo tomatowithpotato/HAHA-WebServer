@@ -14,7 +14,7 @@ namespace haha{
 class TcpConnection{
 public:
 
-    static const int TimeOut = 15;
+    static const int TimeOut = 100;
 
     struct status{
         int n;
@@ -75,8 +75,10 @@ public:
     /* 是否还有数据没发送 */
     bool sendable() { return sender_->ReadableBytes() > 0; }
 
-    void retriveRead();
-    void retriveWrite();
+    // 重置接收缓冲区
+    void retriveRecver();
+    // 重置发送缓冲区
+    void retriveSender();
     void retriveAll();
 
 private:
@@ -86,7 +88,7 @@ private:
     Channel::ptr channel_;      // 事件回调器
     bool disconnected_;
 
-    bool keep_alive_;
+    bool keep_alive_ = false;
 
     bool receiveComplete_ = false;
 

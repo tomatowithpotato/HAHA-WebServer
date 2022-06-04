@@ -12,7 +12,8 @@
 #include <arpa/inet.h> 
 #include <functional> 
 #include <assert.h> 
-#include "TimeStamp.h"
+#include "base/TimeStamp.h"
+#include "base/Mutex.h"
 
 namespace haha{
 
@@ -66,6 +67,8 @@ private:
 
     // 记录定时器在堆中的位置
     std::unordered_map<int, size_t> ref_;
+
+    MutexLock mtx_;
 };
 
 }

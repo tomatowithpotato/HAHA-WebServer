@@ -65,15 +65,15 @@ void TcpConnection::close(){
 }
 
 void TcpConnection::retriveAll(){
-    retriveRead();
-    retriveWrite();
+    retriveRecver();
+    retriveSender();
 }
 
-void TcpConnection::retriveRead(){
+void TcpConnection::retriveRecver(){
     recver_->RetrieveAll();
 }
 
-void TcpConnection::retriveWrite(){
+void TcpConnection::retriveSender(){
     sender_->RetrieveAll();
 }
 
