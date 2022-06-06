@@ -25,7 +25,7 @@ private:
     sem_t m_semaphore;
 };
 
-/* 实现锁的RALL机制 */
+/* 实现普通锁（不区分读写）的RALL机制 */
 template<class T>
 struct LockGuard{
 public:

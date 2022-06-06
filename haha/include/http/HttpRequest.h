@@ -49,7 +49,7 @@ public:
     bool keepAlive() { return keepAlive_; }
     bool hasCookies() { return hasCookies_; }
 
-// private:
+private:
     RET_STATE parseRequestLine();
     RET_STATE parseRequestHeader();
     RET_STATE parseRequestContent();

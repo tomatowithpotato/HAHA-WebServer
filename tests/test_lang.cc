@@ -4,9 +4,21 @@
 #include <string>
 #include <string_view>
 
+class Data{
+public:
+    ~Data(){
+        std::cout << "~Data" << std::endl;
+    }
+private:
+    int cc = 0;
+};
+
 class Heyhey{
 public:
     Heyhey() = default;
+    ~Heyhey(){
+        std::cout << "~Heyhey" << std::endl;
+    }
     explicit Heyhey(int x) {x_ = x; std::cout << "int init" << std::endl;}
     explicit Heyhey(bool hehe) {x_ = 12345; std::cout << "bool init" << std::endl;}
     void oh(){
@@ -20,24 +32,26 @@ public:
 
 private:
     int x_;
+    Data data_;
 };
 
 
 int main(){
-    std::string s("haha");
-    Heyhey hey;
-    Heyhey hey1(3);
-    Heyhey hey2(true);
-    std::unique_ptr<Heyhey> ptr = std::make_unique<Heyhey>(5);
-    std::function<void()> func = std::bind(&Heyhey::shit, ptr.get());
-    hey.shit();
-    func();
-    std::shared_ptr<Heyhey> hey3;
-    std::cout << (hey3 == nullptr) << std::endl;
-
-    std::string_view view("   good good");
-    std::cout << view << std::endl;
-    view.remove_prefix(3);
-    std::cout << view << std::endl;
+    // std::string s("haha");
+    // Heyhey hey;
+    // Heyhey hey1(3);
+    // Heyhey hey2(true);
+    // std::unique_ptr<Heyhey> ptr = std::make_unique<Heyhey>(5);
+    // std::function<void()> func = std::bind(&Heyhey::shit, ptr.get());
+    // hey.shit();
+    // func();
+    // std::shared_ptr<Heyhey> hey3;
+    // std::cout << (hey3 == nullptr) << std::endl;
+    Heyhey *hey = new Heyhey();
+    std::shared_ptr<void> eeee;
+    eeee.reset(hey);
+    std::shared_ptr<Heyhey> oh;
+    oh = std::static_pointer_cast<Heyhey>(eeee);
+    std::cout << eeee.use_count() << std::endl;
     return 0;
 }

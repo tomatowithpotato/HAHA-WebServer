@@ -40,11 +40,11 @@ void TcpServer::handleConnected(Socket::ptr sock){
     auto connection = connects_[connfd];
     connection->setChannel(std::make_shared<Channel>(&eventLoop_, connfd, false));
     connection->setEvents(EPOLLIN | kConnectionEvent);
-    connection->getChannel()->setReadCallback(std::bind(&TcpServer::handleConnectionRead, this, connection.get()));
-    connection->getChannel()->setWriteCallback(std::bind(&TcpServer::handleConnectionWrite, this, connection.get()));
-    connection->getChannel()->setCloseCallback(std::bind(&TcpServer::handleConnectionClose, this, connection.get()));
+    connection->getChannel()->setReadCallback(std::bind(&TcpServer::handleConnectionRead, this, connection));
+    connection->getChannel()->setWriteCallback(std::bind(&TcpServer::handleConnectionWrite, this, connection));
+    connection->getChannel()->setCloseCallback(std::bind(&TcpServer::handleConnectionClose, this, connection));
 
-    onNewConntection(connection.get());
+    onNewConntection(connection);
     
     // 单loop模式下，就是eventLoop_
     // 未来要扩展为one loop per thread，预留
@@ -54,11 +54,11 @@ void TcpServer::handleConnected(Socket::ptr sock){
     loop->addTimer(Timer(
         connfd,
         TimeStamp::nowSecond(TcpConnection::TimeOut),
-        std::bind(&TcpServer::handleConnectionClose, this, connection.get())
+        std::bind(&TcpServer::handleConnectionClose, this, connection)
     ));
 }
 
-void TcpServer::handleConnectionRead(TcpConnection *conn) {
+void TcpServer::handleConnectionRead(TcpConnection::ptr conn) {
     HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "handleConnectionRead";
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
         return;
@@ -71,7 +71,7 @@ void TcpServer::handleConnectionRead(TcpConnection *conn) {
     threadPool_->addTask(std::bind(&TcpServer::onRecv, this, conn));
 }
 
-void TcpServer::handleConnectionWrite(TcpConnection *conn) {
+void TcpServer::handleConnectionWrite(TcpConnection::ptr conn) {
     HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "handleConnectionWrite";
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
         return;
@@ -84,7 +84,7 @@ void TcpServer::handleConnectionWrite(TcpConnection *conn) {
     threadPool_->addTask(std::bind(&TcpServer::onSend, this, conn));
 }
 
-void TcpServer::handleConnectionClose(TcpConnection *conn) {
+void TcpServer::handleConnectionClose(TcpConnection::ptr conn) {
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
         return;
     
@@ -92,10 +92,20 @@ void TcpServer::handleConnectionClose(TcpConnection *conn) {
     
     auto loop = conn->getChannel()->getEventLoop();
     loop->delChannel(conn->getChannel().get());
-    connects_.erase(conn->getFd());
+    conn->setDisconnected(true);
+
+    // 从连接表中删除连接，因为可能有多个线程同时删，因此必须加锁保护
+    {
+        SpinLock::RallLock lock(connMtx_);
+        auto it = connects_.find(conn->getFd());
+        if(it != connects_.end()){
+            connects_.erase(it);
+        }
+    }
+    
 }
 
-void TcpServer::onRecv(TcpConnection *conn){
+void TcpServer::onRecv(TcpConnection::ptr conn){
     TcpConnection::status status = conn->read();
     if(status.type == status.CLOSED || status.type == status.ERROR){
         handleConnectionClose(conn);
@@ -119,7 +129,7 @@ void TcpServer::onRecv(TcpConnection *conn){
     loop->modChannel(conn->getChannel().get());
 }
 
-void TcpServer::onSend(TcpConnection *conn){
+void TcpServer::onSend(TcpConnection::ptr conn){
     TcpConnection::status status = conn->write();
     if(status.type == status.CLOSED){
         if(conn->isKeepAlive()){
@@ -150,18 +160,18 @@ void TcpServer::onSend(TcpConnection *conn){
     }
 }
 
-TcpServer::MESSAGE_STATUS TcpServer::onMessage(TcpConnection *conn){
+TcpServer::MESSAGE_STATUS TcpServer::onMessage(TcpConnection::ptr conn){
     HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onMessage";
     return MESSAGE_STATUS::OK;
 }
 
-bool TcpServer::onNewConntection(TcpConnection *conn){
+bool TcpServer::onNewConntection(TcpConnection::ptr conn){
     HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onNewConntection";
     conn->getSender()->Append("hahaha");
     return true;
 }
 
-bool TcpServer::onCloseConntection(TcpConnection *conn){
+bool TcpServer::onCloseConntection(TcpConnection::ptr conn){
     HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onCloseConntection";
     return true;
 }

@@ -5,6 +5,8 @@
 #include <utility>
 #include <iostream>
 
+#include "base/Mutex.h"
+#include "base/ReadWriteLock.h"
 #include "InetAddress.h"
 #include "Socket.h"
 #include "Channel.h"
@@ -13,6 +15,7 @@ namespace haha{
 
 class TcpConnection{
 public:
+    typedef std::shared_ptr<TcpConnection> ptr;
 
     static const int TimeOut = 100;
 
@@ -66,8 +69,8 @@ public:
     bool isKeepAlive() const { return keep_alive_;}
     void setKeepAlive(bool is) { keep_alive_ = is; }
 
-    bool isDisconnected() const { return disconnected_; }
-    void setDisconnected(bool is) { disconnected_ = is; }
+    bool isDisconnected() const;
+    void setDisconnected(bool is);
 
     Buffer::ptr getRecver() { return recver_; }
     Buffer::ptr getSender() { return sender_; }
@@ -81,16 +84,23 @@ public:
     void retriveSender();
     void retriveAll();
 
+    std::shared_ptr<void> getContext() { return context_; }
+    void setContext(std::shared_ptr<void> context) { context_ = context; }
+    void clearContext() { context_ = nullptr; }
+
 private:
     Socket::ptr sock_;          // socket
     Buffer::ptr recver_;        // 接收缓存
     Buffer::ptr sender_;        // 发送缓存
     Channel::ptr channel_;      // 事件回调器
-    bool disconnected_;
 
+    bool disconnected_ = false;
     bool keep_alive_ = false;
-
     bool receiveComplete_ = false;
+
+    std::shared_ptr<void> context_;     // 连接的上下文数据，例如http的请求数据或响应数据
+
+    mutable ReadWriteLock disconnMtx_;  // 连接状态的读写锁
 
     // /* 已接收的字节数 */
     // int receivedBytes_ = 0;

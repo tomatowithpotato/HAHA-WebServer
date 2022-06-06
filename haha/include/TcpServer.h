@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_map>
 #include "base/Log.h"
+#include "base/Mutex.h"
 #include "InetAddress.h"
 #include "Socket.h"
 #include "ThreadPool.h"
@@ -26,6 +27,7 @@ public:
 
     TcpServer();
     void start(const InetAddress &address);
+
 private:
     void handleServerAccept();
     void handleRead(int fd);
@@ -37,19 +39,21 @@ private:
     void handleWrite();
     void handleClose();
     void handleConnected(Socket::ptr);
-    void handleConnectionRead(TcpConnection *);
-    void handleConnectionWrite(TcpConnection *);
-    void handleConnectionClose(TcpConnection *);
+    void handleConnectionRead(TcpConnection::ptr);
+    void handleConnectionWrite(TcpConnection::ptr);
+    void handleConnectionClose(TcpConnection::ptr);
 
     // virtual bool keepSend();
     // virtual bool keepRecv();
 
-    void onSend(TcpConnection *);
-    void onRecv(TcpConnection *);
+    void onSend(TcpConnection::ptr);
+    void onRecv(TcpConnection::ptr);
 
-    virtual MESSAGE_STATUS onMessage(TcpConnection *);
-    virtual bool onNewConntection(TcpConnection *);
-    virtual bool onCloseConntection(TcpConnection *);
+protected:
+    virtual MESSAGE_STATUS onMessage(TcpConnection::ptr);
+    virtual bool onNewConntection(TcpConnection::ptr);
+    virtual bool onCloseConntection(TcpConnection::ptr);
+
 private:
     int timeoutInterval_;
     EventLoop eventLoop_;
@@ -57,6 +61,8 @@ private:
     Socket servSock_;
 
     Channel::ptr listenChannel_;
+
+    SpinLock connMtx_;
     ConnectMap connects_;
     
     int evfd_;

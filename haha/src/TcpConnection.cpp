@@ -77,4 +77,14 @@ void TcpConnection::retriveSender(){
     sender_->RetrieveAll();
 }
 
+bool TcpConnection::isDisconnected() const {
+    ReadWriteLock::RallReadLock rlock(disconnMtx_);
+    return disconnected_;
+}
+
+void TcpConnection::setDisconnected(bool is){
+    ReadWriteLock::RallWriteLock wlock(disconnMtx_);
+    disconnected_ = is;
+}
+
 }

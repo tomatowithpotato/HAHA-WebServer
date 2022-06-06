@@ -8,7 +8,7 @@ INCLUDE_DIR = -I ../haha/include
 BINARY_DIR = ../bin
 
 lang: test_lang.cc
-	g++ -std=c++2a -ggdb test_lang.cc -o lang
+	g++ -std=c++2a -ggdb test_lang.cc -o $(BINARY_DIR)/langTest.out
 
 timestamp: test_timeStamp.cc
 	g++ -std=c++2a -ggdb test_timeStamp.cc -o timestamp
