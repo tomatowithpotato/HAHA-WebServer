@@ -20,14 +20,15 @@ public:
         HTTPS,
     };
     HttpUrl(std::string_view url = "", bool decode = true);
-    bool empty(){return url_.empty();}
-    size_t size(){return url_.size();}
+    
+    bool empty() const {return url_.empty();}
+    size_t size() const { return url_.size(); }
 
-    STATE getState() { return state_; }
+    STATE getState() const { return state_; }
 
-    std::string_view getUrl(){ return std::string_view(url_.c_str()); }
+    const std::string& getUrl() const { return url_; }
 
-    std::string_view getScheme() { 
+    std::string_view getScheme() const { 
         switch (scheme_)
         {
         case HTTP:
@@ -41,11 +42,11 @@ public:
             break;
         }
     }
-    std::string_view getHost() { return host_; }
-    std::string_view getHostName() { return hostName_; }
-    std::string_view getPort() { return port_; }
-    std::string_view getPath() { return path_; }
-    Query getQuery() { return query_; }
+    std::string_view getHost() const { return host_; }
+    std::string_view getHostName() const { return hostName_; }
+    std::string_view getPort() const { return port_; }
+    std::string_view getPath() const { return path_; }
+    const Query& getQuery() const { return query_; }
 
 private:
     STATE parseFromUrl();

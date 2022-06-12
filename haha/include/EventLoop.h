@@ -5,12 +5,14 @@
 #include "Epoller.h"
 #include "TimerQueue.h"
 #include <functional>
+#include <memory>
 
 namespace haha{
 
 class EventLoop{
 
 public:
+    typedef std::shared_ptr<EventLoop> ptr;
     EventLoop();
     void loop(int idle_timeout_ = -1);
 

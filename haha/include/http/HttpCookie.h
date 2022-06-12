@@ -19,6 +19,9 @@ public:
     const std::string &getPath() const noexcept { return path_; }
     void setMaxAge(int second) { maxAge_ = second; }
     int getMaxAge() const noexcept { return maxAge_; }
+    void setSessionId(const std::string &ssid) { sessionId_ = ssid; }
+    const std::string &getSessionId() const { return sessionId_; }
+
     void setSecure(bool secure) { secure_ = secure; }
     bool isSecure() const noexcept { return secure_; }
     void setHttpOnly(bool httponly) { httpOnly_ = httponly; }
@@ -27,6 +30,7 @@ private:
     std::string expires_;
     std::string domain_;
     std::string path_;
+    std::string sessionId_;
     int maxAge_;
     bool secure_;
     bool httpOnly_;

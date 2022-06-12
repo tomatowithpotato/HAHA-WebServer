@@ -22,11 +22,12 @@ public:
     enum MESSAGE_STATUS{
         OK,
         AGAIN,
-        CLOSE,
     };
 
     TcpServer();
     void start(const InetAddress &address);
+
+    EventLoop::ptr getMainLoop() { return eventLoop_; }
 
 private:
     void handleServerAccept();
@@ -56,7 +57,7 @@ protected:
 
 private:
     int timeoutInterval_;
-    EventLoop eventLoop_;
+    EventLoop::ptr eventLoop_;
     ThreadPool *threadPool_;
     Socket servSock_;
 

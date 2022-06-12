@@ -37,6 +37,9 @@ HttpCookie::HttpCookie(const std::string &str)
                 else if(attr == "max-age"){
                     maxAge_ = std::stoi(val);
                 }
+                else if(attr == "sessionid"){
+                    sessionId_ = val;
+                }
                 else{
                     add(key, val);
                 }
@@ -61,7 +64,7 @@ HttpCookie::HttpCookie(const std::string &str)
 std::string HttpCookie::toString() const{
     std::string str;
     int i = 0;
-    int n = keyCount();
+    int n = size();
     for (const auto &[key, value] : map_) {
         str += key + "=" + value;
         if (i++ < n-1){

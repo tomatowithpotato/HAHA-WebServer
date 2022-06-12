@@ -15,44 +15,44 @@
 #include "http/HttpRequest.h"
 #include "http/HttpTest.h"
 
-void print_parseReqLine(haha::HttpRequest &req){
-    switch (req.parseRequestLine())
-    {
-    case haha::HttpRequest::OK_REQUEST:
-        std::cout << "ok" << std::endl;
-        assert(req.getBuffer()->ReadableBytes() == 0);
-        break;
-    case haha::HttpRequest::AGAIN_REQUEST:
-        std::cout << "again" << std::endl;
-        break;
-    case haha::HttpRequest::BAD_REQUEST:
-        std::cout << "bad" << std::endl;
-        break;
-    default:
-        break;
-    }
-}
+// void print_parseReqLine(haha::HttpRequest &req){
+//     switch (req.parseRequestLine())
+//     {
+//     case haha::HttpRequest::OK_REQUEST:
+//         std::cout << "ok" << std::endl;
+//         assert(req.getBuffer()->ReadableBytes() == 0);
+//         break;
+//     case haha::HttpRequest::AGAIN_REQUEST:
+//         std::cout << "again" << std::endl;
+//         break;
+//     case haha::HttpRequest::BAD_REQUEST:
+//         std::cout << "bad" << std::endl;
+//         break;
+//     default:
+//         break;
+//     }
+// }
 
 
-void print_parseReqHeader(haha::HttpRequest &req){
-    switch (req.parseRequestHeader())
-    {
-    case haha::HttpRequest::OK_REQUEST:
-        std::cout << "ok" << std::endl;
-        for(auto [k,v] : req.getHeader()){
-            std::cout << k << ": " << v << std::endl;
-        }
-        break;
-    case haha::HttpRequest::AGAIN_REQUEST:
-        std::cout << "again" << std::endl;
-        break;
-    case haha::HttpRequest::BAD_REQUEST:
-        std::cout << "bad" << std::endl;
-        break;
-    default:
-        break;
-    }
-}
+// void print_parseReqHeader(haha::HttpRequest &req){
+//     switch (req.parseRequestHeader())
+//     {
+//     case haha::HttpRequest::OK_REQUEST:
+//         std::cout << "ok" << std::endl;
+//         for(auto [k,v] : req.getHeader()){
+//             std::cout << k << ": " << v << std::endl;
+//         }
+//         break;
+//     case haha::HttpRequest::AGAIN_REQUEST:
+//         std::cout << "again" << std::endl;
+//         break;
+//     case haha::HttpRequest::BAD_REQUEST:
+//         std::cout << "bad" << std::endl;
+//         break;
+//     default:
+//         break;
+//     }
+// }
 
 void print_parseHttpUrl(haha::HttpUrl &url){
     std::cout << "=============HttpUrl-query=============" << std::endl;
@@ -171,7 +171,7 @@ int main(){
         std::cout << "==============================Body==============================" << std::endl;
         std::cout << httpRequstStr.getRequestBody() << std::endl;
         haha::Buffer::ptr buffer = std::make_shared<haha::Buffer>();
-        haha::HttpRequest req(buffer);
+        haha::HttpRequest req(nullptr, buffer);
         for(int j = 0; j < 250; ++j){
             auto splits = haha::test::randomSplitStr(httpRequstStr.getRequest(), 10);
             parseRequestBySplit(req, buffer, splits);

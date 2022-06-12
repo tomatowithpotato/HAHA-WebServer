@@ -19,16 +19,13 @@ public:
     typedef typename std::unordered_map<K, V>::iterator Iterator;
     typedef typename std::unordered_map<K, V>::const_iterator ConstIterator;
 
-    HttpBaseMap():length_(0){}
-
     virtual void add(const K& key, const V& value){
         if(C == CASE_SENSITIVE::YES){
             map_.insert({key, value});
         }
         else{
             map_.insert({toLowers(key), value});
-        } 
-        length_ += key.size() + value.size();
+        }
     }
 
     virtual void del(const K& key){
@@ -41,7 +38,6 @@ public:
         }
         
         if(it != map_.end()){
-            length_ -= key.size() + it->second.size();
             map_.erase(it);
         }
     }
@@ -71,17 +67,12 @@ public:
     Iterator begin(){ return map_.begin(); }
     Iterator end(){ return map_.end(); }
 
-    // 返回键值对数量
-    size_t keyCount() const { return map_.size(); }
+    virtual size_t size() const { return map_.size(); }
 
-    // 返回所有内容的大小
-    size_t size() const { return length_; }
-
-    bool empty() const { return length_ > 0; }
+    virtual bool empty() const { return map_.empty(); }
 
 protected:
     std::unordered_map<K, V> map_;
-    size_t length_;
 };
 
 template<CASE_SENSITIVE C = CASE_SENSITIVE::YES>

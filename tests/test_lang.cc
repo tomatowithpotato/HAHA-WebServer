@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <string_view>
+#include <filesystem>
 
 class Data{
 public:
@@ -53,5 +54,14 @@ int main(){
     std::shared_ptr<Heyhey> oh;
     oh = std::static_pointer_cast<Heyhey>(eeee);
     std::cout << eeee.use_count() << std::endl;
+
+    bool ret = std::filesystem::exists("./index.html");
+    if(ret == -1){
+        std::cout << "no such file" << std::endl;
+    }
+    else{
+        auto fsz = std::filesystem::file_size("./index.html");
+        std::cout << "size: " << fsz << std::endl;
+    }
     return 0;
 }

@@ -101,29 +101,37 @@ InetAddress Socket::getRemoteAddress(){
     return sockops::getPeerName(fd_);
 }
 
-int Socket::send(Buffer::ptr buff){
+int Socket::send(Buffer::ptr buff, int *lastLen){
     int sendedBytes = 0;
     int saveErrno;
+    int len;
     do {
-        int len = buff->WriteFd(fd_, &saveErrno);
+        len = buff->WriteFd(fd_, &saveErrno);
         if (len <= 0) {
             break;
         }
         sendedBytes += len;
-    } while (!isBlocked_);
+    } while (!isBlocked_ && buff->ReadableBytes());
+    if(lastLen){
+        *lastLen = len;
+    }
     return sendedBytes;
 }
 
-int Socket::recv(Buffer::ptr buff){
+int Socket::recv(Buffer::ptr buff, int *lastLen){
     int receivedBytes = 0;
     int saveErrno;
+    int len;
     do {
-        int len = buff->ReadFd(fd_, &saveErrno);
+        len = buff->ReadFd(fd_, &saveErrno);
         if (len <= 0) {
             break;
         }
         receivedBytes += len;
     } while (!isBlocked_);
+    if(lastLen){
+        *lastLen = len;
+    }
     return receivedBytes;
 }
 

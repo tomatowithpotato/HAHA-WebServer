@@ -23,12 +23,13 @@ TcpConnection::TcpConnection()
 }
 
 
-TcpConnection::status TcpConnection::read(){
-    int len = sock_->recv(recver_);
+TcpConnection::status TcpConnection::recv(){
+    int len;
+    int recvBytes = sock_->recv(recver_, &len);
 
     if(len > 0){
         /* 阻塞情况下 len > 0 */
-        return status(len, errno, status::COMPLETED);
+        return status(len, errno, status::AGAIN);
     }
     else if(len < 0 && errno == EAGAIN){
         /* 非阻塞情况下 len < 0 且 error == EAGAIN */
@@ -41,11 +42,19 @@ TcpConnection::status TcpConnection::read(){
     return status(len, errno, status::ERROR);
 }
 
-TcpConnection::status TcpConnection::write(){
-    int len = sock_->send(sender_);
+TcpConnection::status TcpConnection::send(){
+    int len = -10086;
+    int sendBytes;
+
+    if(sender_->ReadableBytes() > 0){
+        sendBytes = sock_->send(sender_, &len);
+    }
+    if(fileSender_ && fileSender_->sendable() 
+        && sender_->ReadableBytes() == 0 && (len > 0 || len == -10086)){
+        sendBytes = fileSender_->send(&len);
+    }
 
     if(len > 0){
-        /* 阻塞情况下 len > 0 */
         return status(len, errno, status::COMPLETED);
     }
     else if(len < 0 && errno == EAGAIN){
@@ -62,6 +71,13 @@ TcpConnection::status TcpConnection::write(){
 void TcpConnection::close(){
     disconnected_ = true;
     channel_ = nullptr;
+}
+
+bool TcpConnection::sendable(){
+    if(fileSender_){
+        return fileSender_->sendable() || sender_->ReadableBytes() > 0;
+    }
+    return sender_->ReadableBytes() > 0;
 }
 
 void TcpConnection::retriveAll(){
@@ -85,6 +101,10 @@ bool TcpConnection::isDisconnected() const {
 void TcpConnection::setDisconnected(bool is){
     ReadWriteLock::RallWriteLock wlock(disconnMtx_);
     disconnected_ = is;
+}
+
+void TcpConnection::setFileStream(const char *file_path){
+    fileSender_ = std::make_shared<FileUtil::FileSender>(file_path, sock_->getFd(), sock_->isBlocked());
 }
 
 }

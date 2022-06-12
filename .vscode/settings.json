@@ -55,6 +55,11 @@
         "thread": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "unordered_set": "cpp",
+        "any": "cpp",
+        "codecvt": "cpp",
+        "iomanip": "cpp",
+        "variant": "cpp"
     }
 }

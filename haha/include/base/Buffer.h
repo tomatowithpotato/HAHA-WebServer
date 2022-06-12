@@ -10,6 +10,9 @@
 #include <sys/uio.h>
 #include <assert.h>
 #include <memory>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 namespace haha{
 

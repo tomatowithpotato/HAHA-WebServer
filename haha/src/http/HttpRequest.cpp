@@ -2,8 +2,9 @@
 
 namespace haha{
 
-HttpRequest::HttpRequest(Buffer::ptr data)
-    :data_(data)
+HttpRequest::HttpRequest(HttpSessionManager *sm, TcpConnection::ptr conn)
+    :sessionManager_(sm)
+    ,conn_(conn)
     ,state_(CHECK_REQUESTLINE)
     ,lastEnd_(0)
     ,max_requestLine_len_(2048)
@@ -17,7 +18,7 @@ HttpRequest::HttpRequest(Buffer::ptr data)
     ,chunked_(false)
     ,chunk_size_str_limit(5) // 16^5
     ,cur_chunkedState_(HttpChunkedState::NO_LEN){
-
+    data_ = conn_->getRecver();
 }
 
 
@@ -142,6 +143,7 @@ HttpRequest::RET_STATE HttpRequest::parseRequestHeader(){
             parseCookies();
             parseContentLength();
             parseTransferEncoding();
+            parseSession();
             return OK_REQUEST;
         }
         // 超出最大限制，结束
@@ -193,7 +195,10 @@ HttpRequest::RET_STATE HttpRequest::parseRequestContent(){
     /* 分块传输要咋搞？卧槽 */
     if(hasTransferEncoding_){
         if(chunked_){
-            return parseChunked();
+            auto ret = parseChunked();
+            if(ret != OK_REQUEST){
+                return ret;
+            }
         }
         else{
             // 不支持其他编码
@@ -289,6 +294,7 @@ void HttpRequest::parseContentType(){
 void HttpRequest::parseAcceptEncoding(){
     auto ret = header_.get("Accept-Encoding");
     if(ret.exist()){
+        acceptEncoding_ = ret.value();
         compressed_ = ret.value().find("gzip") != std::string::npos;
     }
 }
@@ -297,7 +303,7 @@ void HttpRequest::parseCookies(){
     auto ret = header_.get("Cookie");
     if(ret.exist()){
         hasCookies_ = true;
-        cookies_ = HttpCookie(ret.value());
+        cookie_ = HttpCookie(ret.value());
     }
 }
 
@@ -382,6 +388,32 @@ HttpRequest::RET_STATE HttpRequest::parseChunked(){
         }
     }
     return AGAIN_REQUEST;
+}
+
+void HttpRequest::parseSession(){
+    auto ssid = cookie_.getSessionId();
+    if(!ssid.empty()){
+        auto ret = sessionManager_->getSession(ssid);
+        if(ret.exist()){
+            session_ = ret.value();
+        }
+        else{
+            session_ = nullptr;
+        }
+    }
+    else{
+        session_ = nullptr;
+    }
+}
+
+HttpSession::ptr HttpRequest::getSession(bool autoCreate){
+    if(session_){
+        return session_;
+    }
+    else if(autoCreate){
+        return sessionManager_->newSession();
+    }
+    return nullptr;
 }
 
 }

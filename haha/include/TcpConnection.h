@@ -7,6 +7,7 @@
 
 #include "base/Mutex.h"
 #include "base/ReadWriteLock.h"
+#include "base/FileUtil.h"
 #include "InetAddress.h"
 #include "Socket.h"
 #include "Channel.h"
@@ -44,8 +45,8 @@ public:
         std::cout << "~TcpConnection" << std::endl;
     }
 
-    status read();
-    status write();
+    status recv();
+    status send();
     void close();
 
     void init(const Socket& sock) {
@@ -76,7 +77,7 @@ public:
     Buffer::ptr getSender() { return sender_; }
 
     /* 是否还有数据没发送 */
-    bool sendable() { return sender_->ReadableBytes() > 0; }
+    bool sendable();
 
     // 重置接收缓冲区
     void retriveRecver();
@@ -88,11 +89,15 @@ public:
     void setContext(std::shared_ptr<void> context) { context_ = context; }
     void clearContext() { context_ = nullptr; }
 
+    void setFileStream(const char *file_path);
+
 private:
     Socket::ptr sock_;          // socket
     Buffer::ptr recver_;        // 接收缓存
     Buffer::ptr sender_;        // 发送缓存
     Channel::ptr channel_;      // 事件回调器
+
+    FileUtil::FileSender::ptr fileSender_; // 文件发送器
 
     bool disconnected_ = false;
     bool keep_alive_ = false;

@@ -2,7 +2,53 @@
 
 namespace haha{
 
-/* ************************************************解码************************************************ */
+
+unsigned int EncodeUtil::murmurHash2(const std::string& s){
+    constexpr unsigned int m = 0x5bd1e995;
+    constexpr int r = 24;
+    // Initialize the hash to a 'random' value
+    size_t len = s.size();
+    unsigned int h = 0xEE6B27EB ^ len;
+
+    // Mix 4 bytes at a time into the hash
+
+    const unsigned char *data = (const unsigned char *)s.data();
+
+    while (len >= 4) {
+        unsigned int k = *(unsigned int *)data;
+
+        k *= m;
+        k ^= k >> r;
+        k *= m;
+
+        h *= m;
+        h ^= k;
+
+        data += 4;
+        len -= 4;
+    }
+
+    // Handle the last few bytes of the input array
+    switch (len) {
+    case 3:
+        h ^= data[2] << 16;
+    case 2:
+        h ^= data[1] << 8;
+    case 1:
+        h ^= data[0];
+        h *= m;
+    };
+
+    // Do a few final mixes of the hash to ensure the last few
+    // bytes are well-incorporated.
+    h ^= h >> 13;
+    h *= m;
+    h ^= h >> 15;
+    return h;
+}
+
+
+/* ************************************************url解码************************************************ */
 
 std::string EncodeUtil::urlDecode(const char *value, size_t size) {
     std::string escaped;
@@ -39,7 +85,7 @@ std::string EncodeUtil::urlDecode(const char *value) {
 }
 
 
-/* ************************************************编码************************************************ */
+/* ************************************************url编码************************************************ */
 
 std::string EncodeUtil::urlEncode(const char *value, size_t size) {
     std::string escaped;

@@ -44,6 +44,7 @@ public:
     explicit Socket(FDTYPE fdtype = FDTYPE::BLOCK);
     ~Socket();
     int getFd() const noexcept { return fd_; }
+    bool isBlocked() { return isBlocked_; }
     // 获取本地地址
     InetAddress getLocalAddress();
     // 获取远端地址
@@ -64,9 +65,9 @@ public:
     void enableKeepAlive(bool on);
 
     // 把buff中的数据发到对端
-    virtual int send(Buffer::ptr buff);
+    virtual int send(Buffer::ptr buff, int *lastLen = nullptr);
     // 从对端读取数据存到buff中
-    virtual int recv(Buffer::ptr buff);
+    virtual int recv(Buffer::ptr buff, int *lastLen = nullptr);
 
 private:
     int fd_;

@@ -14,21 +14,24 @@ timestamp: test_timeStamp.cc
 	g++ -std=c++2a -ggdb test_timeStamp.cc -o timestamp
 
 tcpserver: test_tcpServer.cc
-	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_tcpServer.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/tcpserverTest.out
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_tcpServer.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/tcpserverTest.out
 
 thread: test_thread.cc
-	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_thread.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/threadTest.out
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_thread.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/threadTest.out
 
 
 threadpool: test_threadpool.cc
-	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_threadpool.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/threadpoolTest.out
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_threadpool.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/threadpoolTest.out
 
 log: test_log.cc
-	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_log.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/loglTest.out
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_log.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/loglTest.out
 
 stringview: test_stringview.cc
 	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_stringview.cc -o $(BINARY_DIR)/stringviewlTest.out
 
 
 httpRequest: test_httpRequest.cc $(SOURCE_FILES)
-	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_httpRequest.cc $(SOURCE_FILES) -lpthread -o $(BINARY_DIR)/httpRequestTest.out
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_httpRequest.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/httpRequestTest.out
+
+httpCT: test_httpCT.cc $(SOURCE_FILES)
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_httpCT.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/httpCTTest.out

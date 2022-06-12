@@ -7,6 +7,7 @@ TcpServer::TcpServer()
     :servSock_(Socket::FDTYPE::NONBLOCK)
     ,threadPool_(&ThreadPool::getInstance())
     ,timeoutInterval_(5)
+    ,eventLoop_(std::make_shared<EventLoop>())
 {
     servSock_.enableReuseAddr(true);
     servSock_.enableReusePort(true);
@@ -15,14 +16,14 @@ TcpServer::TcpServer()
 void TcpServer::start(const InetAddress &address){
     servSock_.bind(address);
     servSock_.listen();
-    listenChannel_ = std::make_shared<Channel>(&eventLoop_, servSock_.getFd(), false);
+    listenChannel_ = std::make_shared<Channel>(eventLoop_.get(), servSock_.getFd(), false);
     listenChannel_->setReadCallback(std::bind(&TcpServer::handleServerAccept, this));
     listenChannel_->setEvents(EPOLLIN | kServerEvent);
 
     threadPool_->start();
 
-    eventLoop_.addChannel(listenChannel_.get());
-    eventLoop_.loop(timeoutInterval_);
+    eventLoop_->addChannel(listenChannel_.get());
+    eventLoop_->loop(timeoutInterval_);
 }
 
 void TcpServer::handleServerAccept(){
@@ -38,7 +39,7 @@ void TcpServer::handleConnected(Socket::ptr sock){
     int connfd = sock->getFd();
     connects_[connfd] = std::make_shared<TcpConnection>(sock);
     auto connection = connects_[connfd];
-    connection->setChannel(std::make_shared<Channel>(&eventLoop_, connfd, false));
+    connection->setChannel(std::make_shared<Channel>(eventLoop_.get(), connfd, false));
     connection->setEvents(EPOLLIN | kConnectionEvent);
     connection->getChannel()->setReadCallback(std::bind(&TcpServer::handleConnectionRead, this, connection));
     connection->getChannel()->setWriteCallback(std::bind(&TcpServer::handleConnectionWrite, this, connection));
@@ -106,23 +107,19 @@ void TcpServer::handleConnectionClose(TcpConnection::ptr conn) {
 }
 
 void TcpServer::onRecv(TcpConnection::ptr conn){
-    TcpConnection::status status = conn->read();
+    TcpConnection::status status = conn->recv();
     if(status.type == status.CLOSED || status.type == status.ERROR){
         handleConnectionClose(conn);
         return;
     }
     /* 处理接收的数据 */
-    if(onMessage(conn) == MESSAGE_STATUS::OK){
-        /* 处理完就准备写 */
-        conn->setEvents(EPOLLOUT | kConnectionEvent);
-    }
-    else if(onMessage(conn) == MESSAGE_STATUS::AGAIN){
+    if(onMessage(conn) == MESSAGE_STATUS::AGAIN){
         /* 数据不完整，接着读 */
         conn->setEvents(EPOLLIN | kConnectionEvent);
     }
     else{
-        /* 出现问题，关闭 */
-        handleConnectionClose(conn);
+        /* 处理完就准备写 */
+        conn->setEvents(EPOLLOUT | kConnectionEvent);
     }
 
     auto loop = conn->getChannel()->getEventLoop();
@@ -130,7 +127,7 @@ void TcpServer::onRecv(TcpConnection::ptr conn){
 }
 
 void TcpServer::onSend(TcpConnection::ptr conn){
-    TcpConnection::status status = conn->write();
+    TcpConnection::status status = conn->send();
     if(status.type == status.CLOSED){
         if(conn->isKeepAlive()){
             if(conn->sendable()){

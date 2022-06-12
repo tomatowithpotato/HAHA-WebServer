@@ -12,6 +12,7 @@ namespace haha{
 
 namespace EncodeUtil{
 
+unsigned int murmurHash2(const std::string& s);
 
 /* 
 字符'a'-'z','A'-'Z','0'-'9','.','-','*'和'_' 都不被编码，维持原值；
