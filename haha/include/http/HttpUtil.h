@@ -43,7 +43,7 @@ enum HttpStatus {
   HTTP_VERSION_NOT_SUPPORTED = 505
 };
 
-inline const std::unordered_map<short, const char *> Status_Code = {
+inline const std::unordered_map<short, const char *> HttpStatus2Str = {
     {HttpStatus::CONTINUE, "Continue"},
     {HttpStatus::OK, "OK"},
     {HttpStatus::PARTIAL_CONTENT, "Partial Content"},

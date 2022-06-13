@@ -31,7 +31,8 @@ HttpServer::MESSAGE_STATUS HttpServer::onMessage(TcpConnection::ptr conn){
     case haha::HttpRequest::RET_STATE::BAD_REQUEST:
         conn->setKeepAlive(false);
         response->setStatusCode(HttpStatus::BAD_REQUEST);
-        response->addAtrribute("Connection", "close");
+        // response->addAtrribute("Connection", "close");
+        response->setKeepAlive(false);
         break;
     default:
         break;

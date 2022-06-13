@@ -217,6 +217,11 @@ HttpRequest::RET_STATE HttpRequest::parseRequestContent(){
             data_->Retrieve(accept_size);
         }
     }
+    // 无法确定内容的末尾，终止交易！！！
+    else{
+        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "Unable to determine where the content ends";
+        return BAD_REQUEST;
+    }
 
     if(hasContentType_){
         if(contentType_ == HttpContentType::MULTIPART){

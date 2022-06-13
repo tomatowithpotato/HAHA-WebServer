@@ -97,7 +97,7 @@ private:
     Buffer::ptr sender_;        // 发送缓存
     Channel::ptr channel_;      // 事件回调器
 
-    FileUtil::FileSender::ptr fileSender_; // 文件发送器
+    FileUtil::FileSendStream::ptr fileSender_; // 文件发送器
 
     bool disconnected_ = false;
     bool keep_alive_ = false;

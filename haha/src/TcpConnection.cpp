@@ -104,7 +104,7 @@ void TcpConnection::setDisconnected(bool is){
 }
 
 void TcpConnection::setFileStream(const char *file_path){
-    fileSender_ = std::make_shared<FileUtil::FileSender>(file_path, sock_->getFd(), sock_->isBlocked());
+    fileSender_ = std::make_shared<FileUtil::FileSendStream>(file_path, sock_->getFd(), sock_->isBlocked());
 }
 
 }

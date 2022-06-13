@@ -48,7 +48,7 @@ void File::close(){
 }
 
 
-FileSender::FileSender(const char* file_path, int outfd, bool isBlock, SEND_MOD mod)
+FileSendStream::FileSendStream(const char* file_path, int outfd, bool isBlock, SEND_MOD mod)
     :file_(std::make_shared<File>(file_path))
     ,outfd_(outfd)
     ,isBlock_(isBlock)
@@ -69,7 +69,7 @@ FileSender::FileSender(const char* file_path, int outfd, bool isBlock, SEND_MOD 
     }
 }
 
-FileSender::FileSender(File::ptr file, int outfd, bool isBlock, SEND_MOD mod)
+FileSendStream::FileSendStream(File::ptr file, int outfd, bool isBlock, SEND_MOD mod)
     :file_(file)
     ,outfd_(outfd)
     ,isBlock_(isBlock)
@@ -90,7 +90,7 @@ FileSender::FileSender(File::ptr file, int outfd, bool isBlock, SEND_MOD mod)
     }
 }
 
-int FileSender::send(int *lastLen){
+int FileSendStream::send(int *lastLen){
     int n = 0;
     int ret;
     if(mmap_){
@@ -120,7 +120,7 @@ int FileSender::send(int *lastLen){
     return n;
 }
 
-int FileSSLSender::send(int *lastLen){
+int FileSSLSendStream::send(int *lastLen){
     int n;
     return n;
 }

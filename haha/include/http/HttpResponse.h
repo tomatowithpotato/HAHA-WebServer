@@ -21,11 +21,23 @@ public:
     HttpResponse(HttpVersion, TcpConnection::ptr);
     ~HttpResponse();
     
-    void setKeepAlive(bool on) { keepAlive_ = on; }
     void setVersion(HttpVersion version) { version_ = version; }
     void setStatusCode(HttpStatus statusCode) { statusCode_ = statusCode; }
-    void setContentType(HttpContentType contentType) { contentType_ = contentType; }
-    void setContentLength(size_t contentLength) { contentLength_ = contentLength; }
+    void setKeepAlive(bool on) {
+        if(on){
+            header_.setConnection("Keep-Alive"); 
+        }
+        else{
+            header_.setConnection("Close");
+        }
+    }
+    void setContentType(HttpContentType contentType) { 
+        header_.setContentType(HttpContentType2Name.at(contentType));
+    }
+    void setContentLength(size_t contentLength) { 
+        contentLength_ = contentLength;
+        header_.setContentLength(std::to_string(contentLength)); 
+    }
     void setCookie(const HttpCookie &cookie) {
         header_.add("Set-Cookie", cookie.toString());
     }
@@ -37,23 +49,20 @@ public:
     }
 
     void appendBody(const std::string &data){
-        buffer_->Append(data);
+        body_.append(data);
     }
 
     // 从文件读取内容，只能用于小文件读取
-    void appendFile2Body(const char* file_path){
-        int err;
-        int file = ::open(std::filesystem::absolute(file_path).c_str(), O_RDONLY | O_NONBLOCK);
-        int n;
-        do{
-            n = buffer_->ReadFd(file, &err);
-        }while(n > 0);
-        ::close(file);
+    void setFileBody(const char* file_path){
+        body_.clear();
+        isFileBody_ = true;
+        file_path_ = file_path;
     }
 
     void setBody(const std::string &data){
         buffer_->RetrieveAll();
-        buffer_->Append(data);
+        body_.clear();
+        body_ = data;
     }
 
     HttpStatus getStatusCode() const { return statusCode_; }
@@ -70,11 +79,11 @@ private:
     HttpStatus statusCode_;
     HttpHeader header_;
     HttpContentType contentType_;
-    size_t contentLength_;
+    std::string body_;
+    int contentLength_;
     bool keepAlive_;
-
     bool hasSession_;
-
+    bool isFileBody_;
     std::string file_path_;
 };
 

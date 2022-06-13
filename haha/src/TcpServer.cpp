@@ -118,7 +118,7 @@ void TcpServer::onRecv(TcpConnection::ptr conn){
         conn->setEvents(EPOLLIN | kConnectionEvent);
     }
     else{
-        /* 处理完就准备写 */
+        /* 全部处理完就准备写 */
         conn->setEvents(EPOLLOUT | kConnectionEvent);
     }
 
@@ -136,7 +136,7 @@ void TcpServer::onSend(TcpConnection::ptr conn){
             }
             else{
                 conn->retriveSender();
-                /* 转为读 */
+                /* 准备接受新的请求 */
                 conn->setEvents(EPOLLIN | kConnectionEvent);
             }
             auto loop = conn->getChannel()->getEventLoop();
