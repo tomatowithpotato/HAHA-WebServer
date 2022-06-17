@@ -121,7 +121,7 @@ public:
     };
     explicit FileSendStream(const char* file_path, int outfd, bool isBlock, SEND_MOD mod = SENDFILE);
     explicit FileSendStream(File::ptr file, int outfd, bool isBlock, SEND_MOD mod = SENDFILE);
-    bool sendable() { return remain_bytes_ == 0; }
+    bool sendable() { return remain_bytes_ > 0; }
     virtual int send(int *lastLen = nullptr);
     size_t remainBytes() { return remain_bytes_; }
     size_t sendedBytes() { return sended_bytes_; }

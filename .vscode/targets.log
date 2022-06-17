@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jun 17 10:45:35 2022
+# Make data base, printed on Fri Jun 17 17:10:33 2022
 
 # Variables
 
@@ -67,7 +67,7 @@ CONDA_PREFIX = /home/lighthouse/anaconda3
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-9ea74c3b-fa4d-4da2-b756-be7a7361567e.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-a539abe2-b51d-444e-a710-ad9d3e335ade.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -150,6 +150,7 @@ SSH_CLIENT = 125.216.242.212 62107 22
 BROWSER = /home/lighthouse/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/bin/helpers/browser.sh
 # environment
 VSCODE_HANDLES_SIGPIPE = true
+ 
 # default
 MAKEFILES := 
 # environment
@@ -191,9 +192,9 @@ _CE_CONDA =
 
 # Directories
 
-# . (device 64514, inode 3256621): 12 files, no impossibilities.
+# . (device 64514, inode 3256621): 11 files, no impossibilities.
 
-# 12 files, no impossibilities in 1 directories.
+# 11 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -243,12 +244,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 20 / storage = 166 B / avg = 8 B
-# current buf: size = 8162 B / used = 166 B / count = 20 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 19 / storage = 157 B / avg = 8 B
+# current buf: size = 8162 B / used = 157 B / count = 19 / avg = 8 B
 
-# strcache performance: lookups = 23 / hit rate = 13%
+# strcache performance: lookups = 22 / hit rate = 13%
 # hash-table stats:
-# Load=20/8192=0%, Rehash=0, Collisions=1/23=4%
-# Finished Make data base on Fri Jun 17 10:45:35 2022
+# Load=19/8192=0%, Rehash=0, Collisions=1/22=5%
+# Finished Make data base on Fri Jun 17 17:10:33 2022
 
  

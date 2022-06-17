@@ -101,6 +101,8 @@ int FileSendStream::send(int *lastLen){
                 break;
             }
             n += ret;
+            remain_bytes_ -= ret;
+            sended_bytes_ += ret;
         }while(sendable() && !isBlock_);
     }
     else{
@@ -110,10 +112,11 @@ int FileSendStream::send(int *lastLen){
                 break;
             }
             n += ret;
+            remain_bytes_ -= ret;
+            sended_bytes_ += ret;
         }while(sendable() && !isBlock_);
     }
-    remain_bytes_ -= n;
-    sended_bytes_ += n;
+
     if(lastLen){
         *lastLen = ret;
     }

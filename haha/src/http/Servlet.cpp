@@ -42,11 +42,10 @@ ServletDispatcher::ServletDispatcher(){
         if(exists){
             std::string ext;
             if(p.has_extension()){
-                // substr的目的是去掉扩展名前面的.
-                ext = std::string(p.extension().c_str()).substr(1);
+                ext = std::string(p.extension().c_str());
             }
             std::unordered_set<std::string> accpetable_exts = {
-                "html", "htm", "txt", "jpg", "png"
+                ".html", ".htm", ".txt", ".jpg", ".png"
             };
             if(accpetable_exts.find(ext) != accpetable_exts.end()){
                 auto fsz = std::filesystem::file_size(p);
@@ -60,7 +59,7 @@ ServletDispatcher::ServletDispatcher(){
                 //     resp->setContentType(HttpContentType::HTML);
                 //     resp->setFileStream(p.c_str());
                 // }
-                resp->setContentType(HttpContentType::HTML);
+                resp->setContentType(Ext2HttpContentType.at(ext));
                 resp->setFileStream(p.c_str());
             }
             else{

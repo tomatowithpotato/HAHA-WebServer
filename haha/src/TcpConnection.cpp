@@ -61,7 +61,7 @@ TcpConnection::status TcpConnection::send(){
         sendBytes = fileSender_->send(&len);
     }
 
-    if(len > 0 && sendable() == 0){
+    if(len > 0 && !sendable()){
         return status(len, errno, status::COMPLETED);
     }
     else if(len < 0 && errno == EAGAIN && sendable() > 0){

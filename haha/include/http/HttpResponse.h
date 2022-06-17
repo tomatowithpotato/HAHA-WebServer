@@ -70,7 +70,12 @@ public:
 
     bool hasSession() const { return hasSession_; }
 
-    void setFileStream(const char* file_path) { conn_->setFileStream(file_path); }
+    void setFileStream(const char* file_path) { 
+        body_.clear();
+        isFileStream_ = true;
+        file_path_ = file_path;
+        conn_->setFileStream(file_path); 
+    }
 
 private:
     TcpConnection::ptr conn_;
@@ -85,6 +90,7 @@ private:
     bool keepAlive_;
     bool hasSession_;
     bool isFileBody_;
+    bool isFileStream_;
     std::string file_path_;
 };
 
