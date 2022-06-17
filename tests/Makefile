@@ -11,7 +11,10 @@ lang: test_lang.cc
 	g++ -std=c++2a -ggdb test_lang.cc -o $(BINARY_DIR)/langTest.out
 
 timestamp: test_timeStamp.cc
-	g++ -std=c++2a -ggdb test_timeStamp.cc -o timestamp
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_timeStamp.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/timeStampTest.out
+
+timerheap: test_timerheap.cc
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_timerheap.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/timerheapTest.out
 
 tcpserver: test_tcpServer.cc
 	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_tcpServer.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/tcpserverTest.out
@@ -35,3 +38,6 @@ httpRequest: test_httpRequest.cc $(SOURCE_FILES)
 
 httpCT: test_httpCT.cc $(SOURCE_FILES)
 	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_httpCT.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/httpCTTest.out
+
+httpServer: test_httpServer.cc $(SOURCE_FILES)
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_httpServer.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/httpServerTest.out

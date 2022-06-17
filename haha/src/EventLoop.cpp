@@ -49,4 +49,8 @@ void EventLoop::adjustTimer(const Timer& timer){
     timerQueue_->adjust(timer);
 }
 
+void EventLoop::delTimer(const Timer& timer){
+    timerQueue_->remove(timer);
+}
+
 }

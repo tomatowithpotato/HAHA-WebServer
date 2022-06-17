@@ -60,24 +60,24 @@ ServletDispatcher::ServletDispatcher(){
         else{
             resp->setStatusCode(HttpStatus::NOT_FOUND);
             resp->setContentType(HttpContentType::HTML);
-            resp->appendBody(Servlet::basePage(code));
+            resp->appendBody(Servlet::basePage(HttpStatus::NOT_FOUND));
             return;
         }
     });
 }
 
 void ServletDispatcher::addServlet(const std::string &uri, Servlet::servletFunc func){
-    ReadWriteLock::RallWriteLock lock(mutex_);
+    ReadWriteLock::RAIIWriteLock lock(mutex_);
     dispatcher_[uri] = std::make_shared<Servlet>(std::move(func));
 }
 
 void ServletDispatcher::addServlet(const std::string &uri, Servlet::ptr servlet){
-    ReadWriteLock::RallWriteLock lock(mutex_);
+    ReadWriteLock::RAIIWriteLock lock(mutex_);
     dispatcher_[uri] = servlet;
 }
 
 Servlet::ptr ServletDispatcher::getServlet(const std::string &uri){
-    ReadWriteLock::RallReadLock lock(mutex_);
+    ReadWriteLock::RAIIReadLock lock(mutex_);
     auto it = dispatcher_.find(uri);
     if(it == dispatcher_.end()){
         return defaultServlet_;
@@ -106,7 +106,7 @@ void ServletDispatcher::dispatch(HttpRequest::ptr req, HttpResponse::ptr resp,
 }
 
 ServletDispatcher::Dispatcher::iterator ServletDispatcher::find_match(const std::string& uri){
-    ReadWriteLock::RallReadLock lock(mutex_);
+    ReadWriteLock::RAIIReadLock lock(mutex_);
     auto it = dispatcher_.find(uri);
     if(it != dispatcher_.end()){
         return it;

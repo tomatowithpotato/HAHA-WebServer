@@ -22,6 +22,7 @@ public:
 
     void addTimer(const Timer& timer);
     void adjustTimer(const Timer& timer);
+    void delTimer(const Timer& timer);
 
 private:
     int timeFd_;

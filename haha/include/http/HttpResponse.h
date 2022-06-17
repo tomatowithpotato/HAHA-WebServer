@@ -32,6 +32,7 @@ public:
         }
     }
     void setContentType(HttpContentType contentType) { 
+        contentType_ = contentType;
         header_.setContentType(HttpContentType2Name.at(contentType));
     }
     void setContentLength(size_t contentLength) { 

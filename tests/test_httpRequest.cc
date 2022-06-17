@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <tuple>
 
+#include "TcpConnection.h"
 #include "http/HttpRequest.h"
 #include "http/HttpTest.h"
 
@@ -160,7 +161,8 @@ int main(){
     // for(auto splt : splits){
     //     std::cout << splt << std::endl;
     // }
-
+    
+    haha::TcpConnection::ptr conn = std::make_shared<haha::TcpConnection>();
     for(int i = 0; i < 100; ++i){
         std::cout << "=============New Loop=============" << std::endl;
         haha::test::RandomHttpRequestString httpRequstStr;
@@ -171,7 +173,8 @@ int main(){
         std::cout << "==============================Body==============================" << std::endl;
         std::cout << httpRequstStr.getRequestBody() << std::endl;
         haha::Buffer::ptr buffer = std::make_shared<haha::Buffer>();
-        haha::HttpRequest req(nullptr, buffer);
+        conn->setRecvBuffer(buffer);
+        haha::HttpRequest req(nullptr, conn);
         for(int j = 0; j < 250; ++j){
             auto splits = haha::test::randomSplitStr(httpRequstStr.getRequest(), 10);
             parseRequestBySplit(req, buffer, splits);
@@ -182,7 +185,7 @@ int main(){
                 break;
             case haha::HttpRequest::CHECK_HEADER:
                 std::cout << "CHECK_HEADER" << std::endl;
-                for(auto [k, v] : req.getHeader()){
+                for(const auto &[k, v] : req.getHeader()){
                     std::cout << k << ": " << v << std::endl;
                 }
                 break;

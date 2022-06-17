@@ -21,10 +21,10 @@ public:
 
     virtual void add(const K& key, const V& value){
         if(C == CASE_SENSITIVE::YES){
-            map_.insert({key, value});
+            map_[key] = value;
         }
         else{
-            map_.insert({toLowers(key), value});
+            map_[toLowers(key)] = value;
         }
     }
 
@@ -64,8 +64,10 @@ public:
         return {it->second, true};
     }
 
-    Iterator begin(){ return map_.begin(); }
-    Iterator end(){ return map_.end(); }
+    ConstIterator begin() const { return map_.begin(); }
+    ConstIterator end() const { return map_.end(); }
+    Iterator begin() { return map_.begin(); }
+    Iterator end() { return map_.end(); }
 
     virtual size_t size() const { return map_.size(); }
 

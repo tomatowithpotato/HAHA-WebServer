@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "base/Log.h"
 #include "base/Mutex.h"
+#include "base/ReadWriteLock.h"
 #include "InetAddress.h"
 #include "Socket.h"
 #include "ThreadPool.h"
@@ -40,15 +41,15 @@ private:
     void handleWrite();
     void handleClose();
     void handleConnected(Socket::ptr);
-    void handleConnectionRead(TcpConnection::ptr);
-    void handleConnectionWrite(TcpConnection::ptr);
-    void handleConnectionClose(TcpConnection::ptr);
 
-    // virtual bool keepSend();
-    // virtual bool keepRecv();
+    /* 因为函数都会被注册为回调函数，因此就不能持有shared_ptr，不然无法释放 */
 
-    void onSend(TcpConnection::ptr);
-    void onRecv(TcpConnection::ptr);
+    void handleConnectionRead(TcpConnection::weak_ptr);
+    void handleConnectionWrite(TcpConnection::weak_ptr);
+    void handleConnectionClose(TcpConnection::weak_ptr);
+
+    void onSend(TcpConnection::weak_ptr);
+    void onRecv(TcpConnection::weak_ptr);
 
 protected:
     virtual MESSAGE_STATUS onMessage(TcpConnection::ptr);
@@ -63,7 +64,7 @@ private:
 
     Channel::ptr listenChannel_;
 
-    SpinLock connMtx_;
+    ReadWriteLock connMtx_;
     ConnectMap connects_;
     
     int evfd_;

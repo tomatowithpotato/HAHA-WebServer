@@ -56,9 +56,6 @@ HttpRequest::RET_STATE HttpRequest::parseRequest(){
 }
 
 HttpRequest::RET_STATE HttpRequest::parseRequestLine(){
-    if(data_->ReadableBytes() == 0){
-        return AGAIN_REQUEST;
-    }
     // 超出最大限制，结束
     if(data_->ReadableBytes() > max_requestLine_len_){
         return BAD_REQUEST;
@@ -68,6 +65,9 @@ HttpRequest::RET_STATE HttpRequest::parseRequestLine(){
     // 寻找行结束位置，没有就需要继续接收数据
     size_t end = view.find("\r\n");
     if(end == view.npos){
+        if(view.size() && view[0] != 'G' && view[0] != 'P' && view[0] != 'H'){
+            return BAD_REQUEST;
+        }
         return AGAIN_REQUEST;
     }
 
@@ -127,9 +127,6 @@ HttpRequest::RET_STATE HttpRequest::parseRequestLine(){
 }
 
 HttpRequest::RET_STATE HttpRequest::parseRequestHeader(){
-    if(data_->ReadableBytes() == 0){
-        return AGAIN_REQUEST;
-    }
     std::string_view header(data_->Peek(), data_->ReadableBytes());
     std::string_view line_header;
     while (header.size()) {
@@ -188,10 +185,6 @@ HttpRequest::RET_STATE HttpRequest::parseRequestHeader(){
 
 
 HttpRequest::RET_STATE HttpRequest::parseRequestContent(){
-    if(data_->ReadableBytes() == 0){
-        return AGAIN_REQUEST;
-    }
-
     /* 分块传输要咋搞？卧槽 */
     if(hasTransferEncoding_){
         if(chunked_){
@@ -216,6 +209,10 @@ HttpRequest::RET_STATE HttpRequest::parseRequestContent(){
             body_.append(data_->Peek(), accept_size);
             data_->Retrieve(accept_size);
         }
+    }
+    else if(method_ == HttpMethod::GET || method_ == HttpMethod::HEAD){
+        /* 空消息体，啥也不干 */
+        return OK_REQUEST;
     }
     // 无法确定内容的末尾，终止交易！！！
     else{

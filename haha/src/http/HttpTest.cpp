@@ -82,7 +82,7 @@ std::string RandomHttpRequestString::create_random_RequestLine(){
     std::vector<std::string> schemes = {"http", "https"};
     std::vector<std::string> hostnames = {"baidu","google","taobao"};
     std::vector<std::string> ports = {"8080"};
-    std::vector<std::string> paths = {"/", "/file", "/search", "can/can/need"};
+    std::vector<std::string> paths = {"/", "/file", "/search", "/can/can/need"};
     std::vector<std::string> querys = {
         "sl=zh-CN&tl=en&text=%E9%92%A6%E4%BD%A9&op=translate",
         "q=c%2B%2B11+随机数&newwindow=1&sxsrf=ALiCzsbwl4fBbYQ780AY5kSKXzsHro4EJQ%3A1654172383021",

@@ -5,21 +5,27 @@ namespace haha{
 TcpConnection::TcpConnection(const Socket &sock)
     :sock_(std::make_shared<Socket>(sock))
     ,recver_(std::make_shared<Buffer>())
-    ,sender_(std::make_shared<Buffer>()){
+    ,sender_(std::make_shared<Buffer>())
+    ,keepAlive_(false)
+    ,fileSender_(nullptr){
     
 }
 
 TcpConnection::TcpConnection(Socket::ptr sock)
     :sock_(sock)
     ,recver_(std::make_shared<Buffer>())
-    ,sender_(std::make_shared<Buffer>()){
+    ,sender_(std::make_shared<Buffer>())
+    ,keepAlive_(false)
+    ,fileSender_(nullptr){
 }
 
 
 TcpConnection::TcpConnection()
     :sock_(std::make_shared<Socket>())
     ,recver_(std::make_shared<Buffer>())
-    ,sender_(std::make_shared<Buffer>()){
+    ,sender_(std::make_shared<Buffer>())
+    ,keepAlive_(false)
+    ,fileSender_(nullptr){
 }
 
 
@@ -50,14 +56,15 @@ TcpConnection::status TcpConnection::send(){
         sendBytes = sock_->send(sender_, &len);
     }
     if(fileSender_ && fileSender_->sendable() 
-        && sender_->ReadableBytes() == 0 && (len > 0 || len == -10086)){
+        && sender_->ReadableBytes() == 0 
+        && (len > 0 || len == -10086)){
         sendBytes = fileSender_->send(&len);
     }
 
-    if(len > 0){
+    if(len > 0 && sendable() == 0){
         return status(len, errno, status::COMPLETED);
     }
-    else if(len < 0 && errno == EAGAIN){
+    else if(len < 0 && errno == EAGAIN && sendable() > 0){
         /* 非阻塞情况下 len < 0 且 error == EAGAIN */
         return status(len, errno, status::AGAIN);
     }
@@ -75,9 +82,9 @@ void TcpConnection::close(){
 
 bool TcpConnection::sendable(){
     if(fileSender_){
-        return fileSender_->sendable() || sender_->ReadableBytes() > 0;
+        return fileSender_->sendable() || sender_->ReadableBytes();
     }
-    return sender_->ReadableBytes() > 0;
+    return sender_->ReadableBytes();
 }
 
 void TcpConnection::retriveAll(){
@@ -94,12 +101,12 @@ void TcpConnection::retriveSender(){
 }
 
 bool TcpConnection::isDisconnected() const {
-    ReadWriteLock::RallReadLock rlock(disconnMtx_);
+    ReadWriteLock::RAIIReadLock rlock(disconnMtx_);
     return disconnected_;
 }
 
 void TcpConnection::setDisconnected(bool is){
-    ReadWriteLock::RallWriteLock wlock(disconnMtx_);
+    ReadWriteLock::RAIIWriteLock wlock(disconnMtx_);
     disconnected_ = is;
 }
 

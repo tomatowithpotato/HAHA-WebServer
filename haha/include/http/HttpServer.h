@@ -14,7 +14,7 @@ namespace haha{
 
 class HttpServer : public TcpServer{
 public:
-    HttpServer():servletDispatcher_(std::make_shared<ServletDispatcher>()){}
+    HttpServer();
     void setServletDispatcher(ServletDispatcher::ptr servletDispatcher){
         servletDispatcher_ = servletDispatcher;
     }

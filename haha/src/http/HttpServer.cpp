@@ -2,7 +2,9 @@
 
 namespace haha{
 
-HttpServer::HttpServer(){
+HttpServer::HttpServer()
+    :sessionManger_(&HttpSessionManager::getInstance())
+    ,servletDispatcher_(std::make_shared<ServletDispatcher>()){
     
 }
 
@@ -48,6 +50,8 @@ HttpServer::MESSAGE_STATUS HttpServer::onMessage(TcpConnection::ptr conn){
             });
     }
 
+    conn->setContext(nullptr);
+
     return HttpServer::MESSAGE_STATUS::OK;
 }
 
@@ -85,7 +89,6 @@ void HttpServer::afterServlet(HttpRequest::ptr req, HttpResponse::ptr resp){
                     ));
             }
             else{
-                session->setStatus(HttpSession::Accessed);
                 getMainLoop()->adjustTimer(
                     Timer(
                         EncodeUtil::murmurHash2(session->getId()),
@@ -99,6 +102,7 @@ void HttpServer::afterServlet(HttpRequest::ptr req, HttpResponse::ptr resp){
 
 void HttpServer::handleSessionTimeout(HttpSession::ptr session){
     if(session){
+        session->setStatus(HttpSession::Destroy);
         sessionManger_->delSession(session->getId());
     }
 }

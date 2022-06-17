@@ -8,6 +8,7 @@
 #include "base/Mutex.h"
 #include "base/ReadWriteLock.h"
 #include "base/FileUtil.h"
+#include "base/Log.h"
 #include "InetAddress.h"
 #include "Socket.h"
 #include "Channel.h"
@@ -17,6 +18,7 @@ namespace haha{
 class TcpConnection{
 public:
     typedef std::shared_ptr<TcpConnection> ptr;
+    typedef std::weak_ptr<TcpConnection> weak_ptr;
 
     static const int TimeOut = 100;
 
@@ -42,7 +44,7 @@ public:
     TcpConnection();
 
     ~TcpConnection() {
-        std::cout << "~TcpConnection" << std::endl;
+        // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "~TcpConnection";
     }
 
     status recv();
@@ -54,6 +56,8 @@ public:
     }
 
     void setChannel(Channel::ptr channel) { channel_ = channel; }
+    void setRecvBuffer(Buffer::ptr buffer) { recver_ = buffer; }
+    void setSendBuffer(Buffer::ptr buffer) { sender_ = buffer; }
 
     std::string getLocalIp() const noexcept { return sock_->getLocalAddress().getIp(); }
     uint16_t getLocalPort() const noexcept { return sock_->getLocalAddress().getPort(); }
@@ -67,8 +71,8 @@ public:
     Channel::ptr getChannel() {return channel_;}
     void setEvents(uint32_t events) { channel_->setEvents(events); }
 
-    bool isKeepAlive() const { return keep_alive_;}
-    void setKeepAlive(bool is) { keep_alive_ = is; }
+    bool isKeepAlive() const { return keepAlive_;}
+    void setKeepAlive(bool is) { keepAlive_ = is; }
 
     bool isDisconnected() const;
     void setDisconnected(bool is);
@@ -100,12 +104,12 @@ private:
     FileUtil::FileSendStream::ptr fileSender_; // 文件发送器
 
     bool disconnected_ = false;
-    bool keep_alive_ = false;
-    bool receiveComplete_ = false;
+    bool keepAlive_ = false;
 
     std::shared_ptr<void> context_;     // 连接的上下文数据，例如http的请求数据或响应数据
 
     mutable ReadWriteLock disconnMtx_;  // 连接状态的读写锁
+
 
     // /* 已接收的字节数 */
     // int receivedBytes_ = 0;

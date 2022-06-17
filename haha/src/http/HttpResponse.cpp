@@ -31,10 +31,13 @@ HttpResponse::~HttpResponse(){
         }
         header_.setContentLength(std::to_string(contentLength_));
     }
+
     // 响应头
     for(const auto &[k, v] : header_){
         buffer_->Append(k + ": " + v + "\r\n");
     }
+    buffer_->Append("\r\n");
+
     // 填入文件内容（如果有的话）
     if(isFileBody_){
         int err;

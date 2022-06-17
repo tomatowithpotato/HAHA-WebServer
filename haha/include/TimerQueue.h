@@ -14,6 +14,7 @@ public:
     TimerQueue(int timeFd);
     void push(const Timer &timer);
     void adjust(const Timer &timer);
+    void remove(const Timer &timer);
     int getTimeFd() const { return timeFd_; }
 
     void runOnce(const TimeStamp &t);

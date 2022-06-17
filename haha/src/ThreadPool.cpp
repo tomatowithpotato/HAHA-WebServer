@@ -36,7 +36,7 @@ void ThreadPool::run(){
     while(isRunning_){
         {
             // LockGuard<MutexLock> lock_gaurd(mtx_);
-            MutexLock::RallLock lock_gaurd(mtx_);
+            MutexLock::RAIILock lock_gaurd(mtx_);
             while(isRunning_ && taskPool_.empty()){
                 cond_.wait(mtx_);
             }

@@ -11,7 +11,7 @@ namespace haha
 void TimerHeap::siftup_(size_t i) {
     /* 上浮 */
     assert(i >= 0 && i < heap_.size());
-    size_t j = (i - 1) / 2;
+    int j = (i - 1) / 2;
     while(j >= 0) {
         if(heap_[j] < heap_[i]) { break; }
         SwapNode_(i, j);
@@ -58,12 +58,13 @@ void TimerHeap::del_(size_t index) {
         }
     }
     /* 队尾元素删除 */
-    ref_.erase(heap_.back().fd);
+    int ret = ref_.erase(heap_.back().fd);
+    assert(ret > 0);
     heap_.pop_back();
 }
 
 void TimerHeap::push(const Timer& timer){
-    MutexLock::RallLock lock_gaurd(mtx_);
+    ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
     assert(timer.fd >= 0);
     size_t i;
     auto x = ref_.find(timer.fd);
@@ -85,22 +86,32 @@ void TimerHeap::push(const Timer& timer){
 }
 
 void TimerHeap::adjust(const Timer& timer){
-    MutexLock::RallLock lock_gaurd(mtx_);
+    ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
     auto x = ref_.find(timer.fd);
     if(x != ref_.end()){
-        heap_[x->second].expire = timer.expire;
+        int pos = x->second;
+        heap_[pos].expire = timer.expire;
+        siftdown_(pos, heap_.size());
     }
-    siftdown_(ref_[x->second], heap_.size());
+}
+
+void TimerHeap::remove(const Timer& timer){
+    ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
+    auto x = ref_.find(timer.fd);
+    if(x != ref_.end()){
+        int pos = x->second;
+        del_(pos);
+    }
 }
 
 void TimerHeap::pop() {
-    MutexLock::RallLock lock_gaurd(mtx_);
+    ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
     assert(!heap_.empty());
     del_(0);
 }
 
 void TimerHeap::clear() {
-    MutexLock::RallLock lock_gaurd(mtx_);
+    ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
     ref_.clear();
     heap_.clear();
 }

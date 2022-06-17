@@ -19,40 +19,40 @@ public:
     HttpSession();
     enum Status { New, Accessed, Destroy };
     const std::string& getId() const { 
-        ReadWriteLock::RallReadLock lock(mutex_);
+        ReadWriteLock::RAIIReadLock lock(mutex_);
         return id_; 
     }
     bool isNew() const { 
-        ReadWriteLock::RallReadLock lock(mutex_);
+        ReadWriteLock::RAIIReadLock lock(mutex_);
         return status_ == Status::New; 
     }
     bool isAccessed() const { 
-        ReadWriteLock::RallReadLock lock(mutex_);
+        ReadWriteLock::RAIIReadLock lock(mutex_);
         return status_ == Status::Accessed; 
     }
     bool isDestroy() const { 
-        ReadWriteLock::RallReadLock lock(mutex_);
+        ReadWriteLock::RAIIReadLock lock(mutex_);
         return status_ == Status::Destroy; 
     }
     int getMaxInactiveInterval() const { 
-        ReadWriteLock::RallReadLock lock(mutex_);
+        ReadWriteLock::RAIIReadLock lock(mutex_);
         return interval_; 
     }
 
     void setStatus(Status status) { 
-        ReadWriteLock::RallWriteLock lock(mutex_);
+        ReadWriteLock::RAIIWriteLock lock(mutex_);
         status_ = status; 
     }
 
     template<typename V>
     void setValue(const std::string& key, const V& val){
-        ReadWriteLock::RallWriteLock lock(mutex_);
+        ReadWriteLock::RAIIWriteLock lock(mutex_);
         add(key, std::forward<const V &>(val));
     }
 
     template<typename V>
     const V* getValue(const std::string& key) const {
-        ReadWriteLock::RallReadLock lock(mutex_);
+        ReadWriteLock::RAIIReadLock lock(mutex_);
         auto ret = get(key);
         if(!ret.exist()){
             return nullptr;
@@ -77,7 +77,7 @@ private:
 
 class HttpSessionManager : public noncopyable{
 public:
-    HttpSessionManager& getInstance(){
+    static HttpSessionManager& getInstance(){
         static HttpSessionManager manger;
         return manger;
     }

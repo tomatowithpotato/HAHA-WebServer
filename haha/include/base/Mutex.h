@@ -25,7 +25,7 @@ private:
     sem_t m_semaphore;
 };
 
-/* 实现普通锁（不区分读写）的RALL机制 */
+/* 实现普通锁（不区分读写）的RAII机制 */
 template<class T>
 struct LockGuard{
 public:
@@ -55,7 +55,7 @@ private:
 class MutexLock{
 friend class ConditionVariable;
 public:
-    typedef LockGuard<MutexLock> RallLock;
+    typedef LockGuard<MutexLock> RAIILock;
     MutexLock(){
         pthread_mutex_init(&m_mutex, nullptr);
     }
@@ -78,7 +78,7 @@ private:
 /* 自旋锁 */
 class SpinLock{
 public:
-    typedef LockGuard<SpinLock> RallLock;
+    typedef LockGuard<SpinLock> RAIILock;
     SpinLock(){
         pthread_spin_init(&m_mutex, 0);
     }
@@ -101,7 +101,7 @@ private:
 /* CAS原子锁 */
 class CASLock{
 public:
-    typedef LockGuard<CASLock> RallLock;
+    typedef LockGuard<CASLock> RAIILock;
     CASLock(){
         m_mutex.clear();
     }

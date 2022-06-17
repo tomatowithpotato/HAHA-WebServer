@@ -36,8 +36,7 @@ private:
     Data data_;
 };
 
-
-int main(){
+void test_pointer(){
     // std::string s("haha");
     // Heyhey hey;
     // Heyhey hey1(3);
@@ -48,13 +47,16 @@ int main(){
     // func();
     // std::shared_ptr<Heyhey> hey3;
     // std::cout << (hey3 == nullptr) << std::endl;
-    Heyhey *hey = new Heyhey();
-    std::shared_ptr<void> eeee;
-    eeee.reset(hey);
-    std::shared_ptr<Heyhey> oh;
-    oh = std::static_pointer_cast<Heyhey>(eeee);
-    std::cout << eeee.use_count() << std::endl;
 
+    // Heyhey *hey = new Heyhey();
+    // std::shared_ptr<void> eeee;
+    // eeee.reset(hey);
+    // std::shared_ptr<Heyhey> oh;
+    // oh = std::static_pointer_cast<Heyhey>(eeee);
+    // std::cout << eeee.use_count() << std::endl;
+}
+
+void test_filesystem(){
     bool ret = std::filesystem::exists("./index.html");
     if(ret == -1){
         std::cout << "no such file" << std::endl;
@@ -63,5 +65,20 @@ int main(){
         auto fsz = std::filesystem::file_size("./index.html");
         std::cout << "size: " << fsz << std::endl;
     }
+}
+
+void test_stringview(){
+    std::string str("haha");
+    std::string_view view(str);
+    std::cout << view << std::endl;
+    str = "xixixixixixixixixixixixi";
+    std::cout << view << std::endl;
+}
+
+
+int main(){
+    
+    test_stringview();
+
     return 0;
 }

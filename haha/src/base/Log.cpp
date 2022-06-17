@@ -231,11 +231,11 @@ Logger::Logger(const std::string &name)
 
 
 void Logger::setFormatter(LogFormatter::ptr val){
-    MutexType::RallLock lock(m_mutex);
+    MutexType::RAIILock lock(m_mutex);
     m_formatter = val;
 
     for(auto &i : m_appenders){
-        MutexType::RallLock ll(i->m_mutex);
+        MutexType::RAIILock ll(i->m_mutex);
         // appender还没设置格式，因此把logger的默认格式赋给它
         if(!i->hasFormatter()){
             i->m_formatter = m_formatter;
@@ -256,21 +256,21 @@ void Logger::setFormatter(const std::string &val){
 }
 
 LogFormatter::ptr Logger::getFormatter(){
-    MutexType::RallLock lock(m_mutex);
+    MutexType::RAIILock lock(m_mutex);
     return m_formatter;
 }
 
 void Logger::addAppender(LogAppender::ptr appender){
-    MutexType::RallLock lock(m_mutex);
+    MutexType::RAIILock lock(m_mutex);
     if(!appender->getFormatter()){
-        MutexType::RallLock ll(appender->m_mutex);
+        MutexType::RAIILock ll(appender->m_mutex);
         appender->m_formatter = m_formatter;
     }
     m_appenders.push_back(appender);
 }
 
 void Logger::delAppender(LogAppender::ptr appender){
-    MutexType::RallLock lock(m_mutex);
+    MutexType::RAIILock lock(m_mutex);
     for(auto it = m_appenders.begin(); it != m_appenders.end(); ++it){
         if(*it == appender){
             m_appenders.erase(it);
@@ -287,7 +287,7 @@ void Logger::log(LogEvent::ptr event){
     auto level = event->getLevel();
     if(level >= m_level){
         auto self = shared_from_this();
-        MutexType::RallLock lock(m_mutex);
+        MutexType::RAIILock lock(m_mutex);
         if(!m_appenders.empty()){
             for(auto &i : m_appenders){
                 i->log(event);
@@ -303,7 +303,7 @@ void Logger::log(LogEvent::ptr event){
 /* *************************************LogAppender************************************* */
 
 void LogAppender::setFormatter(LogFormatter::ptr val){
-    MutexType::RallLock lock(m_mutex);
+    MutexType::RAIILock lock(m_mutex);
     m_formatter = val;
     if(m_formatter){
 
@@ -314,7 +314,7 @@ void LogAppender::setFormatter(LogFormatter::ptr val){
 }
 
 LogFormatter::ptr LogAppender::getFormatter(){
-    MutexType::RallLock lock(m_mutex);
+    MutexType::RAIILock lock(m_mutex);
     return m_formatter;
 }
 
@@ -332,7 +332,7 @@ void FileLogAppender::log(LogEvent::ptr event){
             reopen();
             m_lastTime = now;
         }
-        MutexType::RallLock lock(m_mutex);
+        MutexType::RAIILock lock(m_mutex);
         if(!(m_filestream << m_formatter->format(event))){
             std::cout << "error" << std::endl;
         }
@@ -340,7 +340,7 @@ void FileLogAppender::log(LogEvent::ptr event){
 }
 
 bool FileLogAppender::reopen(){
-    MutexType::RallLock lock(m_mutex);
+    MutexType::RAIILock lock(m_mutex);
     if(m_filestream){
         m_filestream.close();
     }
@@ -351,7 +351,7 @@ bool FileLogAppender::reopen(){
 void StdoutLogAppender::log(LogEvent::ptr event){
     auto level = event->getLevel();
     if(level >= m_level){
-        MutexType::RallLock lock(m_mutex);
+        MutexType::RAIILock lock(m_mutex);
         std::cout << m_formatter->format(event);
     }
 }
@@ -515,7 +515,7 @@ LoggerManager::LoggerManager(){
 }
 
 Logger::ptr LoggerManager::getLogger(const std::string &name){
-    MutexType::RallLock lock(m_mutex);
+    MutexType::RAIILock lock(m_mutex);
     auto it = m_loggers.find(name);
     if(it != m_loggers.end()){
         return it->second;

@@ -26,7 +26,7 @@ public:
     HttpHeader():length_(0){}
 
     void add(const std::string& key, const std::string& value) override{
-        map_.insert({toLowers(key), value}); 
+        map_[toLowers(key)] = value;
         length_ += key.size() + value.size();
     }
 

@@ -5,6 +5,71 @@
     "version": "0.2.0",
     "configurations": [
     {
+        "name": "(gdb) 启动 webbench1.5",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/webbench1.5/webbench",
+        "args": [
+            "-c",
+            "1",
+            "-t",
+            "10",
+            "http://106.52.96.198:9999/"
+        ],
+        "stopAtEntry": false,
+        "cwd": "${fileDirname}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "为 gdb 启用整齐打印",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            },
+            {
+                "description":  "将反汇编风格设置为 Intel",
+                "text": "-gdb-set disassembly-flavor intel",
+                "ignoreFailures": true
+            },
+            {
+                "description": "只调试子进程",
+                "text": "set follow-fork-mode child",
+                "ignoreFailures": true
+            },
+            {
+                "description": "只调试子进程",
+                "text": "set detach-on-fork on",
+                "ignoreFailures": true
+            },
+
+        ]
+    },
+    {
+        "name": "(gdb) 启动 timerheapTest",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/bin/timerheapTest.out",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${fileDirname}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "为 gdb 启用整齐打印",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            },
+            {
+                "description":  "将反汇编风格设置为 Intel",
+                "text": "-gdb-set disassembly-flavor intel",
+                "ignoreFailures": true
+            }
+        ]
+    },
+    {
         "name": "(gdb) 启动 httpRequestTest",
         "type": "cppdbg",
         "request": "launch",
@@ -28,30 +93,54 @@
             }
         ]
     },
-        {
-            "name": "(gdb) 启动 tcpserverTest",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/tcpserverTest.out",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "为 gdb 启用整齐打印",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-                {
-                    "description":  "将反汇编风格设置为 Intel",
-                    "text": "-gdb-set disassembly-flavor intel",
-                    "ignoreFailures": true
-                }
-            ]
-        }
+    {
+        "name": "(gdb) 启动 tcpserverTest",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/bin/tcpserverTest.out",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "为 gdb 启用整齐打印",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            },
+            {
+                "description":  "将反汇编风格设置为 Intel",
+                "text": "-gdb-set disassembly-flavor intel",
+                "ignoreFailures": true
+            }
+        ]
+    },
+    {
+        "name": "(gdb) 启动 httpServerTest",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/bin/httpServerTest.out",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "为 gdb 启用整齐打印",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            },
+            {
+                "description":  "将反汇编风格设置为 Intel",
+                "text": "-gdb-set disassembly-flavor intel",
+                "ignoreFailures": true
+            }
+        ]
+    },
 
     ]
 }

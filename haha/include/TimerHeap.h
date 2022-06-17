@@ -14,6 +14,7 @@
 #include <assert.h> 
 #include "base/TimeStamp.h"
 #include "base/Mutex.h"
+#include "base/ReadWriteLock.h"
 
 namespace haha{
 
@@ -44,15 +45,26 @@ public:
 
     void push(const Timer &timer);
 
+    void remove(const Timer &timer);
+
     void clear();
 
     void pop();
 
-    Timer& top() { return heap_.front(); }
+    Timer& top() { 
+        ReadWriteLock::RAIIReadLock lock(mtx_);
+        return heap_.front(); 
+    }
 
-    bool empty() const { return heap_.empty(); }
+    bool empty() const { 
+        ReadWriteLock::RAIIReadLock lock(mtx_);
+        return heap_.empty(); 
+    }
 
-    size_t size() const { return heap_.size(); }
+    size_t size() const {
+        ReadWriteLock::RAIIReadLock lock(mtx_);
+        return heap_.size(); 
+    }
 
 private:
     void del_(size_t i);
@@ -68,7 +80,7 @@ private:
     // 记录定时器在堆中的位置
     std::unordered_map<int, size_t> ref_;
 
-    MutexLock mtx_;
+    mutable ReadWriteLock mtx_;
 };
 
 }

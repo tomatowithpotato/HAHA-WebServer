@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Jun 12 23:26:27 2022
+# Make data base, printed on Fri Jun 17 09:52:11 2022
 
 # Variables
 
@@ -39,9 +39,9 @@ CURDIR := /home/lighthouse/MyCode/linux/linux_network/HAHAWebServer
 # makefile
 SHELL = /bin/sh
 # environment
-VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{"*":"zh-cn"},"_languagePackId":"4d12339779e8282869a6d44b7af3df1e.zh-cn","_translationsConfigFile":"/home/lighthouse/.vscode-server/data/clp/4d12339779e8282869a6d44b7af3df1e.zh-cn/tcf.json","_cacheRoot":"/home/lighthouse/.vscode-server/data/clp/4d12339779e8282869a6d44b7af3df1e.zh-cn","_resolvedLanguagePackCoreLocation":"/home/lighthouse/.vscode-server/data/clp/4d12339779e8282869a6d44b7af3df1e.zh-cn/4af164ea3a06f701fe3e89a2bcbb421d2026b68f","_corruptedFile":"/home/lighthouse/.vscode-server/data/clp/4d12339779e8282869a6d44b7af3df1e.zh-cn/corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{"*":"zh-cn"},"_languagePackId":"bbca1a7059cee8a1b93da8947fee1c4f.zh-cn","_translationsConfigFile":"/home/lighthouse/.vscode-server/data/clp/bbca1a7059cee8a1b93da8947fee1c4f.zh-cn/tcf.json","_cacheRoot":"/home/lighthouse/.vscode-server/data/clp/bbca1a7059cee8a1b93da8947fee1c4f.zh-cn","_resolvedLanguagePackCoreLocation":"/home/lighthouse/.vscode-server/data/clp/bbca1a7059cee8a1b93da8947fee1c4f.zh-cn/30d9c6cd9483b2cc586687151bcbcd635f373630","_corruptedFile":"/home/lighthouse/.vscode-server/data/clp/bbca1a7059cee8a1b93da8947fee1c4f.zh-cn/corrupted.info","_languagePackSupport":true}
 # environment
-_ = /home/lighthouse/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/node
+_ = /home/lighthouse/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/node
 # makefile
 MAKEFILE_LIST := 
 # 'override' directive
@@ -57,9 +57,9 @@ LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /home/lighthouse
 # environment
-SSH_CONNECTION = 125.216.242.212 50993 10.0.8.17 22
+SSH_CONNECTION = 125.216.242.212 62107 10.0.8.17 22
 # environment
-PATH = /home/lighthouse/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/remote-cli:/home/lighthouse/anaconda3/bin:/home/lighthouse/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /home/lighthouse/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/bin/remote-cli:/home/lighthouse/anaconda3/bin:/home/lighthouse/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 XDG_RUNTIME_DIR = /run/user/1001
 # environment
@@ -67,7 +67,7 @@ CONDA_PREFIX = /home/lighthouse/anaconda3
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-2c399b4e-573a-4ad2-bdf7-6fab9d0e3441.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-888c2f96-28b0-4b70-b8f7-35c4a2fe76e6.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -119,7 +119,7 @@ MAKECMDGOALS := all
 # environment
 SHLVL = 0
 # environment
-XDG_SESSION_ID = 2
+XDG_SESSION_ID = 9305
 # environment
 USER = lighthouse
 # makefile
@@ -130,6 +130,8 @@ USER = lighthouse
 CONDA_SHLVL = 1
 # default
 MAKE_COMMAND := make
+# environment
+OLDPWD = /home/lighthouse/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630
 # default
 .VARIABLES := 
 # automatic
@@ -141,11 +143,11 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 125.216.242.212 50993 22
+SSH_CLIENT = 125.216.242.212 62107 22
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
-BROWSER = /home/lighthouse/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/helpers/browser.sh
+BROWSER = /home/lighthouse/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/bin/helpers/browser.sh
 # environment
 VSCODE_HANDLES_SIGPIPE = true
 # default
@@ -181,7 +183,7 @@ MOTD_SHOWN = pam
 # environment
 _CE_CONDA = 
 # variable set hash-table stats:
-# Load=84/1024=8%, Rehash=0, Collisions=10/106=9%
+# Load=85/1024=8%, Rehash=0, Collisions=10/107=9%
 
 # Pattern-specific Variable Values
 
@@ -189,9 +191,9 @@ _CE_CONDA =
 
 # Directories
 
-# . (device 64514, inode 3256621): 10 files, no impossibilities.
+# . (device 64514, inode 3256621): 12 files, no impossibilities.
 
-# 10 files, no impossibilities in 1 directories.
+# 12 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -241,12 +243,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 18 / storage = 145 B / avg = 8 B
-# current buf: size = 8162 B / used = 145 B / count = 18 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 20 / storage = 166 B / avg = 8 B
+# current buf: size = 8162 B / used = 166 B / count = 20 / avg = 8 B
 
-# strcache performance: lookups = 21 / hit rate = 14%
+# strcache performance: lookups = 23 / hit rate = 13%
 # hash-table stats:
-# Load=18/8192=0%, Rehash=0, Collisions=1/21=5%
-# Finished Make data base on Sun Jun 12 23:26:27 2022
+# Load=20/8192=0%, Rehash=0, Collisions=1/23=4%
+# Finished Make data base on Fri Jun 17 09:52:11 2022
 
  

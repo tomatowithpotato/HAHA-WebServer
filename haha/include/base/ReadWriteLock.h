@@ -7,7 +7,7 @@ namespace haha{
 
 /* *********************************************读写锁********************************************* */
 
-// 读锁的RALL机制
+// 读锁的RAII机制
 template<class T>
 class ReadLockGuard{
 public:
@@ -30,7 +30,7 @@ private:
     bool m_locked;
 };
 
-// 写锁的RALL机制
+// 写锁的RAII机制
 template<class T>
 class WriteLockGuard{
 public:
@@ -56,8 +56,8 @@ private:
 /* 读写锁 */
 class ReadWriteLock{
 public:
-    typedef ReadLockGuard<ReadWriteLock> RallReadLock;
-    typedef WriteLockGuard<ReadWriteLock> RallWriteLock;
+    typedef ReadLockGuard<ReadWriteLock> RAIIReadLock;
+    typedef WriteLockGuard<ReadWriteLock> RAIIWriteLock;
     ReadWriteLock(){
         pthread_rwlock_init(&m_mutex, nullptr);
     }

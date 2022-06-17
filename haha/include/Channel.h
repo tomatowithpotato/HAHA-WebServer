@@ -5,10 +5,11 @@
 #include <sys/epoll.h>
 #include <memory>
 #include <unistd.h>
+#include <iostream>
+
 #include "base/Buffer.h"
 #include "base/noncopyable.h"
-
-#include <iostream>
+#include "base/Log.h"
 
 namespace haha{
 
@@ -26,8 +27,8 @@ public:
 
     Channel(EventLoop* loop, int fd, bool BlockFd = true);
     ~Channel() {
-        std::cout << "~Channel" << std::endl;
-        ::close(fd_);
+        // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "~Channel close fd: " << fd_;
+        // ::close(fd_);
     }
 
     void handleEvents(uint32_t revents);

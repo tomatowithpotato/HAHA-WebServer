@@ -17,6 +17,10 @@ void TimerQueue::adjust(const Timer& timer) {
     timerHeap_->adjust(timer);
 }
 
+void TimerQueue::remove(const Timer &timer){
+    timerHeap_->remove(timer);
+}
+
 // run once
 void TimerQueue::runOnce(const TimeStamp &t) {
     uint64_t second = t.second();

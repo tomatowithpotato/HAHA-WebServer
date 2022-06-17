@@ -55,7 +55,7 @@ static std::string generate_threadSafe(){
 
     uuid_t uu;
     {
-        SpinLock::RallLock lock(uuid_mutex_); 
+        SpinLock::RAIILock lock(uuid_mutex_); 
         ::uuid_generate( uu ); 
     }  
 

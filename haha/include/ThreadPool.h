@@ -28,7 +28,7 @@ public:
     size_t getThreadNum() const {return num_thread_;}
 
 private:
-    ThreadPool(size_t ThreadNum = 8): num_thread_(ThreadNum){}
+    ThreadPool(size_t ThreadNum = 4): num_thread_(ThreadNum){}
     void run();
 
 private:
