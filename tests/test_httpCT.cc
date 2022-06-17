@@ -7,6 +7,8 @@ int main(){
         std::cout << k << ": ";
         std::cout << magic_enum::enum_name(v) << std::endl;
     }
+    std::string html("html");
+    haha::Ext2HttpContentType.at(html);
     std::cout << "********************************************************************" << std::endl;
     for(auto &[k, v] : haha::HttpContentType2Ext){
         std::cout << magic_enum::enum_name(k) << ": ";

@@ -5,8 +5,9 @@
 
 namespace haha{
 
-static const std::string BASE_ROOT = ".";
-static const uintmax_t small_file_limit = 4 *1024 * 1024; // 4M
+static const std::string BASE_ROOT = "./resource";
+// static const uintmax_t small_file_limit = 4 *1024 * 1024; // 4M
+static const uintmax_t small_file_limit = 0;
 
 std::string Servlet::basePage(int code, const std::string &content) {
   std::string text = std::to_string(code) + " " + HttpStatus2Str.at(code);
@@ -27,15 +28,23 @@ ServletDispatcher::ServletDispatcher(){
             resp->appendBody(Servlet::basePage(code));
             return;
         }
+
         auto url = req->getUrl();
         std::string path(url.getPath());
         if(path == "/"){
             path = "/index.html";
         }
-        bool exists = std::filesystem::exists(BASE_ROOT + std::string(path));
+        char buf[1024];
+        getcwd(buf, sizeof(buf));
+        std::filesystem::path cur_path = std::filesystem::current_path();
+        std::filesystem::path p(BASE_ROOT + std::string(path));
+        bool exists = std::filesystem::exists(p);
         if(exists){
-            std::filesystem::path p(BASE_ROOT + std::string(path));
-            auto ext = p.extension();
+            std::string ext;
+            if(p.has_extension()){
+                // substr的目的是去掉扩展名前面的.
+                ext = std::string(p.extension().c_str()).substr(1);
+            }
             std::unordered_set<std::string> accpetable_exts = {
                 "html", "htm", "txt", "jpg", "png"
             };
@@ -43,7 +52,7 @@ ServletDispatcher::ServletDispatcher(){
                 auto fsz = std::filesystem::file_size(p);
                 if(fsz <= small_file_limit){
                     // 小文件
-                    resp->setContentType(Ext2HttpContentType.at(ext.c_str()));
+                    resp->setContentType(Ext2HttpContentType.at(ext));
                     resp->setFileBody(p.c_str());
                 }
                 else{

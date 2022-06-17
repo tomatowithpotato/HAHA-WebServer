@@ -43,7 +43,7 @@ enum HttpStatus {
   HTTP_VERSION_NOT_SUPPORTED = 505
 };
 
-inline const std::unordered_map<short, const char *> HttpStatus2Str = {
+inline const std::unordered_map<short, std::string> HttpStatus2Str = {
     {HttpStatus::CONTINUE, "Continue"},
     {HttpStatus::OK, "OK"},
     {HttpStatus::PARTIAL_CONTENT, "Partial Content"},
@@ -86,7 +86,7 @@ enum class HttpContentType {
 };
 
 
-inline const std::unordered_map<HttpContentType, const char *> HttpContentType2Name {
+inline const std::unordered_map<HttpContentType, std::string> HttpContentType2Name {
     {HttpContentType::URLENCODED, "application/x-www-form-urlencoded"},
     {HttpContentType::MULTIPART, "multipart/form-data"},
     {HttpContentType::PLAIN, "text/plain"},
@@ -102,9 +102,9 @@ inline const std::unordered_map<HttpContentType, const char *> HttpContentType2N
     {HttpContentType::JSON, "application/json"},
 };
 
-inline const std::unordered_map<const char *, HttpContentType> Name2HttpContentType(
+inline const std::unordered_map<std::string, HttpContentType> Name2HttpContentType(
   [](){
-    std::unordered_map<const char *, HttpContentType> temp;
+    std::unordered_map<std::string, HttpContentType> temp;
     for(auto &[k, v] : HttpContentType2Name){
         temp[v] = k;
     }
@@ -113,7 +113,7 @@ inline const std::unordered_map<const char *, HttpContentType> Name2HttpContentT
 );
 
 
-inline const std::unordered_map<const char *, const char *> Ext2HttpContentTypeName{
+inline const std::unordered_map<std::string, std::string> Ext2HttpContentTypeName{
     {"html", "text/html"},
     {"htm", "text/html"},
     {"css", "text/css"},
@@ -178,9 +178,9 @@ inline const std::unordered_map<const char *, const char *> Ext2HttpContentTypeN
     {"pptx","application/""vnd.openxmlformats-officedocument.presentationml.presentation"}};
   
 
-inline const std::unordered_map<const char *, HttpContentType> Ext2HttpContentType(
+inline const std::unordered_map<std::string, HttpContentType> Ext2HttpContentType(
     [](){
-        std::unordered_map<const char *, HttpContentType> temp;
+        std::unordered_map<std::string, HttpContentType> temp;
         for(auto &[k, v] : Ext2HttpContentTypeName){
             auto it = Name2HttpContentType.find(v);
             if(it != Name2HttpContentType.end()){
@@ -191,9 +191,9 @@ inline const std::unordered_map<const char *, HttpContentType> Ext2HttpContentTy
     }()
 );
 
-inline const std::unordered_map<HttpContentType, const char *> HttpContentType2Ext(
+inline const std::unordered_map<HttpContentType, std::string> HttpContentType2Ext(
     [](){
-        std::unordered_map<HttpContentType, const char *> temp;
+        std::unordered_map<HttpContentType, std::string> temp;
         for(auto &[k, v] : Ext2HttpContentType){
             temp[v] = k;
         }
@@ -213,13 +213,13 @@ enum class HttpVersion {
     HTTP_2_0 = 0x20 /*not support HTTP 2.0*/
 };
 
-inline const std::unordered_map<HttpMethod, const char *> HttpMethod2Str{
+inline const std::unordered_map<HttpMethod, std::string> HttpMethod2Str{
     {HttpMethod::GET, "GET"},
     {HttpMethod::POST, "POST"},
     {HttpMethod::HEAD, "HEAD"},
 };
 
-inline const std::unordered_map<HttpVersion, const char *> HttpVersion2Str{
+inline const std::unordered_map<HttpVersion, std::string> HttpVersion2Str{
     {HttpVersion::HTTP_1_0, "HTTP/1.0"},
     {HttpVersion::HTTP_1_1, "HTTP/1.1"},
     {HttpVersion::HTTP_2_0, "HTTP/2.0"},

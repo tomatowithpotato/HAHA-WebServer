@@ -57,13 +57,17 @@ void test_pointer(){
 }
 
 void test_filesystem(){
-    bool ret = std::filesystem::exists("./index.html");
-    if(ret == -1){
+    std::filesystem::path p("./resource/index.html");
+    bool ret = std::filesystem::exists(p);
+    if(!ret){
         std::cout << "no such file" << std::endl;
     }
     else{
-        auto fsz = std::filesystem::file_size("./index.html");
+        auto fsz = std::filesystem::file_size(p);
         std::cout << "size: " << fsz << std::endl;
+        std::cout << "full path: " << p << std::endl;
+        std::cout << "file name: " << p.stem() << std::endl;
+        std::cout << "file extention: " << p.extension() << std::endl;
     }
 }
 
@@ -78,7 +82,8 @@ void test_stringview(){
 
 int main(){
     
-    test_stringview();
+    // test_stringview();
+    test_filesystem();
 
     return 0;
 }

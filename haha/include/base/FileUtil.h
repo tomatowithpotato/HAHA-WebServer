@@ -119,8 +119,8 @@ public:
         SENDFILE,
         MMAP,
     };
-    explicit FileSendStream(const char* file_path, int outfd, bool isBlock, SEND_MOD mod = MMAP);
-    explicit FileSendStream(File::ptr file, int outfd, bool isBlock, SEND_MOD mod = MMAP);
+    explicit FileSendStream(const char* file_path, int outfd, bool isBlock, SEND_MOD mod = SENDFILE);
+    explicit FileSendStream(File::ptr file, int outfd, bool isBlock, SEND_MOD mod = SENDFILE);
     bool sendable() { return remain_bytes_ == 0; }
     virtual int send(int *lastLen = nullptr);
     size_t remainBytes() { return remain_bytes_; }
