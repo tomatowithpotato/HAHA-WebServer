@@ -41,3 +41,6 @@ httpCT: test_httpCT.cc $(SOURCE_FILES)
 
 httpServer: test_httpServer.cc $(SOURCE_FILES)
 	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_httpServer.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/httpServerTest.out
+
+dogServlet: test_servlet.cc $(SOURCE_FILES)
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_servlet.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/dogServletTest.out
