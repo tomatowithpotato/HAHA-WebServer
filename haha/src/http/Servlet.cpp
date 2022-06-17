@@ -6,8 +6,8 @@
 namespace haha{
 
 static const std::string BASE_ROOT = "./resource";
-// static const uintmax_t small_file_limit = 4 *1024 * 1024; // 4M
-static const uintmax_t small_file_limit = 0;
+static const uintmax_t small_file_limit = 4 *1024 * 1024; // 4M
+// static const uintmax_t small_file_limit = 0;
 
 std::string Servlet::basePage(int code, const std::string &content) {
   std::string text = std::to_string(code) + " " + HttpStatus2Str.at(code);
@@ -50,16 +50,18 @@ ServletDispatcher::ServletDispatcher(){
             };
             if(accpetable_exts.find(ext) != accpetable_exts.end()){
                 auto fsz = std::filesystem::file_size(p);
-                if(fsz <= small_file_limit){
-                    // 小文件
-                    resp->setContentType(Ext2HttpContentType.at(ext));
-                    resp->setFileBody(p.c_str());
-                }
-                else{
-                    // 大文件
-                    resp->setContentType(HttpContentType::HTML);
-                    resp->setFileStream(p.c_str());
-                }
+                // if(fsz <= small_file_limit){
+                //     // 小文件
+                //     resp->setContentType(Ext2HttpContentType.at(ext));
+                //     resp->setFileBody(p.c_str());
+                // }
+                // else{
+                //     // 大文件
+                //     resp->setContentType(HttpContentType::HTML);
+                //     resp->setFileStream(p.c_str());
+                // }
+                resp->setContentType(HttpContentType::HTML);
+                resp->setFileStream(p.c_str());
             }
             else{
                 resp->setContentType(HttpContentType::HTML);
