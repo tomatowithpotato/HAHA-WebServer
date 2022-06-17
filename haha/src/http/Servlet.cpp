@@ -34,9 +34,9 @@ ServletDispatcher::ServletDispatcher(){
         if(path == "/"){
             path = "/index.html";
         }
-        char buf[1024];
-        getcwd(buf, sizeof(buf));
-        std::filesystem::path cur_path = std::filesystem::current_path();
+        // char buf[1024];
+        // getcwd(buf, sizeof(buf));
+        // std::filesystem::path cur_path = std::filesystem::current_path();
         std::filesystem::path p(BASE_ROOT + std::string(path));
         bool exists = std::filesystem::exists(p);
         if(exists){
@@ -99,7 +99,7 @@ void ServletDispatcher::dispatch(HttpRequest::ptr req, HttpResponse::ptr resp,
                                     Servlet::servletFunc preprocess, Servlet::servletFunc postprocess){
     preprocess(req, resp);
 
-    std::string path = BASE_ROOT + std::string(req->getUrl().getPath());
+    std::string path(req->getUrl().getPath());
     Servlet::ptr p = nullptr;
     
     auto it = find_match(path);
