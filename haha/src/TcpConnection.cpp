@@ -6,8 +6,8 @@ TcpConnection::TcpConnection(const Socket &sock)
     :sock_(std::make_shared<Socket>(sock))
     ,recver_(std::make_shared<Buffer>())
     ,sender_(std::make_shared<Buffer>())
-    ,keepAlive_(false)
-    ,fileSender_(nullptr){
+    ,fileSender_(nullptr)
+    ,keepAlive_(false){
     
 }
 
@@ -15,8 +15,8 @@ TcpConnection::TcpConnection(Socket::ptr sock)
     :sock_(sock)
     ,recver_(std::make_shared<Buffer>())
     ,sender_(std::make_shared<Buffer>())
-    ,keepAlive_(false)
-    ,fileSender_(nullptr){
+    ,fileSender_(nullptr)
+    ,keepAlive_(false){
 }
 
 
@@ -24,8 +24,8 @@ TcpConnection::TcpConnection()
     :sock_(std::make_shared<Socket>())
     ,recver_(std::make_shared<Buffer>())
     ,sender_(std::make_shared<Buffer>())
-    ,keepAlive_(false)
-    ,fileSender_(nullptr){
+    ,fileSender_(nullptr)
+    ,keepAlive_(false){
 }
 
 
@@ -35,17 +35,17 @@ TcpConnection::status TcpConnection::recv(){
 
     if(len > 0){
         /* 阻塞情况下 len > 0 */
-        return status(len, errno, status::AGAIN);
+        return status(recvBytes, errno, status::AGAIN);
     }
     else if(len < 0 && errno == EAGAIN){
         /* 非阻塞情况下 len < 0 且 error == EAGAIN */
-        return status(len, errno, status::AGAIN);
+        return status(recvBytes, errno, status::AGAIN);
     }
     else if(len == 0){
         /* len == 0 说明连接关闭 */
-        return status(len, errno, status::CLOSED);
+        return status(recvBytes, errno, status::CLOSED);
     }
-    return status(len, errno, status::ERROR);
+    return status(recvBytes, errno, status::ERROR);
 }
 
 TcpConnection::status TcpConnection::send(){
@@ -62,17 +62,17 @@ TcpConnection::status TcpConnection::send(){
     }
 
     if(len > 0 && !sendable()){
-        return status(len, errno, status::COMPLETED);
+        return status(sendBytes, errno, status::COMPLETED);
     }
     else if(len < 0 && errno == EAGAIN && sendable() > 0){
         /* 非阻塞情况下 len < 0 且 error == EAGAIN */
-        return status(len, errno, status::AGAIN);
+        return status(sendBytes, errno, status::AGAIN);
     }
     else if(len == 0){
         /* len == 0 说明连接关闭 */
-        return status(len, errno, status::CLOSED);
+        return status(sendBytes, errno, status::CLOSED);
     }
-    return status(len, errno, status::ERROR);
+    return status(sendBytes, errno, status::ERROR);
 }
 
 void TcpConnection::close(){

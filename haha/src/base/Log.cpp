@@ -191,14 +191,14 @@ LogEvent::LogEvent(std::shared_ptr<Logger> logger,
                     // uint32_t fiber_id, 
                     uint64_t time,
                     const std::string &thread_name)
-        :m_file(file), 
+        :m_logger(logger),
+        m_file(file), 
         m_line(line), 
         m_elapse(elapse), 
         m_threadId(thread_id), 
         // m_fiberId(fiber_id), 
         m_time(time),
         m_threadName(thread_name),
-        m_logger(logger),
         m_level(level){
     
 }

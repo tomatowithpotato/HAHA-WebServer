@@ -4,12 +4,12 @@
 namespace haha{
 
 HttpResponse::HttpResponse(HttpVersion version, TcpConnection::ptr conn)
-    :version_(version)
+    :conn_(conn)
+    ,version_(version)
     ,statusCode_(HttpStatus::OK)
-    ,conn_(conn)
-    ,hasSession_(false)
-    ,keepAlive_(false)
     ,contentLength_(-1)
+    ,keepAlive_(false)
+    ,hasSession_(false)
     ,isFileBody_(false)
     ,isFileStream_(false){
     buffer_ = conn_->getSender();

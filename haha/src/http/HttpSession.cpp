@@ -5,8 +5,8 @@ namespace haha{
 static const int INTERVAL = 180; // 三分钟会话过期
 
 HttpSession::HttpSession()
-    :status_(Status::New)
-    ,id_(uuid::generate_threadSafe())
+    :id_(uuid::generate_threadSafe())
+    ,status_(Status::New)
     ,interval_(INTERVAL){
 }
 

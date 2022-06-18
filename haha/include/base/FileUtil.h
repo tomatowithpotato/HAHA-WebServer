@@ -129,8 +129,8 @@ private:
     File::ptr file_;
     int outfd_;
     bool isBlock_;
-    MMap::ptr mmap_;
     SEND_MOD mod_;
+    MMap::ptr mmap_;
     SendFile::ptr sendFile_;
     size_t remain_bytes_;
     size_t sended_bytes_;

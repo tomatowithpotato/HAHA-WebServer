@@ -51,7 +51,7 @@ cd 当前目录
 运行
 ```shell
 cd 当前目录
-./run.sh
+./run_httpServer.sh
 ```
 
 测试：
@@ -61,7 +61,7 @@ cd 当前目录
 
 ## Servlet使用
 
-以下是servlet使用的小例子，想直接运行的话，可移步tests文件夹下的test_servlet.cc一探究竟
+以下是servlet使用的小例子，代码在tests文件夹下的test_servlet.cc
 ```c++
 #include <string>
 #include <unordered_set>
@@ -75,9 +75,11 @@ static const std::string BASE_ROOT = "./resource";
 // 这里只是个示例，与默认处理近似，可自行修改
 // 但大体流程不建议变动
 void watch_dog(haha::HttpRequest::ptr req, haha::HttpResponse::ptr resp){
-    auto &reqBody = req->getBody();
-    // 暂时没想好怎么处理请求体的数据，先不管
-    // 请自由发挥
+    // auto &reqBody = req->getBody();
+    // // 如果请求中有session，就会返回一个已有的
+    // // 如果没有或者是过期的，那就会创建一个新的session
+    // haha::HttpSession::ptr session = req->getSession();
+    // // 我还没怎么测过session，可能有bug
 
     auto code = resp->getStatusCode();
     // 出错，返回错误页面
@@ -101,7 +103,7 @@ void watch_dog(haha::HttpRequest::ptr req, haha::HttpResponse::ptr resp){
             ".html", ".htm", ".txt", ".jpg", ".png"
         };
         if(accpetable_exts.find(ext) != accpetable_exts.end()){
-            auto fsz = std::filesystem::file_size(p);
+            // auto fsz = std::filesystem::file_size(p);
             // // setFileBody是直接用read读取文件内容到缓冲区然后再write发出去
             // // 这个效率不高，但如果你想你可以用这个，虽然我不知道你为什么会想
             // // 最好使用setFileStream
@@ -116,6 +118,9 @@ void watch_dog(haha::HttpRequest::ptr req, haha::HttpResponse::ptr resp){
             //     resp->setContentType(HttpContentType::HTML);
             //     resp->setFileStream(p.c_str());
             // }
+            haha::HttpCookie cookie;
+            cookie.add("liming", "hi");
+            resp->setCookie(cookie);
             resp->setContentType(haha::Ext2HttpContentType.at(ext));
             resp->setFileStream(p.c_str());
         }

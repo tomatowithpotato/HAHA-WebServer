@@ -96,7 +96,6 @@ private:
 
     const size_t max_requestLine_len_;
     const size_t max_requestHeader_len_;
-    const size_t chunk_size_str_limit;
 
     HttpMethod method_;
     HttpUrl reqUrl_;
@@ -116,14 +115,15 @@ private:
     std::string transferEncoding_;
     bool chunked_;
 
+    const size_t chunk_size_str_limit;
     HttpChunkedState cur_chunkedState_;
     int cur_chunk_size_;
 
     bool keepAlive_;
     bool compressed_;
     bool hasContentType_;
-    bool hasCookies_;
     bool hasContentLength_;
+    bool hasCookies_;
     bool hasTransferEncoding_;
 };
 

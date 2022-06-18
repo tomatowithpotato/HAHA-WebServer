@@ -6,8 +6,8 @@ namespace haha{
 
 void parseKeyValue(const std::string& src, const std::string& join, const std::string& split,
                                     HttpMap<CASE_SENSITIVE::YES> &map, bool urldecode){
-    size_t i;
-    size_t j = 0;
+    // size_t i;
+    // size_t j = 0;
     std::string_view view;
     std::string decoded_src;
     if(urldecode){

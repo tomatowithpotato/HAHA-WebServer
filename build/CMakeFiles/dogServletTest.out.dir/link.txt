@@ -1,0 +1,1 @@
+/usr/bin/c++   -rdynamic -O0 -ggdb -std=c++2a -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined  -rdynamic CMakeFiles/dogServletTest.out.dir/tests/test_servlet.cc.o  -o ../bin/dogServletTest.out   -L/usr/local/lib  -Wl,-rpath,/usr/local/lib:/home/lighthouse/MyCode/linux/linux_network/HAHAWebServer/lib ../lib/libhaha.so -lpthread -luuid 

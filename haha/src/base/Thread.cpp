@@ -18,10 +18,10 @@ const std::string& Thread::CurrentThreadName(){
 
 Thread::Thread(Task task, const std::string& name)
     :thread_(0)
+    ,joined_(false)
     ,task_(std::move(task))
     ,name_(name)
-    ,started_(false)
-    ,joined_(false){
+    ,started_(false){
     ++numThread_;
     setDefaultName();
     int ret = pthread_create(&thread_, nullptr, &Thread::run, this);

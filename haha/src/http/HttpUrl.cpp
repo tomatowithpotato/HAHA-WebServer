@@ -17,7 +17,7 @@ HttpUrl::HttpUrl(const std::string& url, bool decode){
 }
 
 HttpUrl::STATE HttpUrl::parseFromUrl(){
-    size_t n = url_.size();
+    // size_t n = url_.size();
     std::string_view url_view(url_);
     size_t pos;
 

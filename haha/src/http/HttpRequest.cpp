@@ -10,15 +10,16 @@ HttpRequest::HttpRequest(HttpSessionManager *sm, TcpConnection::ptr conn)
     ,max_requestLine_len_(2048)
     ,max_requestHeader_len_(8192)
     ,version_(HttpVersion::HTTP_1_0)
+    ,chunked_(false)
+    ,chunk_size_str_limit(5) // 16^5
+    ,cur_chunkedState_(HttpChunkedState::NO_LEN)
+    ,cur_chunk_size_(0)
     ,keepAlive_(false)
     ,compressed_(false)
     ,hasContentType_(false)
     ,hasContentLength_(false)
     ,hasCookies_(false)
-    ,hasTransferEncoding_(false)
-    ,chunked_(false)
-    ,chunk_size_str_limit(5) // 16^5
-    ,cur_chunkedState_(HttpChunkedState::NO_LEN){
+    ,hasTransferEncoding_(false){
     data_ = conn_->getRecver();
 }
 
@@ -361,7 +362,7 @@ HttpRequest::RET_STATE HttpRequest::parseChunked(){
         }
         // 读取数据
         else if(cur_chunkedState_ == HttpChunkedState::NO_DATA){
-            if(view.size() < cur_chunk_size_ + 2){
+            if((int)view.size() < cur_chunk_size_ + 2){
                 return AGAIN_REQUEST;
             }
             // 读取数据成功，开始准备下一个chunk

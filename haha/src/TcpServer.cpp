@@ -4,10 +4,10 @@
 namespace haha{
 
 TcpServer::TcpServer()
-    :servSock_(Socket::FDTYPE::NONBLOCK)
-    ,threadPool_(&ThreadPool::getInstance())
-    ,timeoutInterval_(5)
+    :timeoutInterval_(5)
     ,eventLoop_(std::make_shared<EventLoop>())
+    ,threadPool_(&ThreadPool::getInstance())
+    ,servSock_(Socket::FDTYPE::NONBLOCK)
 {
     servSock_.enableReuseAddr(true);
     servSock_.enableReusePort(true);

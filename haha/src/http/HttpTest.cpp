@@ -54,7 +54,6 @@ std::vector<std::string> randomSplitStr(const std::string &str, size_t limit){
     ::srand(::time(NULL));
     std::string_view view(str);
     std::vector<std::string> res;
-    size_t n = str.size();
     while(view.size()){
         size_t i = rand() % std::min(view.size(), limit) + 1;
         res.push_back(std::string(view.substr(0, i)));

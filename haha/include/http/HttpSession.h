@@ -68,8 +68,8 @@ public:
 
 private:
     std::string id_;
-    int interval_;
     Status status_;
+    int interval_;
 
     mutable ReadWriteLock mutex_;
 };

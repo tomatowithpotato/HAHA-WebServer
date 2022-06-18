@@ -52,10 +52,10 @@ FileSendStream::FileSendStream(const char* file_path, int outfd, bool isBlock, S
     :file_(std::make_shared<File>(file_path))
     ,outfd_(outfd)
     ,isBlock_(isBlock)
-    ,sended_bytes_(0)
+    ,mod_(mod)
     ,mmap_(nullptr)
     ,sendFile_(nullptr)
-    ,mod_(mod){
+    ,sended_bytes_(0){
     
     file_->open(File::OPEN_MOD::READ_ONLY);
 
@@ -73,10 +73,10 @@ FileSendStream::FileSendStream(File::ptr file, int outfd, bool isBlock, SEND_MOD
     :file_(file)
     ,outfd_(outfd)
     ,isBlock_(isBlock)
-    ,sended_bytes_(0)
+    ,mod_(mod)
     ,mmap_(nullptr)
     ,sendFile_(nullptr)
-    ,mod_(mod){
+    ,sended_bytes_(0){
 
     file_->open(File::OPEN_MOD::READ_ONLY);
 
@@ -124,7 +124,7 @@ int FileSendStream::send(int *lastLen){
 }
 
 int FileSSLSendStream::send(int *lastLen){
-    int n;
+    int n = 0;
     return n;
 }
 

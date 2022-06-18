@@ -3,9 +3,9 @@
 namespace haha{
 
 Channel::Channel(EventLoop* loop, int fd, bool BlockFd)
-  :eventloop_(loop)
-  ,fd_(fd)
-  ,isBlockFd_(BlockFd){
+  :fd_(fd)
+  ,isBlockFd_(BlockFd)
+  ,eventloop_(loop){
 
 }
 
