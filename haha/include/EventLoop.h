@@ -24,10 +24,17 @@ public:
     void adjustTimer(const Timer& timer);
     void delTimer(const Timer& timer);
 
+    void wakeup();
+
+private:
+    void handleWakeup();
+
 private:
     int timeFd_;
+    int wakeupFd_;
     Epoller epoller_;
     std::unique_ptr<Channel> timeoutChannel_;
+    std::unique_ptr<Channel> wakeupChannel_;
     std::unique_ptr<TimerQueue> timerQueue_;
     // std::thread::id threadId;
 };

@@ -1,13 +1,27 @@
 #include "EventLoop.h"
+#include <sys/eventfd.h>
 
 namespace haha{
 
+int createEventfd() {
+    int evtfd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+    if (evtfd < 0) {
+        HAHA_LOG_ERROR(HAHA_LOG_ROOT()) << "Failed in create eventfd";
+        abort();
+    }
+    return evtfd;
+}
+
 EventLoop::EventLoop()
     :timeFd_(::timerfd_create(CLOCK_REALTIME, 0))
+    ,wakeupFd_(createEventfd())
     ,timeoutChannel_(std::make_unique<Channel>(this, timeFd_))
+    ,wakeupChannel_(std::make_unique<Channel>(this, wakeupFd_))
     ,timerQueue_(std::make_unique<TimerQueue>(timeFd_)){
-    timeoutChannel_->setEvents(EPOLLIN);
+    timeoutChannel_->setEvents(EPOLLIN | EPOLLET);
     timeoutChannel_->setReadCallback(std::bind(&TimerQueue::handleTimeout, timerQueue_.get()));
+    wakeupChannel_->setEvents(EPOLLIN | EPOLLET);
+    wakeupChannel_->setReadCallback(std::bind(&EventLoop::handleWakeup, this));
 }
 
 void EventLoop::loop(int idle_timeout_){
@@ -16,6 +30,7 @@ void EventLoop::loop(int idle_timeout_){
         addChannel(timeoutChannel_.get());
         timerQueue_->runForever(TimeStamp::second(idle_timeout_));
     }
+    addChannel(wakeupChannel_.get());
 
     while(true){
         int num_events = epoller_.wait();
@@ -51,6 +66,22 @@ void EventLoop::adjustTimer(const Timer& timer){
 
 void EventLoop::delTimer(const Timer& timer){
     timerQueue_->remove(timer);
+}
+
+void EventLoop::wakeup() {
+    uint64_t one = 1;
+    ssize_t n = write(wakeupFd_, (void*)(&one), sizeof(one));
+    if (n != sizeof(one)) {
+        HAHA_LOG_ERROR(HAHA_LOG_ROOT()) << "EventLoop::wakeup() writes " << n << " bytes instead of 8";
+    }
+}
+
+void EventLoop::handleWakeup(){
+    uint64_t one = 1;
+    ssize_t n = read(wakeupFd_, (void*)(&one), sizeof(one));
+    if (n != sizeof(one)) {
+        HAHA_LOG_ERROR(HAHA_LOG_ROOT()) << "EventLoop::wakeup() reads " << n << " bytes instead of 8";
+    }
 }
 
 }
