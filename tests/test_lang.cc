@@ -5,6 +5,9 @@
 #include <string_view>
 #include <filesystem>
 
+#define varName(x) #x
+#define typeName(x) typeid(x).name()
+
 class Data{
 public:
     ~Data(){
@@ -79,11 +82,20 @@ void test_stringview(){
     std::cout << view << std::endl;
 }
 
+void test_var_type_name(){
+    Data d;
+    auto vname = varName(1);
+    auto tname = typeName(d);
+    std::cout << vname << std::endl;
+    std::cout << tname << std::endl;
+}
+
 
 int main(){
     
     // test_stringview();
-    test_filesystem();
+    // test_filesystem();
+    test_var_type_name();
 
     return 0;
 }

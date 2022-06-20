@@ -63,7 +63,7 @@ int Epoller::wait(int timeoutMs) {
         }
     }
 
-    if (num_events >= (int)events_.size())
+    if (num_events > (int)(events_.size() * 0.75))
         events_.resize(num_events * 2);
     
     return num_events;

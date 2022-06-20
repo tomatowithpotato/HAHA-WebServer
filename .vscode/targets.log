@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat Jun 18 00:18:58 2022
+# Make data base, printed on Sat Jun 18 17:41:04 2022
 
 # Variables
 
@@ -67,7 +67,7 @@ CONDA_PREFIX = /home/lighthouse/anaconda3
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-026608ae-a3c3-4810-8ec8-ef7ae70d1a0f.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-1c0f4ec3-95f6-440b-844f-1e3638da8b8f.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -130,8 +130,6 @@ USER = lighthouse
 CONDA_SHLVL = 1
 # default
 MAKE_COMMAND := make
-# environment
-OLDPWD = /home/lighthouse/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630
 # default
 .VARIABLES := 
 # automatic
@@ -183,7 +181,7 @@ MOTD_SHOWN = pam
 # environment
 _CE_CONDA = 
 # variable set hash-table stats:
-# Load=85/1024=8%, Rehash=0, Collisions=10/107=9%
+# Load=84/1024=8%, Rehash=0, Collisions=10/106=9%
 
 # Pattern-specific Variable Values
 
@@ -191,9 +189,9 @@ _CE_CONDA =
 
 # Directories
 
-# . (device 64514, inode 3256621): 14 files, no impossibilities.
+# . (device 64514, inode 3256621): 16 files, no impossibilities.
 
-# 14 files, no impossibilities in 1 directories.
+# 16 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -243,12 +241,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 22 / storage = 185 B / avg = 8 B
-# current buf: size = 8162 B / used = 185 B / count = 22 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 24 / storage = 221 B / avg = 9 B
+# current buf: size = 8162 B / used = 221 B / count = 24 / avg = 9 B
 
-# strcache performance: lookups = 25 / hit rate = 12%
+# strcache performance: lookups = 27 / hit rate = 11%
 # hash-table stats:
-# Load=22/8192=0%, Rehash=0, Collisions=1/25=4%
-# Finished Make data base on Sat Jun 18 00:18:58 2022
+# Load=24/8192=0%, Rehash=0, Collisions=1/27=4%
+# Finished Make data base on Sat Jun 18 17:41:04 2022
 
  
