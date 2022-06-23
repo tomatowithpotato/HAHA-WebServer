@@ -93,6 +93,11 @@ void Socket::enableKeepAlive(bool on) {
     ::setsockopt(fd_, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval));
 }
 
+void Socket::enableIgnoreSIGPIPE(bool on) {
+    int optval = on ? 1 : 0;
+    ::setsockopt(fd_, SOL_SOCKET, MSG_NOSIGNAL, &optval, sizeof(optval));
+}
+
 InetAddress Socket::getLocalAddress(){
     return sockops::getSockName(fd_);
 }

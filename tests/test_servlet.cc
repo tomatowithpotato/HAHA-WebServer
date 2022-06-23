@@ -5,7 +5,7 @@
 
 // 工作目录为可执行文件所在目录，即bin目录
 // bin目录下有个resource目录，建议把你要加的html、图片之类的放那里边
-static const std::string BASE_ROOT = "./resource";
+static const std::string BASE_ROOT = "../resource";
 
 // 这里只是个示例，与默认处理近似，可自行修改
 // 但大体流程不建议变动

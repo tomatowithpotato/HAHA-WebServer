@@ -50,7 +50,7 @@ TcpConnection::status TcpConnection::recv(){
 
 TcpConnection::status TcpConnection::send(){
     int len = -10086;
-    int sendBytes;
+    int sendBytes = 0;
 
     if(sender_->ReadableBytes() > 0){
         sendBytes = sock_->send(sender_, &len);

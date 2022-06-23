@@ -39,7 +39,7 @@ private:
     bool                            joined_;     // 是否要join
     Task                            task_;      // 任务
     std::string                     name_;      // 名字
-    bool                            started_;    // 已启动
+    volatile bool                            started_;    // 已启动
     static std::atomic<int>         numThread_;     // 线程数量
 };
 

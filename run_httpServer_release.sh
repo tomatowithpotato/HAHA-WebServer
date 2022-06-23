@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd ./bin
+cd ./bin/release
 ./httpServerTest.out

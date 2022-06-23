@@ -5,7 +5,7 @@
 
 namespace haha{
 
-static const std::string BASE_ROOT = "./resource";
+static const std::string BASE_ROOT = "../resource";
 static const uintmax_t small_file_limit = 4 *1024 * 1024; // 4M
 // static const uintmax_t small_file_limit = 0;
 

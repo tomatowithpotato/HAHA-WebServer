@@ -1,5 +1,6 @@
 #include "TcpServer.h"
 #include <iostream>
+#include <signal.h>
 
 namespace haha{
 
@@ -14,6 +15,7 @@ TcpServer::TcpServer()
 }
 
 void TcpServer::start(const InetAddress &address){
+    ::signal(SIGPIPE, SIG_IGN);
     servSock_.bind(address);
     servSock_.listen();
     listenChannel_ = std::make_shared<Channel>(eventLoop_.get(), servSock_.getFd(), false);

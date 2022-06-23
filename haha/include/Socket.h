@@ -63,6 +63,8 @@ public:
     void enableReusePort(bool on);
     // 开启保活
     void enableKeepAlive(bool on);
+    // 忽略SIGPIPE信号
+    void enableIgnoreSIGPIPE(bool on);
 
     // 把buff中的数据发到对端
     virtual int send(Buffer::ptr buff, int *lastLen = nullptr);

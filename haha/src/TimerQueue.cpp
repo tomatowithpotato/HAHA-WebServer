@@ -55,7 +55,10 @@ void TimerQueue::handleTimeout() {
     HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "timeout";
     
     uint64_t one;
-    ::read(timeFd_, &one, sizeof(one));
+    int n = ::read(timeFd_, &one, sizeof(one));
+    if(n != sizeof(one)){
+        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "read time fd error?";
+    }
 
     TimeStamp now = TimeStamp::now();
     while (!timerHeap_->empty()) {
