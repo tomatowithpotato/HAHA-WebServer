@@ -61,6 +61,11 @@ cd 当前目录
     运行后，打开浏览器，输入http://你的ip地址:9999/
     例如 http://0.0.0.0:9999/dog.html
 
+
+## 压力测试
+
+即将呈现
+
 ## Servlet使用
 
 以下是servlet使用的小例子，代码在tests文件夹下的test_servlet.cc
