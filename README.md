@@ -64,7 +64,37 @@ cd 当前目录
 
 ## 压力测试
 
-即将呈现
+以下分别对nginx、TinyWebServer和HAHA-WebServer做压力测试
+使用TinyWebServer中自带的Webbench进行测试
+没有提到的地方都采用默认配置
+
+HAHA和Tiny每次响应的页面数据量基本接近（TinyWebServer对默认的webbench请求返回的是404页面，跟HAHA的默认返回页面差不多大），因而可以排除页面大小干扰
+
+用webbench对nginx进行压力测试的结果
+![img1](./resource/nginx-webbench-5000-5.png)
+
+用webbench对TinyWebServer进行压力测试的结果，关闭日志，LT+ET模式，不开启编译优化
+![img2](./resource/tiny-lt%2Bet-debug-webbench-5000-5.png)
+
+用webbench对TinyWebServer进行压力测试的结果，关闭日志，LT+ET模式，开启O2级别编译优化
+![img3](./resource/tiny-lt%2Bet-release-webbench-5000-5.png)
+
+用webbench对HAHA-WebServer进行压力测试的结果，不开启编译优化
+![img4](./resource/haha-debug-webbench-5000-5.png)
+
+用webbench对HAHA-WebServer进行压力测试的结果，开启O2级别编译优化
+![img5](./resource/haha-release-webbench-5000-5.png)
+
+通过上述结果，可得到如下信息:
+
+    1. nginx碾压后两者，而且是在每次相应的数据要多于前两者的情况下
+
+    2. 不开编译优化的话，HAHA要逊色于TinyWebServer
+
+    3. 开启编译优化后，HAHA性能提升了数倍，远甩开了TinyWebServer
+    
+    4. TinyWebServer开启O2级别编译优化后，性能并没有什么提升，不知是为何
+
 
 ## Servlet使用
 
