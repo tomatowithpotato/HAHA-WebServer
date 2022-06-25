@@ -24,7 +24,7 @@ namespace haha{
     if(logger->getLevel() <= level) \
     haha::LogEventWrap(logger, haha::LogEvent::ptr(new haha::LogEvent(logger, level, \
                         __FILE__, __LINE__, 0, haha::GetThreadId(), \
-                        time(0), haha::Thread::CurrentThreadName()))).getSS()
+                        time(0), haha::Thread::getCurrentThreadName()))).getSS()
 
 #define HAHA_LOG_DEBUG(logger)  HAHA_LOG_LEVEL(logger, haha::LogLevel::Level::DEBUG)
 #define HAHA_LOG_INFO(logger)  HAHA_LOG_LEVEL(logger, haha::LogLevel::Level::INFO)
@@ -37,7 +37,7 @@ namespace haha{
     if(logger->getLevel() <= level) \
     haha::LogEventWrap(haha::LogEvent::ptr(new haha::LogEvent(logger, level, \
                         __FILE__, __LINE__, 0, haha::GetThreadId(), \
-                        time(0), haha::Thread::CurrentThreadName()))).getLogEvent()->format(fmt, __VA_ARGS__)
+                        time(0), haha::Thread::getCurrentThreadName()))).getLogEvent()->format(fmt, __VA_ARGS__)
 
 #define HAHA_LOG_FMT_DEBUG(logger, fmt, ...)  HAHA_LOG_FMT_LEVEL(logger, haha::LogLevel::Level::DEBUG, fmt, __VA_ARGS__)
 #define HAHA_LOG_FMT_INFO(logger, fmt, ...)  HAHA_LOG_FMT_LEVEL(logger, haha::LogLevel::Level::INFO, fmt, __VA_ARGS__)

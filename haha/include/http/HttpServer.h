@@ -27,7 +27,7 @@ public:
 
 protected:
     MESSAGE_STATUS onMessage(TcpConnection::ptr) override;
-    bool onNewConntection(TcpConnection::ptr) override;
+    bool onCreateConnection(TcpConnection::ptr) override;
     bool onCloseConntection(TcpConnection::ptr) override;
 
     void beforeServlet(HttpRequest::ptr, HttpResponse::ptr);

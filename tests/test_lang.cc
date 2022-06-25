@@ -90,12 +90,19 @@ void test_var_type_name(){
     std::cout << tname << std::endl;
 }
 
+void test_unique_move(){
+    std::unique_ptr<Data> p = std::make_unique<Data>();
+    auto t = std::move(p);
+    std::cout << "---" << std::endl;
+}
+
 
 int main(){
     
     // test_stringview();
     // test_filesystem();
-    test_var_type_name();
+    // test_var_type_name();
+    test_unique_move();
 
     return 0;
 }

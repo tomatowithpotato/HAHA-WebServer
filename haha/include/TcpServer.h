@@ -8,7 +8,7 @@
 #include "base/ReadWriteLock.h"
 #include "InetAddress.h"
 #include "Socket.h"
-#include "ThreadPool.h"
+#include "EventLoopThreadPool.h"
 #include "Channel.h"
 #include "EventLoop.h"
 #include "TcpConnection.h"
@@ -28,7 +28,7 @@ public:
     TcpServer();
     void start(const InetAddress &address);
 
-    EventLoop::ptr getMainLoop() { return eventLoop_; }
+    EventLoop::ptr getMainLoop() { return mainLoop_; }
 
 private:
     void handleServerAccept();
@@ -40,7 +40,6 @@ private:
     void handleRead();
     void handleWrite();
     void handleClose();
-    void handleConnected(Socket::ptr);
 
     /* 因为函数都会被注册为回调函数，因此就不能持有shared_ptr，不然无法释放 */
 
@@ -50,16 +49,17 @@ private:
 
     void onSend(TcpConnection::weak_ptr);
     void onRecv(TcpConnection::weak_ptr);
+    void onConnect(TcpConnection::weak_ptr);
 
 protected:
     virtual MESSAGE_STATUS onMessage(TcpConnection::ptr);
-    virtual bool onNewConntection(TcpConnection::ptr);
+    virtual bool onCreateConnection(TcpConnection::ptr);
     virtual bool onCloseConntection(TcpConnection::ptr);
 
 private:
     int timeoutInterval_;
-    EventLoop::ptr eventLoop_;
-    ThreadPool *threadPool_;
+    EventLoopThreadPool *threadPool_;
+    EventLoop::ptr mainLoop_;
     Socket servSock_;
 
     Channel::ptr listenChannel_;

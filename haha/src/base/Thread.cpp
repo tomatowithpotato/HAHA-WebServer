@@ -8,11 +8,15 @@ std::atomic<int> Thread::numThread_{0};
 static thread_local Thread* cur_thread = nullptr;
 static thread_local std::string cur_thread_name = "UNKNOW";
 
-const Thread* Thread::CurrentThread(){
+const Thread* Thread::getCurrentThread(){
     return cur_thread;
 }
 
-const std::string& Thread::CurrentThreadName(){
+const Thread::ID Thread::getCurrentThreadId(){
+    return pthread_self();
+}
+
+const std::string& Thread::getCurrentThreadName(){
     return cur_thread_name;
 }
 

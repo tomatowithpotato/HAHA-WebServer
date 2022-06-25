@@ -67,7 +67,7 @@ public:
     uint16_t getRemotePort() const noexcept { return sock_->getRemoteAddress().getPort(); }
     sockaddr *getRemoteSockAddr() const noexcept { return sock_->getRemoteAddress().getSockAddr(); }
 
-    int getFd() { return channel_->getFd(); }
+    int getFd() { return sock_->getFd(); }
     Channel::ptr getChannel() {return channel_;}
     void setEvents(uint32_t events) { channel_->setEvents(events); }
 

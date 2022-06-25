@@ -6,65 +6,60 @@ namespace haha{
 
 TcpServer::TcpServer()
     :timeoutInterval_(5)
-    ,eventLoop_(std::make_shared<EventLoop>())
-    ,threadPool_(&ThreadPool::getInstance())
+    ,threadPool_(&EventLoopThreadPool::getInstance())
+    ,mainLoop_(threadPool_->getBaseLoop())
     ,servSock_(Socket::FDTYPE::NONBLOCK)
 {
     servSock_.enableReuseAddr(true);
     servSock_.enableReusePort(true);
 }
 
+
 void TcpServer::start(const InetAddress &address){
-    ::signal(SIGPIPE, SIG_IGN);
     servSock_.bind(address);
     servSock_.listen();
-    listenChannel_ = std::make_shared<Channel>(eventLoop_.get(), servSock_.getFd(), false);
+    listenChannel_ = std::make_shared<Channel>(mainLoop_.get(), servSock_.getFd(), false);
     listenChannel_->setReadCallback(std::bind(&TcpServer::handleServerAccept, this));
     listenChannel_->setEvents(EPOLLIN | kServerEvent);
 
     threadPool_->start();
 
-    eventLoop_->addChannel(listenChannel_.get());
-    eventLoop_->loop(timeoutInterval_);
+    mainLoop_->addChannel(listenChannel_.get());
+    mainLoop_->loop(timeoutInterval_);
 }
+
 
 void TcpServer::handleServerAccept(){
     Socket::ptr sock = servSock_.accept();
     if(sock == nullptr){
         return;
     }
-    handleConnected(sock);
-}
 
-void TcpServer::handleConnected(Socket::ptr sock){
     sock->setNonBlocking();
+    sock->enableIgnoreSIGPIPE(true);
+
     int connfd = sock->getFd();
-    TcpConnection::ptr connection;
+    
+    TcpConnection::ptr conn = std::make_shared<TcpConnection>(sock);
+
     {
         ReadWriteLock::RAIIWriteLock lock(connMtx_);
-        connects_[connfd] = std::make_shared<TcpConnection>(sock);
-        connection = connects_[connfd];
+        connects_[connfd] = conn;
     }
-    TcpConnection::weak_ptr weak_conn(connection);
-    connection->setChannel(std::make_shared<Channel>(eventLoop_.get(), connfd, false));
-    connection->setEvents(EPOLLIN | kConnectionEvent);
-    connection->getChannel()->setReadCallback(std::bind(&TcpServer::handleConnectionRead, this, weak_conn));
-    connection->getChannel()->setWriteCallback(std::bind(&TcpServer::handleConnectionWrite, this, weak_conn));
-    connection->getChannel()->setCloseCallback(std::bind(&TcpServer::handleConnectionClose, this, weak_conn));
 
-    onNewConntection(connection);
-    
-    // 单loop模式下，就是eventLoop_
-    // 未来要扩展为one loop per thread，预留
-    auto loop = connection->getChannel()->getEventLoop();
+    TcpConnection::weak_ptr weak_conn(conn);
+    auto loop = threadPool_->getNextLoop();
 
-    loop->addChannel(connection->getChannel().get());
-    loop->addTimer(Timer(
-        connfd,
-        TimeStamp::nowSecond(TcpConnection::TimeOut),
-        std::bind(&TcpServer::handleConnectionClose, this, weak_conn)
-    ));
+    auto channel = std::make_shared<Channel>(loop.get(), connfd, false);
+    channel->setEvents(EPOLLIN | kConnectionEvent);
+    channel->setReadCallback(std::bind(&TcpServer::handleConnectionRead, this, weak_conn));
+    channel->setWriteCallback(std::bind(&TcpServer::handleConnectionWrite, this, weak_conn));
+    channel->setCloseCallback(std::bind(&TcpServer::handleConnectionClose, this, weak_conn));
+    conn->setChannel(channel);
+
+    loop->runInLoop(std::bind(&TcpServer::onConnect, this, weak_conn));
 }
+
 
 void TcpServer::handleConnectionRead(TcpConnection::weak_ptr weak_conn) {
     // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "handleConnectionRead";
@@ -76,15 +71,20 @@ void TcpServer::handleConnectionRead(TcpConnection::weak_ptr weak_conn) {
     }
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
         return;
+
     auto loop = conn->getChannel()->getEventLoop();
+    loop->assertInLoopThread();
+
     loop->adjustTimer(Timer(
         conn->getFd(),
         TimeStamp::nowSecond(TcpConnection::TimeOut),
         nullptr
     ));
-    threadPool_->addTask(std::bind(&TcpServer::onRecv, this, weak_conn));
+
+    loop->runInLoop(std::bind(&TcpServer::onRecv, this, weak_conn));
     // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << (std::string("ptr count: ") + std::to_string(conn.use_count()));
 }
+
 
 void TcpServer::handleConnectionWrite(TcpConnection::weak_ptr weak_conn) {
     // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "handleConnectionWrite";
@@ -96,14 +96,19 @@ void TcpServer::handleConnectionWrite(TcpConnection::weak_ptr weak_conn) {
     }
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
         return;
+
     auto loop = conn->getChannel()->getEventLoop();
+    loop->assertInLoopThread();
+
     loop->adjustTimer(Timer(
         conn->getFd(),
         TimeStamp::nowSecond(TcpConnection::TimeOut),
         nullptr
     ));
-    threadPool_->addTask(std::bind(&TcpServer::onSend, this, weak_conn));
+
+    loop->runInLoop(std::bind(&TcpServer::onSend, this, weak_conn));
 }
+
 
 void TcpServer::handleConnectionClose(TcpConnection::weak_ptr weak_conn) {
     // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "handleConnectionClose";
@@ -119,6 +124,8 @@ void TcpServer::handleConnectionClose(TcpConnection::weak_ptr weak_conn) {
     onCloseConntection(conn);
     
     auto loop = conn->getChannel()->getEventLoop();
+    loop->assertInLoopThread();
+
     loop->delChannel(conn->getChannel().get());
     conn->setDisconnected(true);
 
@@ -134,6 +141,30 @@ void TcpServer::handleConnectionClose(TcpConnection::weak_ptr weak_conn) {
     
 }
 
+
+void TcpServer::onConnect(TcpConnection::weak_ptr weak_conn){
+    TcpConnection::ptr conn = weak_conn.lock();
+    // 检查连接是否被析构
+    if(!conn){
+        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "conn already destroy";
+        return;
+    }
+
+    auto connfd = conn->getFd();
+    auto loop = conn->getChannel()->getEventLoop();
+    loop->assertInLoopThread();
+
+    onCreateConnection(conn);
+
+    loop->addChannel(conn->getChannel().get());
+    loop->addTimer(Timer(
+        connfd,
+        TimeStamp::nowSecond(TcpConnection::TimeOut),
+        std::bind(&TcpServer::handleConnectionClose, this, weak_conn)
+    ));
+}
+
+
 void TcpServer::onRecv(TcpConnection::weak_ptr weak_conn){
     TcpConnection::ptr conn = weak_conn.lock();
     // 检查连接是否被析构
@@ -142,10 +173,13 @@ void TcpServer::onRecv(TcpConnection::weak_ptr weak_conn){
         return;
     }
     TcpConnection::status status = conn->recv();
+
+    auto loop = conn->getChannel()->getEventLoop();
+    loop->assertInLoopThread();
+
     if(status.type == status.CLOSED || status.type == status.ERROR){
         HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "onRecv: CLOSE or ERROR";
         /* 关闭连接 */
-        auto loop = conn->getChannel()->getEventLoop();
         loop->delTimer(Timer(
             conn->getFd(),
             TimeStamp::nowSecond(0),
@@ -164,10 +198,10 @@ void TcpServer::onRecv(TcpConnection::weak_ptr weak_conn){
         conn->setEvents(EPOLLOUT | kConnectionEvent);
     }
 
-    auto loop = conn->getChannel()->getEventLoop();
     loop->modChannel(conn->getChannel().get());
     // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << (std::string("ptr count: ") + std::to_string(conn.use_count()));
 }
+
 
 void TcpServer::onSend(TcpConnection::weak_ptr weak_conn){
     TcpConnection::ptr conn = weak_conn.lock();
@@ -176,21 +210,22 @@ void TcpServer::onSend(TcpConnection::weak_ptr weak_conn){
         HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "conn already destroy";
         return;
     }
+
     TcpConnection::status status = conn->send();
-    EventLoop *loop = nullptr;
+    EventLoop *loop = conn->getChannel()->getEventLoop();
+    loop->assertInLoopThread();
+
     switch (status.type)
     {
     case status.COMPLETED:
         if(conn->isKeepAlive()){
             /* 准备接受新的连接 */
             conn->setEvents(EPOLLIN | kConnectionEvent);
-            loop = conn->getChannel()->getEventLoop();
             loop->modChannel(conn->getChannel().get());
         }
         else{
             // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "onSend: COMPLETED, has write " << status.n;
             /* 关闭连接 */
-            loop = conn->getChannel()->getEventLoop();
             loop->delTimer(Timer(
                 conn->getFd(),
                 TimeStamp::nowSecond(0),
@@ -204,13 +239,11 @@ void TcpServer::onSend(TcpConnection::weak_ptr weak_conn){
         // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "onSend: AGAIN ";
         /* 没写完，接着写 */
         conn->setEvents(EPOLLOUT | kConnectionEvent);
-        loop = conn->getChannel()->getEventLoop();
         loop->modChannel(conn->getChannel().get());
         break;
     default:
         // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "onSend: CLOSE or ERROR";
         /* 关闭连接 */
-        loop = conn->getChannel()->getEventLoop();
         loop->delTimer(Timer(
             conn->getFd(),
             TimeStamp::nowSecond(0),
@@ -226,7 +259,7 @@ TcpServer::MESSAGE_STATUS TcpServer::onMessage(TcpConnection::ptr conn){
     return MESSAGE_STATUS::OK;
 }
 
-bool TcpServer::onNewConntection(TcpConnection::ptr conn){
+bool TcpServer::onCreateConnection(TcpConnection::ptr conn){
     HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onNewConntection";
     return true;
 }

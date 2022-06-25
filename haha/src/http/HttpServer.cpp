@@ -55,7 +55,7 @@ HttpServer::MESSAGE_STATUS HttpServer::onMessage(TcpConnection::ptr conn){
     return HttpServer::MESSAGE_STATUS::OK;
 }
 
-bool HttpServer::onNewConntection(TcpConnection::ptr conn){
+bool HttpServer::onCreateConnection(TcpConnection::ptr conn){
     return true;
 }
 
