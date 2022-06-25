@@ -116,7 +116,8 @@ void EventLoop::doPendingTasks(){
     std::vector<Task> tasks;
     callingPendingTasks_ = true;
     {
-        MutexLock::RAIILock lock(mutex_);
+        // MutexLock::RAIILock lock(mutex_);
+        SpinLock::RAIILock lock(mutex_);
         tasks.swap(pendingTasks_);
     }
     for(const auto &task : tasks){
@@ -127,7 +128,8 @@ void EventLoop::doPendingTasks(){
 
 void EventLoop::queueInLoop(Task task){
     {
-        MutexLock::RAIILock lock(mutex_);
+        // MutexLock::RAIILock lock(mutex_);
+        SpinLock::RAIILock lock(mutex_);
         pendingTasks_.push_back(std::move(task));
     }
 

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <thread>
 #include "base/noncopyable.h"
 #include "EventLoop.h"
 #include "EventLoopThread.h"
@@ -21,7 +22,7 @@ public:
     EventLoop::ptr getNextLoop();
 
 private:
-    EventLoopThreadPool(size_t ThreadNum = 4);
+    EventLoopThreadPool(size_t ThreadNum = std::thread::hardware_concurrency());
 
 private:
     bool started_;

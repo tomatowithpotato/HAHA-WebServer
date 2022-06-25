@@ -51,7 +51,8 @@ private:
     std::unique_ptr<Channel> wakeupChannel_;
     std::unique_ptr<TimerQueue> timerQueue_;
     
-    MutexLock mutex_;
+    // MutexLock mutex_;
+    SpinLock mutex_;
     Thread::ID threadId_;
     std::vector<Task> pendingTasks_;
     std::atomic_bool callingPendingTasks_;

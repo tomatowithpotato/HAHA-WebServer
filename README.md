@@ -48,12 +48,12 @@
 编译
 ```shell
 cd 当前目录
-./build.sh
+./build_release.sh
 ```
 运行
 ```shell
 cd 当前目录
-./run_httpServer.sh
+./run_httpServer_release.sh
 ```
 
 测试：
@@ -69,6 +69,9 @@ cpu为i5-10400F
 虚拟机内存4G
 分配6个核心
 
+单reactor模型在分支single_reactor中
+
+"one loop per thread"模型在分支"one_loop_per_thread"中
 
 以下分别对nginx、TinyWebServer和HAHA-WebServer做压力测试
 使用TinyWebServer中自带的Webbench进行测试
@@ -108,10 +111,10 @@ HAHA和Tiny每次响应的页面数据量基本接近（TinyWebServer对默认�
     4. TinyWebServer开启O2级别编译优化后，性能并没有什么提升，不知是为何
 
     5. 采用one loop per thread模型，性能得到了一点提升，但不是很大，可能的原因：
-    
-        1. 可能是我线程设置太少（默认4）
 
-        2. 并发量还不够大，只有5000，无法体现优势，以后换更好的机子测
+        1. 并发量还不够大，只有5000，无法体现优势，以后换更好的机子测
+
+        2. 数据读写处理有待优化
 
         3. 可以尝试用03级别优化看看
         
