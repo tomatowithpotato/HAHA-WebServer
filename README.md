@@ -64,6 +64,12 @@ cd 当前目录
 
 ## 压力测试
 
+测试环境是我电脑的虚拟机，
+cpu为i5-10400F
+虚拟机内存4G
+分配6个核心
+
+
 以下分别对nginx、TinyWebServer和HAHA-WebServer做压力测试
 使用TinyWebServer中自带的Webbench进行测试
 没有提到的地方都采用默认配置
@@ -79,21 +85,37 @@ HAHA和Tiny每次响应的页面数据量基本接近（TinyWebServer对默认�
 用webbench对TinyWebServer进行压力测试的结果，关闭日志，LT+ET模式，开启O2级别编译优化
 ![img3](./resource/tiny-lt%2Bet-release-webbench-5000-5.png)
 
-用webbench对HAHA-WebServer进行压力测试的结果，不开启编译优化
+用webbench对HAHA-WebServer进行压力测试的结果，单reactor搭配阻塞队列模型，不开启编译优化
 ![img4](./resource/haha-debug-webbench-5000-5.png)
 
-用webbench对HAHA-WebServer进行压力测试的结果，开启O2级别编译优化
+用webbench对HAHA-WebServer进行压力测试的结果，单reactor搭配阻塞队列模型，开启O2级别编译优化
 ![img5](./resource/haha-release-webbench-5000-5.png)
+
+用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，不开启编译优化
+![img5](./resource/haha-olpt-debug-webbench-5000-5.png)
+
+用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，开启O2级别编译优化
+![img6](./resource/haha-olpt-release-webbench-5000-5.png)
 
 通过上述结果，可得到如下信息:
 
     1. nginx碾压后两者，而且是在每次相应的数据要多于前两者的情况下
 
-    2. 不开编译优化的话，HAHA要逊色于TinyWebServer
+    2. 不开编译优化的话，HAHA处理的请求数少于TinyWebServer，但实际上处理的数据多于Tiny（因为页面数据更大）
 
-    3. 开启编译优化后，HAHA性能提升了数倍，远甩开了TinyWebServer
+    3. 开启编译优化后，HAHA性能提升了数倍，远远好于TinyWebServer
     
     4. TinyWebServer开启O2级别编译优化后，性能并没有什么提升，不知是为何
+
+    5. 采用one loop per thread模型，性能得到了一点提升，但不是很大，可能的原因：
+    
+        1. 可能是我线程设置太少（默认4）
+
+        2. 并发量还不够大，只有5000，无法体现优势，以后换更好的机子测
+
+        3. 可以尝试用03级别优化看看
+        
+        4. 代码写得有问题，跟muduo原版写法还有很多差距
 
 
 ## Servlet使用
