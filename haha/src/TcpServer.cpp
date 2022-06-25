@@ -15,7 +15,11 @@ TcpServer::TcpServer()
 }
 
 void TcpServer::start(const InetAddress &address){
-    ::signal(SIGPIPE, SIG_IGN);
+    sigset_t set;
+    sigemptyset(&set);
+    sigaddset(&set, SIGPIPE);
+    pthread_sigmask(SIG_BLOCK, &set, NULL);
+
     servSock_.bind(address);
     servSock_.listen();
     listenChannel_ = std::make_shared<Channel>(eventLoop_.get(), servSock_.getFd(), false);
