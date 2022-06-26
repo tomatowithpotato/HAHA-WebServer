@@ -64,7 +64,8 @@ private:
 
     Channel::ptr listenChannel_;
 
-    ReadWriteLock connMtx_;
+    // ReadWriteLock connMtx_;
+    SpinLock connMtx_;
     ConnectMap connects_;
     
     int evfd_;
