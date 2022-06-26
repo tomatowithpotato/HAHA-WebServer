@@ -1,48 +1,50 @@
 # HAHAWebServer
 
-一个用c++20实现的简易http服务器，还在更新中
+一个用c++20实现的简易高并发http服务器，支持servlet，目前还在更新中
 
 ## 技术特点：
 
-    1. 支持两种模型：
-        1. 单reactor模型： epoll + 阻塞队列 + 线程池
-        2. one loop per thread模型
+* 支持两种模型：
+    - 单reactor模型： epoll + 阻塞队列 + 线程池
+    - one loop per thread模型，参考项目muduo
 
-    2. 采用时间堆管理超时连接
+* 对线程和锁都进行了封装，用到了互斥锁、读写锁、自旋锁
 
-    3. 利用智能指针进行内存的管理，最大限度避免内存泄漏
+* 采用时间堆管理超时连接
 
-    4. 利用mmap或sendfile进行文件传输
+* 利用智能指针进行内存的管理，最大限度避免内存泄漏
 
-    5. 较简陋的日志系统
+* 利用mmap或sendfile进行文件传输
+
+* 较简陋的日志系统
 
 ## 目前支持如下功能：
 
-    1. 支持http1.0、http1.1协议
+* 支持http1.0、http1.1协议
 
-    2. 支持cookie和session
+* 支持cookie和session
 
-    3. 支持文件的上传和下载（还未全部完成）
+* 支持文件的上传和下载
 
-    3. 提供servlet编程接口
+* 提供servlet编程接口
 
 ## 未来的计划：
 
-    1. 加入配置系统
+* 加入配置系统
 
-    2. 优化日志系统，改为异步模式
+* 优化日志系统，改为异步模式
 
-    3. 添加对https的支持
+* 添加对https的支持
 
-    4. 将数据存储进mysql，比如session，用户登录的账号和密码等
+* 将数据存储进mysql，比如session，用户登录的账号和密码等
 
-    5. 实现更完善的http协议
+* 实现更完善的http协议（http2.0、websocket等）
 
-    6. 实现负载均衡功能
+* 实现负载均衡功能
 
-    7. 加入协程
+* 加入协程
 
-    8. 实现诸如聊天室、email、游戏服务器等附带功能
+* 基于该框架，实现诸如聊天室、email、游戏服务器等功能
 
 
 ## 快速使用：
@@ -66,14 +68,15 @@ cd 当前目录
 
 ## 压力测试
 
-测试环境是我电脑的虚拟机，
-cpu为i5-10400F
-虚拟机内存4G
-分配6个核心
-
-单reactor模型在分支single_reactor中
-
+单reactor模型在分支single_reactor中，
 "one loop per thread"模型在分支"one_loop_per_thread"中
+
+### 测试环境
+- 测试环境是我电脑的虚拟机，webbench和服务器都同时运行在虚拟机上
+- cpu为i5-10400F
+- 内存4G
+- 6线程
+
 
 以下分别对nginx、TinyWebServer和HAHA-WebServer做压力测试
 使用TinyWebServer中自带的Webbench进行测试
@@ -81,44 +84,52 @@ cpu为i5-10400F
 
 HAHA和Tiny每次响应的页面数据量基本接近（TinyWebServer对默认的webbench请求返回的是404页面，跟HAHA的默认返回页面差不多大），因而可以排除页面大小干扰
 
-用webbench对nginx进行压力测试的结果
+### 测试结果
+
+* 用webbench对nginx进行压力测试的结果
 ![img1](./resource/nginx-webbench-5000-5.png)
 
-用webbench对TinyWebServer进行压力测试的结果，关闭日志，LT+ET模式，不开启编译优化
+* 用webbench对TinyWebServer进行压力测试的结果，关闭日志，LT+ET模式，不开启编译优化
 ![img2](./resource/tiny-lt%2Bet-debug-webbench-5000-5.png)
 
-用webbench对TinyWebServer进行压力测试的结果，关闭日志，LT+ET模式，开启O2级别编译优化
+* 用webbench对TinyWebServer进行压力测试的结果，关闭日志，LT+ET模式，开启O2级别编译优化
 ![img3](./resource/tiny-lt%2Bet-release-webbench-5000-5.png)
 
-用webbench对HAHA-WebServer进行压力测试的结果，单reactor搭配阻塞队列模型，不开启编译优化
+* 用webbench对HAHA-WebServer进行压力测试的结果，单reactor搭配阻塞队列模型，不开启编译优化
 ![img4](./resource/haha-debug-webbench-5000-5.png)
 
-用webbench对HAHA-WebServer进行压力测试的结果，单reactor搭配阻塞队列模型，开启O2级别编译优化
+* 用webbench对HAHA-WebServer进行压力测试的结果，单reactor搭配阻塞队列模型，开启O2级别编译优化
 ![img5](./resource/haha-release-webbench-5000-5.png)
 
-用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，不开启编译优化
+* 用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，不开启编译优化
 ![img5](./resource/haha-olpt-debug-webbench-5000-5.png)
 
-用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，开启O2级别编译优化
+* 用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，开启O2级别编译优化
 ![img6](./resource/haha-olpt-release-webbench-5000-5.png)
+
+
+* 在上述配置和条件下，取最佳表现，HAHA为4万多QPS，Tiny为1万多QPS，nginx5万多QPS
+
+
+### 结果分析
 
 通过上述结果，可得到如下信息:
 
-    1. nginx碾压后两者，而且是在每次相应的数据要多于前两者的情况下
+- nginx碾压后两者，而且是在每次相应的数据要多于前两者的情况下
 
-    2. 不开编译优化的话，HAHA处理的请求数少于TinyWebServer，但实际上处理的数据多于Tiny（因为页面数据更大）
+- 不开编译优化的话，HAHA处理的请求数少于TinyWebServer，但实际上处理的数据多于Tiny（因为页面数据更大）
 
-    3. 开启编译优化后，HAHA性能提升了数倍，远远好于TinyWebServer
+- 开启编译优化后，HAHA性能提升了数倍，远远好于TinyWebServer
     
-    4. TinyWebServer开启O2级别编译优化后，性能并没有什么提升，不知是为何
+- TinyWebServer开启O2级别编译优化后，性能并没有什么提升，不知是为何
 
-    5. 采用one loop per thread模型，性能得到了一点提升，但不是很大，可能的原因：
+- 采用one loop per thread模型，性能得到了一点提升，但不是很大，可能的原因：
 
-        1. 并发量还不够大，只有5000，无法体现优势，以后换更好的机子测
+    - 并发量还不够大，只有5000，无法体现优势，以后换更好的机子测
 
-        2. 数据读写处理有待优化
+    - 数据读写处理有待优化
         
-        3. 代码写得有问题，跟muduo原版写法还有很多差距
+    - 代码写得有问题，跟muduo原版写法还有很多差距
 
 
 ## Servlet使用
