@@ -4,6 +4,7 @@
  * @copyleft Apache 2.0
  */ 
 #include "TimerHeap.h"
+#include "base/Log.h"
 
 namespace haha
 {
@@ -64,7 +65,8 @@ void TimerHeap::del_(size_t index) {
 }
 
 void TimerHeap::push(const Timer& timer){
-    ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
+    assertInLoopThread();
+    // ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
     assert(timer.fd >= 0);
     size_t i;
     auto x = ref_.find(timer.fd);
@@ -86,7 +88,8 @@ void TimerHeap::push(const Timer& timer){
 }
 
 void TimerHeap::adjust(const Timer& timer){
-    ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
+    assertInLoopThread();
+    // ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
     auto x = ref_.find(timer.fd);
     if(x != ref_.end()){
         int pos = x->second;
@@ -96,7 +99,8 @@ void TimerHeap::adjust(const Timer& timer){
 }
 
 void TimerHeap::remove(const Timer& timer){
-    ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
+    assertInLoopThread();
+    // ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
     auto x = ref_.find(timer.fd);
     if(x != ref_.end()){
         int pos = x->second;
@@ -105,15 +109,25 @@ void TimerHeap::remove(const Timer& timer){
 }
 
 void TimerHeap::pop() {
-    ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
+    assertInLoopThread();
+    // ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
     assert(!heap_.empty());
     del_(0);
 }
 
 void TimerHeap::clear() {
-    ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
+    assertInLoopThread();
+    // ReadWriteLock::RAIIWriteLock lock_gaurd(mtx_);
     ref_.clear();
     heap_.clear();
+}
+
+void TimerHeap::assertInLoopThread() const{
+    if(!isInLoopThread()){
+        HAHA_LOG_ERROR(HAHA_LOG_ROOT()) << "EventLoop was created in threadId_ = "
+            << threadId_ << ", but current thread id = " << Thread::getCurrentThreadId();
+        assert(isInLoopThread());
+    }
 }
 
 } // namespace haha

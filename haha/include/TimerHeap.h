@@ -13,6 +13,7 @@
 #include <functional> 
 #include <assert.h> 
 #include "base/TimeStamp.h"
+#include "base/Thread.h"
 #include "base/Mutex.h"
 #include "base/ReadWriteLock.h"
 
@@ -37,7 +38,7 @@ struct Timer {
 
 class TimerHeap {
 public:
-    TimerHeap() { heap_.reserve(64); }
+    TimerHeap():threadId_(Thread::getCurrentThreadId()) { heap_.reserve(64); }
 
     ~TimerHeap() { clear(); }
 
@@ -51,18 +52,24 @@ public:
 
     void pop();
 
+    bool isInLoopThread() const { return threadId_ == Thread::getCurrentThreadId(); }
+    void assertInLoopThread() const;
+
     Timer& top() { 
-        ReadWriteLock::RAIIReadLock lock(mtx_);
+        assertInLoopThread();
+        // ReadWriteLock::RAIIReadLock lock(mtx_);
         return heap_.front(); 
     }
 
     bool empty() const { 
-        ReadWriteLock::RAIIReadLock lock(mtx_);
+        assertInLoopThread();
+        // ReadWriteLock::RAIIReadLock lock(mtx_);
         return heap_.empty(); 
     }
 
     size_t size() const {
-        ReadWriteLock::RAIIReadLock lock(mtx_);
+        assertInLoopThread();
+        // ReadWriteLock::RAIIReadLock lock(mtx_);
         return heap_.size(); 
     }
 
@@ -80,7 +87,9 @@ private:
     // 记录定时器在堆中的位置
     std::unordered_map<int, size_t> ref_;
 
-    mutable ReadWriteLock mtx_;
+    // mutable ReadWriteLock mtx_;
+
+    Thread::ID threadId_;
 };
 
 }
