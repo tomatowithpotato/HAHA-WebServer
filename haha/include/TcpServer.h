@@ -19,6 +19,8 @@ class TcpServer{
 
 public:
     typedef std::unordered_map<int, std::shared_ptr<TcpConnection>> ConnectMap;
+    // typedef CASLock MutexType;
+    typedef SpinLock MutexType;
 
     enum MESSAGE_STATUS{
         OK,
@@ -64,8 +66,7 @@ private:
 
     Channel::ptr listenChannel_;
 
-    // ReadWriteLock connMtx_;
-    SpinLock connMtx_;
+    MutexType connMtx_;
     ConnectMap connects_;
     
     int evfd_;

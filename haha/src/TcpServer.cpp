@@ -48,7 +48,7 @@ void TcpServer::handleServerAccept(){
     TcpConnection::ptr conn = std::make_shared<TcpConnection>(sock);
 
     {
-        SpinLock::RAIILock lock(connMtx_);
+        MutexType::RAIILock lock(connMtx_);
         connects_[connfd] = conn;
     }
 
@@ -136,7 +136,7 @@ void TcpServer::handleConnectionClose(TcpConnection::weak_ptr weak_conn) {
 
     // 从连接表中删除连接，因为可能有多个线程同时删，因此必须加锁保护
     {
-        SpinLock::RAIILock lock(connMtx_);
+        MutexType::RAIILock lock(connMtx_);
         auto it = connects_.find(conn->getFd());
         if(it != connects_.end()){
             connects_.erase(it);
