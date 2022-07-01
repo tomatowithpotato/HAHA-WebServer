@@ -12,12 +12,50 @@
 #include <sys/sendfile.h>
 #include <openssl/err.h>
 #include <openssl/ssl.h>
+#include "base/noncopyable.h"
 
 namespace haha{
 
 namespace FileUtil{
 
-class File{
+// read small file < 64KB
+class SmallFileUtil : public noncopyable
+{
+public:
+    SmallFileUtil(const char* filename);
+    ~SmallFileUtil();
+
+    // return errno
+    int readToString(int maxSize,
+                    std::string &content,
+                    int64_t* fileSize,
+                    int64_t* modifyTime,
+                    int64_t* createTime);
+
+    /// Read at maxium kBufferSize into buf_
+    // return errno
+    int readToBuffer(int* size);
+
+    const char* buffer() const { return buf_; }
+
+    static const int kBufferSize = 64*1024;
+
+private:
+    int fd_;
+    int err_;
+    char buf_[kBufferSize];
+};
+
+// read the file content, returns errno if error happens.
+int readSmallFile(const char* filename,
+                    int maxSize,
+                    std::string &content,
+                    int64_t* fileSize = NULL,
+                    int64_t* modifyTime = NULL,
+                    int64_t* createTime = NULL);
+
+
+class File : public noncopyable{
 public:
     typedef std::shared_ptr<File> ptr;
     enum STATE{
@@ -47,7 +85,7 @@ private:
 };
 
 
-class MMap {
+class MMap : public noncopyable{
 public:
     typedef std::shared_ptr<MMap> ptr;
     explicit MMap(int infd) : fd_(infd){
@@ -77,7 +115,7 @@ private:
 };
 
 
-class SendFile {
+class SendFile : public noncopyable{
 public:
     typedef std::shared_ptr<SendFile> ptr;
     explicit SendFile(int infd, int outfd)
@@ -112,7 +150,7 @@ private:
 };
 
 
-class FileSendStream{
+class FileSendStream : public noncopyable{
 public:
     typedef std::shared_ptr<FileSendStream> ptr;
     enum SEND_MOD{
@@ -137,7 +175,7 @@ private:
 };
 
 
-class FileSSLSendStream : FileSendStream{
+class FileSSLSendStream : public FileSendStream{
     int send(int *lastLen = nullptr) override;
 };
 

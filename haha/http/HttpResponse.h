@@ -6,7 +6,7 @@
 #include <filesystem>
 #include "base/TimeStamp.h"
 #include "base/Buffer.h"
-#include "TcpConnection.h"
+#include "net/TcpConnection.h"
 #include "http/HttpUtil.h"
 #include "http/HttpUrl.h"
 #include "http/HttpHeader.h"

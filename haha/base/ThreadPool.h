@@ -37,7 +37,7 @@ private:
     size_t num_thread_;
     std::atomic<bool> isRunning_;
     MutexLock mtx_;
-    ConditionVariable cond_;
+    ConditionVariable<MutexLock> cond_;
 };
 
 }

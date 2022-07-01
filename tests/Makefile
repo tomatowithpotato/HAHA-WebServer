@@ -1,9 +1,9 @@
-SOURCE_DIR = ../haha/src
+SOURCE_DIR = ../haha
 
 SOURCE_FILES = $(wildcard $(SOURCE_DIR)/*.cpp)
 SOURCE_FILES += $(wildcard $(SOURCE_DIR)/*/*.cpp)
 
-INCLUDE_DIR = -I ../haha/include
+INCLUDE_DIR = -I ../haha
 
 BINARY_DIR = ../bin
 

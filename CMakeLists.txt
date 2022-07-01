@@ -53,21 +53,23 @@ message(STATUS "CMAKE_BUILD_TYPE = " ${CMAKE_BUILD_TYPE})
 # set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -rdynamic -O2 -ggdb -std=c++2a -Wall -Wno-deprecated -Werror -Wno-unused-function \
 # -Wno-builtin-macro-redefined")
 
-include_directories(. ./haha/include)
+include_directories(. ./haha)
 # include_directories(${YAML_CPP_INCLUE})
 include_directories(/usr/local/include)             # 添加头文件路径
 link_directories(/usr/local/lib)                    # 添加库文件路径
 
 
-aux_source_directory(${PROJECT_SOURCE_DIR}/haha/src SRC_LIST)        # 将制定路径内的源文件全部加入变量中
-aux_source_directory(${PROJECT_SOURCE_DIR}/haha/src/base SRC_BASE_LIST)        # 将制定路径内的源文件全部加入变量中
-aux_source_directory(${PROJECT_SOURCE_DIR}/haha/src/http SRC_http_LIST)        # 将制定路径内的源文件全部加入变量中
+aux_source_directory(${PROJECT_SOURCE_DIR}/haha/base SRC_BASE_LIST)        # 将制定路径内的源文件全部加入变量中
+aux_source_directory(${PROJECT_SOURCE_DIR}/haha/net SRC_NET_LIST)        # 将制定路径内的源文件全部加入变量中
+aux_source_directory(${PROJECT_SOURCE_DIR}/haha/http SRC_HTTP_LIST)        # 将制定路径内的源文件全部加入变量中
+aux_source_directory(${PROJECT_SOURCE_DIR}/haha/log SRC_LOG_LIST)        # 将制定路径内的源文件全部加入变量中
 
 set(
     LIB_SRC
-    ${SRC_LIST}
     ${SRC_BASE_LIST}
-    ${SRC_http_LIST}
+    ${SRC_NET_LIST}
+    ${SRC_HTTP_LIST}
+    ${SRC_LOG_LIST}
 )
 
 # MESSAGE( STATUS "LIB_SRC = ${LIB_SRC}.")

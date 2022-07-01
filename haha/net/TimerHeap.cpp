@@ -4,7 +4,7 @@
  * @copyleft Apache 2.0
  */ 
 #include "TimerHeap.h"
-#include "base/Log.h"
+#include "log/Log.h"
 
 namespace haha
 {

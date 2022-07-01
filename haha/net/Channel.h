@@ -9,7 +9,7 @@
 
 #include "base/Buffer.h"
 #include "base/noncopyable.h"
-#include "base/Log.h"
+#include "log/Log.h"
 
 namespace haha{
 

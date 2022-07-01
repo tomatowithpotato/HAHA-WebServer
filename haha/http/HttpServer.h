@@ -2,11 +2,11 @@
 #define __HAHA_HTTPSERVER_H__
 
 #include <memory>
-#include "TcpServer.h"
-#include "HttpRequest.h"
-#include "HttpResponse.h"
-#include "HttpSession.h"
-#include "Servlet.h"
+#include "net/TcpServer.h"
+#include "http/HttpRequest.h"
+#include "http/HttpResponse.h"
+#include "http/HttpSession.h"
+#include "http/Servlet.h"
 #include "base/EncodeUtil.h"
 #include "base/TimeStamp.h"
 

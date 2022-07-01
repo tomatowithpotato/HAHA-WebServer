@@ -5,7 +5,7 @@
 #include <string>
 #include "base/util.h"
 #include "base/RetOption.h"
-#include "HttpMap.h"
+#include "http/HttpMap.h"
 #include "base/EncodeUtil.h"
 
 #include <random>

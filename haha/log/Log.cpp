@@ -1,4 +1,4 @@
-#include "base/Log.h"
+#include "log/Log.h"
 
 namespace haha{
 
@@ -305,12 +305,6 @@ void Logger::log(LogEvent::ptr event){
 void LogAppender::setFormatter(LogFormatter::ptr val){
     MutexType::RAIILock lock(m_mutex);
     m_formatter = val;
-    if(m_formatter){
-
-    }
-    else{
-
-    }
 }
 
 LogFormatter::ptr LogAppender::getFormatter(){

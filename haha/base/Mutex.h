@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <stdint.h>
 #include <atomic>
+#include "base/noncopyable.h"
 
 namespace haha{
 
@@ -27,7 +28,7 @@ private:
 
 /* 实现普通锁（不区分读写）的RAII机制 */
 template<class T>
-struct LockGuard{
+struct LockGuard : public noncopyable{
 public:
     LockGuard(T& mutex)
         :m_mutex(mutex){
@@ -51,9 +52,19 @@ private:
     bool m_locked;
 };
 
+template<typename M>
+class LockInterface : public noncopyable{
+public:
+    virtual void lock() = 0;
+    virtual void unlock() = 0;
+    M& getMutex() { return m_mutex; }
+protected:
+    M m_mutex;
+};
+
+
 /* 互斥锁 */
-class MutexLock{
-friend class ConditionVariable;
+class MutexLock : public LockInterface<pthread_mutex_t>{
 public:
     typedef LockGuard<MutexLock> RAIILock;
     MutexLock(){
@@ -64,19 +75,17 @@ public:
         pthread_mutex_destroy(&m_mutex);
     }
 
-    void lock(){
+    void lock() override{
         pthread_mutex_lock(&m_mutex);
     }
 
-    void unlock(){
+    void unlock() override{
         pthread_mutex_unlock(&m_mutex);
     }
-private:
-    pthread_mutex_t m_mutex;
 };
 
 /* 自旋锁 */
-class SpinLock{
+class SpinLock : public LockInterface<pthread_spinlock_t>{
 public:
     typedef LockGuard<SpinLock> RAIILock;
     SpinLock(){
@@ -87,19 +96,17 @@ public:
         pthread_spin_destroy(&m_mutex);
     }
 
-    void lock(){
+    void lock() override{
         pthread_spin_lock(&m_mutex);
     }
 
-    void unlock(){
+    void unlock() override{
         pthread_spin_unlock(&m_mutex);
     }
-private:
-    pthread_spinlock_t m_mutex;
 };
 
 /* CAS原子锁 */
-class CASLock{
+class CASLock : public LockInterface<std::atomic_flag>{
 public:
     typedef LockGuard<CASLock> RAIILock;
     CASLock(){
@@ -108,15 +115,13 @@ public:
 
     ~CASLock(){}
 
-    void lock(){
+    void lock() override{
         while(std::atomic_flag_test_and_set_explicit(&m_mutex, std::memory_order_acquire));
     }
 
-    void unlock(){
+    void unlock() override{
         std::atomic_flag_clear_explicit(&m_mutex, std::memory_order_release);
     }
-private:
-    volatile std::atomic_flag m_mutex;
 };
 
 
