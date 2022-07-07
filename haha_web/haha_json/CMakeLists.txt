@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(haha_web)
+project(haha_json)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)                  # make 过程中显示信息
 
@@ -53,47 +53,30 @@ message(STATUS "CMAKE_BUILD_TYPE = " ${CMAKE_BUILD_TYPE})
 # set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -rdynamic -O2 -ggdb -std=c++2a -Wall -Wno-deprecated -Werror -Wno-unused-function \
 # -Wno-builtin-macro-redefined")
 
-include_directories(. ./haha_web)
+include_directories(. ./haha_json)
 # include_directories(${YAML_CPP_INCLUE})
 include_directories(/usr/local/include)             # 添加头文件路径
 link_directories(/usr/local/lib)                    # 添加库文件路径
 
 
-aux_source_directory(${PROJECT_SOURCE_DIR}/haha_web/base SRC_BASE_LIST)        # 将制定路径内的源文件全部加入变量中
-aux_source_directory(${PROJECT_SOURCE_DIR}/haha_web/net SRC_NET_LIST)        # 将制定路径内的源文件全部加入变量中
-aux_source_directory(${PROJECT_SOURCE_DIR}/haha_web/http SRC_HTTP_LIST)        # 将制定路径内的源文件全部加入变量中
-aux_source_directory(${PROJECT_SOURCE_DIR}/haha_web/log SRC_LOG_LIST)        # 将制定路径内的源文件全部加入变量中
-
-add_subdirectory(${PROJECT_SOURCE_DIR}/haha_web/haha_json)              # 添加子项目
-include_directories(${PROJECT_SOURCE_DIR}/haha_web/haha_json)           # 添加子项目头文件
+aux_source_directory(${PROJECT_SOURCE_DIR}/haha_json/ SRC_LIST)        # 将制定路径内的源文件全部加入变量中
 
 set(
     LIB_SRC
-    ${SRC_BASE_LIST}
-    ${SRC_NET_LIST}
-    ${SRC_HTTP_LIST}
-    ${SRC_LOG_LIST}
+    ${SRC_LIST}
 )
 
 # MESSAGE( STATUS "LIB_SRC = ${LIB_SRC}.")
 
-add_library(haha_web SHARED ${LIB_SRC})                                # SHARED 指示生成so文件 即动态链接库
+add_library(haha_json SHARED ${LIB_SRC})                                # SHARED 指示生成so文件 即动态链接库
 
 set(
     ALL_LIBS
-    haha_web
     haha_json
     pthread
     uuid
 )
 
-add_executable(httpServerTest.out tests/test_httpServer.cc)             # 设置要生成可执行文件的代码
-add_dependencies(httpServerTest.out haha_web haha_json)                               # 设置依赖关系
-target_link_libraries(httpServerTest.out ${ALL_LIBS})                   # 设置要链接的库
-
-add_executable(dogServletTest.out tests/test_servlet.cc)                # 设置要生成可执行文件的代码
-add_dependencies(dogServletTest.out haha_web haha_json)                               # 设置依赖关系
-target_link_libraries(dogServletTest.out ${ALL_LIBS})                   # 设置要链接的库
-
-# SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)                   # 设置可执行文件的位置
-# SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)                      # 设置动态链接库的位置
+add_executable(jsonParseTest.out tests/test_json.cpp)             # 设置要生成可执行文件的代码
+add_dependencies(jsonParseTest.out haha_json)                               # 设置依赖关系
+target_link_libraries(jsonParseTest.out ${ALL_LIBS})                   # 设置要链接的库

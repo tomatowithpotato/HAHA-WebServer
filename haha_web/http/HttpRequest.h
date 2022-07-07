@@ -3,6 +3,8 @@
 
 #include <string_view>
 #include <memory>
+
+#include "haha_json/json.h"
 #include "base/Buffer.h"
 #include "net/TcpConnection.h"
 #include "http/HttpUtil.h"
@@ -106,6 +108,7 @@ private:
     HttpMultiPart multipart_;
     std::string body_;
     HttpForm form_;
+    json::Json json_;
 
     HttpSession::ptr session_;
 
