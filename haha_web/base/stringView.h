@@ -77,9 +77,9 @@ public:
     /* 判断str是否是其后缀 有范围限制 */
     bool ends_with(const char *begin, const char *end){
         if(begin == end)return true;
-        if(begin < end || size() == 0 || size() < end - begin)return false;
+        if(begin < end || size() == 0 || (int)size() < end - begin)return false;
         int i = end - begin - 1;
-        int j = size() - 1;
+        int j = (int)size() - 1;
         while(i >= 0 && j >= 0 && begin[i] == begin_[j]){
             --i;
             --j;
@@ -91,9 +91,9 @@ public:
     bool ends_with(const char *str){
         int i = strlen(str);
         if(i == 0)return true;
-        if(size() == 0 || size() < i)return false;
+        if((int)size() == 0 || (int)size() < i)return false;
         --i;
-        int j = size() - 1;
+        int j = (int)size() - 1;
         while(i >= 0 && j >= 0 && str[i] == begin_[j]){
             --i;
             --j;
