@@ -101,27 +101,23 @@ public:
         return i >= 0 ? false : true;
     }
 
-    size_t find(const char *str, size_t pos = 0){
-        if(pos >= size()){
-            throw std::out_of_range("StringView find out of range");
-        }
-        // return strstr(begin_+pos, str) - begin_;
-        return std::search(begin_+pos, end_, str, str+strlen(str)-1) - begin_;
-    }
+    size_t find(const char *str, size_t pos = 0);
 
-    size_t find(const char *begin, const char* end, size_t pos = 0){
-        if(pos >= size()){
-            throw std::out_of_range("StringView find out of range");
+    size_t find(const char *begin, const char* end, size_t pos = 0);
+
+    int compare(size_t start, size_t len, const char *str){
+        if(begin_ + len > end_){
+            throw std::out_of_range("len out of range");
         }
-        return std::search(begin_+pos, end_, begin, end) - begin_;
+        return strncmp(begin_+start, str, len);
     }
     
 
-    inline size_t size() {return static_cast<size_t>(end_ - begin_);}
+    inline size_t size() const {return static_cast<size_t>(end_ - begin_);}
 
-    const char& operator [](size_t pos){
+    const char& operator [](size_t pos) const{
         if(begin_ + pos > end_){
-            throw std::out_of_range("StringView substr out of range");
+            throw std::out_of_range("index out of range");
         }
         return begin_[pos];
     }
@@ -132,7 +128,7 @@ private:
     size_t length_;
 };
 
-std::ostream& operator<<(std::ostream& ostream, StringView view){
+inline std::ostream& operator<<(std::ostream& ostream, StringView view){
     for(auto i = view.begin_; i != view.end_; ++i){
         ostream << *i;
     }
