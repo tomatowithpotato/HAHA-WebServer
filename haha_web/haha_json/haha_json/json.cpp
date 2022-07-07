@@ -120,6 +120,10 @@ JsonArray::ptr parse_array(std::string_view &str){
     auto check_func = [&str](){
         if(str[0] == ','){
             str.remove_prefix(1);
+            /* 支持最后一个加逗号 */
+            if(str.size() && str[0] == ']'){
+                return false;
+            }
             return true;
         }
         return false;
@@ -159,6 +163,10 @@ JsonObject::ptr parse_object(std::string_view &str){
     auto check_func = [&str](){
         if(str[0] == ','){
             str.remove_prefix(1);
+            /* 支持最后一个加逗号 */
+            if(str.size() && str[0] == '}'){
+                return false;
+            }
             return true;
         }
         return false;

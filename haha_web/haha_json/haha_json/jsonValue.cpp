@@ -63,6 +63,64 @@ std::string getJsonTypeName(JsonType json_type){
     return "---error---";
 }
 
+
+std::string JsonString::toString(const PrintFormatter &format, int depth) const{
+    std::string res;
+    res.reserve(val_.size());
+    res += '"';
+
+    std::string_view view(val_);
+    char utf_str[6] = {0};
+    while(!view.empty()){
+        // 普通字符
+        if(view[0] > 31 && view[0] != '\"' && view[0] != '\\'){
+            res += view[0];
+        }
+        else{
+            res += '\\';
+            switch (view[0])
+            {
+            case '\\':
+                res += '\\';
+                break;
+            case '\"':
+                res += '"';
+                break;
+            case '\b':
+                res += 'b';
+                break;
+            case '\f':
+                res += 'f';
+                break;
+            case '\n':
+                res += 'n';
+                break;
+            case '\r':
+                res += 'r';
+                break;
+            case '\t':
+                res += 't';
+                break;
+            default:
+                // uxxxx
+                if(format.ensureAscii()){
+                    sprintf(utf_str, "u%04x", *(unsigned char *)view.data());
+                    res += utf_str;
+                }
+                else{
+                    res.pop_back();
+                    res += view[0];
+                }
+                break;
+            }
+        }
+        view.remove_prefix(1);
+    }
+    res += '"';
+    return res;
+}
+
+
 } // namespace json
 
 

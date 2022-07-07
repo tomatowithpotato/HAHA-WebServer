@@ -1,0 +1,6 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/home/lighthouse/MyCode/haha_json'
+make: Leaving directory '/home/lighthouse/MyCode/haha_json'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+

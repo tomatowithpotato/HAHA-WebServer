@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jul  7 21:50:35 2022
+# Make data base, printed on Thu Jul  7 20:05:52 2022
 
 # Variables
 
@@ -35,7 +35,7 @@ VSCODE_LOG_NATIVE = false
 # default
 MAKE_VERSION := 4.2.1
 # makefile
-CURDIR := /home/lighthouse/MyCode/linux/linux_network/HAHAWebServer
+CURDIR := /home/lighthouse/MyCode/haha_json
 # makefile
 SHELL = /bin/sh
 # environment
@@ -67,7 +67,7 @@ CONDA_PREFIX = /home/lighthouse/anaconda3
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-39205629-daec-435a-8bbc-4056e37a1000.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-b2e79c48-70c6-4479-8d1d-09946cb6b9d6.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -79,7 +79,7 @@ CONDA_EXE = /home/lighthouse/anaconda3/bin/conda
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
-PWD = /home/lighthouse/MyCode/linux/linux_network/HAHAWebServer
+PWD = /home/lighthouse/MyCode/haha_json
 # default
 .LOADED := 
 # automatic
@@ -189,9 +189,9 @@ _CE_CONDA =
 
 # Directories
 
-# . (device 64514, inode 3256621): 21 files, no impossibilities.
+# . (device 64514, inode 657793): 16 files, no impossibilities.
 
-# 21 files, no impossibilities in 1 directories.
+# 16 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -241,12 +241,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 29 / storage = 333 B / avg = 11 B
-# current buf: size = 8162 B / used = 333 B / count = 29 / avg = 11 B
+# strcache buffers: 1 (0) / strings = 24 / storage = 247 B / avg = 10 B
+# current buf: size = 8162 B / used = 247 B / count = 24 / avg = 10 B
 
-# strcache performance: lookups = 32 / hit rate = 9%
+# strcache performance: lookups = 27 / hit rate = 11%
 # hash-table stats:
-# Load=29/8192=0%, Rehash=0, Collisions=1/32=3%
-# Finished Make data base on Thu Jul  7 21:50:35 2022
+# Load=24/8192=0%, Rehash=0, Collisions=1/27=4%
+# Finished Make data base on Thu Jul  7 20:05:52 2022
 
  

@@ -36,15 +36,19 @@ enum class JsonFormatType { RAW, SPACE, NEWLINE };
 class PrintFormatter{
 public:
     PrintFormatter(const JsonFormatType &fmt = JsonFormatType::RAW, 
-                    int indent = 0)
+                    int indent = 0,
+                    bool ensure_ascii = true)
         :format_(fmt),
-        indent_(indent)
+        indent_(indent),
+        ensure_ascii_(ensure_ascii)
     {
     }
     JsonFormatType formatType() const { return format_; }
+    bool ensureAscii() const { return ensure_ascii_; }
 private:
     JsonFormatType format_ = JsonFormatType::RAW;
     int indent_ = 0;
+    bool ensure_ascii_ = true;
 };
 
 
@@ -67,7 +71,7 @@ class JsonString : public JsonValue{
 public:
     typedef std::shared_ptr<JsonString> ptr;
     explicit JsonString(const std::string &str):JsonValue(JsonType::String),val_(str){}
-    std::string toString(const PrintFormatter &format = PrintFormatter(), int depth = 0) const override { return '\"' + val_ + '\"'; }
+    std::string toString(const PrintFormatter &format = PrintFormatter(), int depth = 0) const override;
     bool operator <(const JsonString &rhs) const{
         return val_ < rhs.val_;
     }
@@ -151,7 +155,7 @@ public:
                 res += std::string(depth+1, '\t');
             }
             res += arr_[i]->toString(format, depth+1);
-            res += ',';
+            res += i+1 < arr_.size() ? "," : "";
             if(fmt == JsonFormatType::SPACE && i+1 < arr_.size()){
                 res += ' ';
             }

@@ -28,18 +28,42 @@ int main(){
         obj = json.getValuePtr<haha::json::JsonObject>();
     }
 
-    if(obj){
-        for(const auto &[k,v] : *obj){
-            std::cout << haha::json::getJsonTypeName(k.getType()) << ": "
-                << haha::json::getJsonTypeName(v->getType())
-                << std::endl;
-        }
+    for(const auto &[k,v] : *obj){
+        std::cout << haha::json::getJsonTypeName(k.getType()) << ": "
+            << haha::json::getJsonTypeName(v->getType())
+            << std::endl;
+    }
 
-        haha::json::PrintFormatter fmt{
-            haha::json::JsonFormatType::NEWLINE,
-            1,
-        };
-        std::cout << obj->toString(fmt) << std::endl;
+    haha::json::PrintFormatter fmt{
+        haha::json::JsonFormatType::NEWLINE,
+        1,
+        true
+    };
+
+    /* 序列化 */
+    std::string output = obj->toString(fmt);
+    std::cout << output << std::endl;
+
+    std::cout << std::string(60, '*') << std::endl;
+
+    /* 反序列化 */
+    haha::json::Json json1;
+    ok = json1.fromString(output);
+    std::cout << ok << std::endl;
+    haha::json::JsonObject::ptr obj1;
+    if(json1.getType() == haha::json::JsonType::Object){
+        obj1 = json.getValuePtr<haha::json::JsonObject>();
+    }
+
+    haha::json::PrintFormatter fmt1{
+        haha::json::JsonFormatType::NEWLINE,
+        1,
+        false
+    };
+    
+    if(ok){
+        std::string output1 = obj1->toString(fmt1);
+        std::cout << output1 << std::endl;
     }
 
     return 0;
