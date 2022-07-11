@@ -1,0 +1,29 @@
+{
+	"configurations": [
+		{
+			"MIMode": "gdb",
+			"args": [],
+			"cwd": "${workspaceFolder}/bin",
+			"environment": [],
+			"externalConsole": false,
+			"name": "(gdb) 启\t动",
+			"program": "${workspaceFolder}/bin/parseTest.out",
+			"request": "launch",
+			"setupCommands": [
+				{
+					"description": "为 gdb 启用整齐打印",
+					"ignoreFailures": true,
+					"text": "-enable-pretty-printing"
+				},
+				{
+					"description": "将反汇编风格设置为 Intel",
+					"ignoreFailures": true,
+					"text": "-gdb-set disassembly-flavor intel"
+				}
+			],
+			"stopAtEntry": false,
+			"type": "cppdbg"
+		}
+	],
+	"version": "0.2.0"
+}

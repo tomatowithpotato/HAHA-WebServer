@@ -2,69 +2,51 @@
 #include <iostream>
 #include "json.h"
 
+namespace JSON = haha::json;
 
 int main(){
-    std::string str = "{\"check\": 123.5e10, \"2893h\":\"ok\", \"arr\": [\"sd\", null]}";
-    std::string str1 = "{\"\": 0, \"\\u7814\": 1, \"\\u7a76\": 2, \"\\u53d1\": 3, \"\\u73b0\": 4, \"\\u7ec6\": 5, \"\\u80de\": 6}";
-    haha::json::Json json;
-
-    bool ok = true;
-    ok = json.fromString(str1);
-
-    std::cout << ok << std::endl;
-
-    std::cout << json.toString() << std::endl;
+    JSON::JsonNode::ptr js;
 
     std::string filePath = "../test.json"; // 文件位置自己定
 
-    ok = json.fromFile(filePath);
+    // 从文件读取
+    js = JSON::fromFile(filePath);
 
-    std::cout << ok << std::endl;
+    // 序列化（转为字符串）
+    std::cout << js->toString() << std::endl;
 
-    std::cout << json.toString() << std::endl;
-
-    haha::json::JsonObject::ptr obj;
-    if(json.getType() == haha::json::JsonType::Object){
-        obj = json.getValuePtr<haha::json::JsonObject>();
+    // 类型转换
+    JSON::JsonObject::ptr obj;
+    if(js->getType() == JSON::JsonType::Object){
+        obj = JSON::pointer_cast<JsonObject>(js);
     }
 
-    for(const auto &[k,v] : *obj){
-        std::cout << haha::json::getJsonTypeName(k.getType()) << ": "
-            << haha::json::getJsonTypeName(v->getType())
-            << std::endl;
-    }
-
-    haha::json::PrintFormatter fmt{
-        haha::json::JsonFormatType::NEWLINE,
+    // 输出格式
+    JSON::PrintFormatter fmt{
+        JSON::JsonFormatType::NEWLINE,
         1,
-        true
     };
 
-    /* 序列化 */
+    /* 序列化（转为字符串） */
     std::string output = obj->toString(fmt);
     std::cout << output << std::endl;
 
     std::cout << std::string(60, '*') << std::endl;
 
-    /* 反序列化 */
-    haha::json::Json json1;
-    ok = json1.fromString(output);
-    std::cout << ok << std::endl;
-    haha::json::JsonObject::ptr obj1;
-    if(json1.getType() == haha::json::JsonType::Object){
-        obj1 = json.getValuePtr<haha::json::JsonObject>();
-    }
+    /* 反序列化（从字符串读取） */
+    JSON::JsonNode::ptr js1;
+    js1 = JSON::fromString(output);
 
-    haha::json::PrintFormatter fmt1{
-        haha::json::JsonFormatType::NEWLINE,
+    JSON::PrintFormatter fmt1{
+        JSON::JsonFormatType::NEWLINE,
         1,
-        false
     };
     
-    if(ok){
-        std::string output1 = obj1->toString(fmt1);
-        std::cout << output1 << std::endl;
-    }
+    std::string output1 = js1->toString(fmt1);
+    std::cout << output1 << std::endl;
+
+    // 输出到文件
+    JSON::toFile(js1, "../output.json", fmt1);
 
     return 0;
 }

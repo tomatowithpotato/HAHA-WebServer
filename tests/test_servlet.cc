@@ -74,8 +74,6 @@ void watch_dog(haha::HttpRequest::ptr req, haha::HttpResponse::ptr resp){
 
 
 int main(){
-    // 这里的9999是端口号，可自行修改
-    haha::InetAddress address(9999);
     haha::HttpServer server;
     // 添加servlet到服务器，这边我把两种请求都映射到了watch_dog上
     server.addServlet("/dog", [](haha::HttpRequest::ptr req, haha::HttpResponse::ptr resp){
@@ -85,6 +83,6 @@ int main(){
         watch_dog(req, resp);
     });
 
-    server.start(address);
+    server.start();
     return 0;
 }

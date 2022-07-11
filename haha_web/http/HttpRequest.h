@@ -108,7 +108,7 @@ private:
     HttpMultiPart multipart_;
     std::string body_;
     HttpForm form_;
-    json::Json json_;
+    json::JsonNode::ptr json_;
 
     HttpSession::ptr session_;
 

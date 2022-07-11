@@ -107,6 +107,8 @@ unsigned int parse_hex4(const unsigned char * const input);
 
 std::string utf16_literal_to_utf8(std::string_view &str);
 
+std::string utf8_to_unicode(std::string_view &str);
+
 }
 
 }

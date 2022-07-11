@@ -1,0 +1,9 @@
+{
+    "server": {
+        "port": 9999,
+        "timeout": 5
+    },
+    "EventLoopThreadPool":{
+        "threadNum": 4
+    }
+}

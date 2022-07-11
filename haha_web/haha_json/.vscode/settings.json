@@ -61,6 +61,7 @@
         "unordered_set": "cpp",
         "bitset": "cpp",
         "codecvt": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "variant": "cpp"
     }
 }

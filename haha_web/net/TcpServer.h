@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_map>
 #include "log/Log.h"
+#include "config/config.h"
 #include "base/Mutex.h"
 #include "base/ReadWriteLock.h"
 #include "InetAddress.h"
@@ -29,6 +30,7 @@ public:
 
     TcpServer();
     void start(const InetAddress &address);
+    void start();
 
     EventLoop::ptr getMainLoop() { return mainLoop_; }
 

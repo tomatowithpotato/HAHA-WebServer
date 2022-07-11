@@ -238,7 +238,7 @@ HttpRequest::RET_STATE HttpRequest::parseRequestContent(){
             parseKeyValue(body_, "=", "&", form_, false);
         }
         else if(contentType_ == HttpContentType::JSON){
-            json_.fromString(body_);
+            json_ = json::fromString(body_);
         }
     }
 

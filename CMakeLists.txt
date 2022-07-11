@@ -63,6 +63,7 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/haha_web/base SRC_BASE_LIST)        #
 aux_source_directory(${PROJECT_SOURCE_DIR}/haha_web/net SRC_NET_LIST)        # 将制定路径内的源文件全部加入变量中
 aux_source_directory(${PROJECT_SOURCE_DIR}/haha_web/http SRC_HTTP_LIST)        # 将制定路径内的源文件全部加入变量中
 aux_source_directory(${PROJECT_SOURCE_DIR}/haha_web/log SRC_LOG_LIST)        # 将制定路径内的源文件全部加入变量中
+aux_source_directory(${PROJECT_SOURCE_DIR}/haha_web/config SRC_CONFIG_LIST)        # 将制定路径内的源文件全部加入变量中
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/haha_web/haha_json)              # 添加子项目
 include_directories(${PROJECT_SOURCE_DIR}/haha_web/haha_json)           # 添加子项目头文件
@@ -73,6 +74,7 @@ set(
     ${SRC_NET_LIST}
     ${SRC_HTTP_LIST}
     ${SRC_LOG_LIST}
+    ${SRC_CONFIG_LIST}
 )
 
 # MESSAGE( STATUS "LIB_SRC = ${LIB_SRC}.")

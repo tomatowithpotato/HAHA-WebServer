@@ -103,9 +103,9 @@ public:
         return i >= 0 ? false : true;
     }
 
-    size_t find(const char *str, size_t pos = 0);
+    inline size_t find(const char *str, size_t pos = 0);
 
-    size_t find(const char *begin, const char* end, size_t pos = 0);
+    inline size_t find(const char *begin, const char* end, size_t pos = 0);
 
     int compare(size_t start, size_t len, const char *str){
         if(begin_ + len > end_){

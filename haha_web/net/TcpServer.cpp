@@ -5,7 +5,7 @@
 namespace haha{
 
 TcpServer::TcpServer()
-    :timeoutInterval_(5)
+    :timeoutInterval_(GET_CONFIG(int, "server.timeout", 5))
     ,threadPool_(&EventLoopThreadPool::getInstance())
     ,mainLoop_(threadPool_->getBaseLoop())
     ,servSock_(Socket::FDTYPE::NONBLOCK)
@@ -31,6 +31,12 @@ void TcpServer::start(const InetAddress &address){
 
     mainLoop_->addChannel(listenChannel_.get());
     mainLoop_->loop(timeoutInterval_);
+}
+
+void TcpServer::start(){
+    InetAddress address(GET_CONFIG(int, "server.port", 9999));
+    HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "server port: " << address.getPort();
+    start(address);
 }
 
 

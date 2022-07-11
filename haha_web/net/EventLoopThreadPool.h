@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <thread>
+#include "config/config.h"
 #include "base/noncopyable.h"
 #include "EventLoop.h"
 #include "EventLoopThread.h"
@@ -13,7 +14,8 @@ namespace haha{
 class EventLoopThreadPool : noncopyable{
 public:
     static EventLoopThreadPool& getInstance(){
-        static EventLoopThreadPool pool;
+        static EventLoopThreadPool pool(
+            GET_CONFIG(int, "EventLoopThreadPool.threadNum", std::thread::hardware_concurrency()));
         return pool;
     }
     void start();
@@ -22,7 +24,7 @@ public:
     EventLoop::ptr getNextLoop();
 
 private:
-    EventLoopThreadPool(size_t ThreadNum = std::thread::hardware_concurrency());
+    EventLoopThreadPool(size_t ThreadNum);
 
 private:
     bool started_;

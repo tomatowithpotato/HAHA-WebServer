@@ -36,6 +36,23 @@ protected:
     int __line, __col;
 };
 
+
+class JsonTypeCastError : public JsonError {
+public:
+    JsonTypeCastError(int line, int col, const std::string &msg)
+        : __line(line), __col(col) {
+        std::stringstream ss;
+        ss << "SyntaxError: [" << std::to_string(__line) << ","
+          << std::to_string(__col) << "] => [" << msg << "]";
+        __error_msg = ss.str();
+    }
+    int line() const { return __line; }
+    int col() const { return __col; }
+protected:
+    int __line, __col;
+};
+
+
 class JsonSyntaxError : public JsonError {
 public:
     JsonSyntaxError(int line, int col, const std::string &msg)

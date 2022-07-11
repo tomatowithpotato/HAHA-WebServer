@@ -51,11 +51,13 @@ size_t StringView::find(const char *begin, const char* end, size_t pos){
     if(pos >= size()){
         throw std::out_of_range("StringView find out of range");
     }
-    size_t len = end - begin;
-    if(len * size() < 100){
-        return std::search(begin_+pos, end_, begin, end) - begin_;
-    }
-    return KMP_search(*this, StringView(begin, end));
+    // size_t len = end - begin;
+    // if(len * size() < 100){
+    //     return std::search(begin_+pos, end_, begin, end) - begin_;
+    // }
+    // return KMP_search(*this, StringView(begin, end));
+
+    return std::search(begin_+pos, end_, begin, end) - begin_;
 }
 
 size_t StringView::find(const char *str, size_t pos){
@@ -63,10 +65,12 @@ size_t StringView::find(const char *str, size_t pos){
         throw std::out_of_range("StringView find out of range");
     }
     size_t len = strlen(str);
-    if(len * size() < 100){
-        return std::search(begin_+pos, end_, str, str+len) - begin_;
-    }
-    return KMP_search(*this, StringView(str, len));
+    // if(len * size() < 100){
+    //     return std::search(begin_+pos, end_, str, str+len) - begin_;
+    // }
+    // return KMP_search(*this, StringView(str, len));
+
+    return std::search(begin_+pos, end_, str, str+len) - begin_;
 }
     
 } // namespace haha

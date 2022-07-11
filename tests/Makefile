@@ -1,14 +1,17 @@
-SOURCE_DIR = ../haha
+SOURCE_DIR = ../haha_web
 
 SOURCE_FILES = $(wildcard $(SOURCE_DIR)/*.cpp)
 SOURCE_FILES += $(wildcard $(SOURCE_DIR)/*/*.cpp)
 
-INCLUDE_DIR = -I ../haha
+INCLUDE_DIR = -I ../haha_web
 
 BINARY_DIR = ../bin
 
 lang: test_lang.cc
 	g++ -std=c++2a -ggdb test_lang.cc -o $(BINARY_DIR)/langTest.out
+
+config: test_config.cc $(SOURCE_FILES)
+	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_config.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/configTest.out
 
 timestamp: test_timeStamp.cc
 	g++ -std=c++2a -ggdb $(INCLUDE_DIR) test_timeStamp.cc $(SOURCE_FILES) -lpthread -luuid -o $(BINARY_DIR)/timeStampTest.out
