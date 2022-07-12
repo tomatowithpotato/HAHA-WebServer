@@ -112,23 +112,26 @@ HAHA和Tiny每次响应的页面数据量基本接近（TinyWebServer对默认�
 * 用webbench对nginx进行压力测试的结果
 ![img1](./resource/nginx-webbench-5000-5.png)
 
+* 用webbench对muduo进行压力测试的结果，采用其自带的httpserver_test, release模式编译，同时我注释掉了日志输出的代码以防对性能造成干扰
+![img2](./resource/muduo-release-webbench-5000-5.png)
+
 * 用webbench对TinyWebServer进行压力测试的结果，关闭日志，LT+ET模式，不开启编译优化
-![img2](./resource/tiny-lt%2Bet-debug-webbench-5000-5.png)
+![img3](./resource/tiny-lt%2Bet-debug-webbench-5000-5.png)
 
 * 用webbench对TinyWebServer进行压力测试的结果，关闭日志，LT+ET模式，开启O2级别编译优化
-![img3](./resource/tiny-lt%2Bet-release-webbench-5000-5.png)
+![img4](./resource/tiny-lt%2Bet-release-webbench-5000-5.png)
 
 * 用webbench对HAHA-WebServer进行压力测试的结果，单reactor搭配阻塞队列模型，不开启编译优化
-![img4](./resource/haha-debug-webbench-5000-5.png)
+![img5](./resource/haha-debug-webbench-5000-5.png)
 
 * 用webbench对HAHA-WebServer进行压力测试的结果，单reactor搭配阻塞队列模型，开启O2级别编译优化
-![img5](./resource/haha-release-webbench-5000-5.png)
+![img6](./resource/haha-release-webbench-5000-5.png)
 
 * 用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，不开启编译优化
-![img5](./resource/haha-olpt-debug-webbench-5000-5.png)
+![img7](./resource/haha-olpt-debug-webbench-5000-5.png)
 
 * 用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，开启O2级别编译优化
-![img6](./resource/haha-olpt-release-webbench-5000-5.png)
+![img8](./resource/haha-olpt-release-webbench-5000-5.png)
 
 
 * 在上述配置和条件下，取最佳表现:
@@ -136,7 +139,8 @@ HAHA和Tiny每次响应的页面数据量基本接近（TinyWebServer对默认�
     | 框架         | qps  | bytes/s   |
     | -------------- | ---- | --------- |
     | nginx          | 5W多 | 5000W左右 |
-    | TinyWebServer  | 1W多 | 200W左右 |
+    | muduo          | 1W多 | 300W左右  |
+    | TinyWebServer  | 1W多 | 200W左右  |
     | HAHA_WEBSERVER | 4W多 | 1700W左右 |
 
 
@@ -146,7 +150,7 @@ HAHA和Tiny每次响应的页面数据量基本接近（TinyWebServer对默认�
 
 - nginx碾压后两者，无论是qps还是传输数据量
 
-- 不开编译优化的话，HAHA处理的请求数少于TinyWebServer，但实际上处理的数据多于Tiny（因为页面数据更大）
+- muduo的结果让我比较奇怪，按理不该这么差，可能有我没考虑的因素？
 
 - 开启编译优化后，HAHA性能提升了数倍，远远好于TinyWebServer
     
