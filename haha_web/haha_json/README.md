@@ -2,6 +2,16 @@
 
 一个用c++17实现的json解析库，还在更新中
 
+## 技术特点
+
+* 使用了c++17中的variant和string_view
+
+* 多态、泛型编程
+
+* 使用智能指针管理内存
+
+* 支持读取ANSI、utf8、utf16编码，统一解析为utf8格式
+
 ## 未来的计划：
 
 * 提供更易用的API
@@ -25,50 +35,57 @@ cd 当前目录
 
 ## 代码示例
 
-代码在tests文件夹下的test_parse.cc
+代码在tests文件夹下的test_json.cc
 ```c++
 #include <string>
 #include <iostream>
 #include "json.h"
 
+namespace JSON = haha::json;
+
 int main(){
-    std::string str = "{\"check\": 123.5e10, \"2893h\":\"ok\", \"arr\": [\"sd\", null]}";
-    std::string str1 = "{\"\": 0, \"\\u7814\": 1, \"\\u7a76\": 2, \"\\u53d1\": 3, \"\\u73b0\": 4, \"\\u7ec6\": 5, \"\\u80de\": 6}";
-    haha::json::Json json;
-
-    bool ok = true;
-    ok = json.fromString(str1);
-
-    std::cout << ok << std::endl;
-
-    std::cout << json.toString() << std::endl;
+    JSON::JsonNode::ptr js;
 
     std::string filePath = "../test.json"; // 文件位置自己定
 
-    ok = json.fromFile(filePath);
+    // 从文件读取
+    js = JSON::fromFile(filePath);
 
-    std::cout << ok << std::endl;
+    // 序列化（转为字符串）
+    std::cout << js->toString() << std::endl;
 
-    std::cout << json.toString() << std::endl;
-
-    haha::json::JsonObject::ptr obj;
-    if(json.getType() == haha::json::JsonType::Object){
-        obj = json.getValuePtr<haha::json::JsonObject>();
+    // 类型转换
+    JSON::JsonObject::ptr obj;
+    if(js->getType() == JSON::JsonType::Object){
+        obj = JSON::pointer_cast<JsonObject>(js);
     }
 
-    if(obj){
-        for(const auto &[k,v] : *obj){
-            std::cout << haha::json::getJsonTypeName(k.getType()) << ": "
-                << haha::json::getJsonTypeName(v->getType())
-                << std::endl;
-        }
+    // 输出格式
+    JSON::PrintFormatter fmt{
+        JSON::JsonFormatType::NEWLINE,
+        1,
+    };
 
-        haha::json::PrintFormatter fmt{
-            haha::json::JsonFormatType::NEWLINE,
-            1,
-        };
-        std::cout << obj->toString(fmt) << std::endl;
-    }
+    /* 序列化（转为字符串） */
+    std::string output = obj->toString(fmt);
+    std::cout << output << std::endl;
+
+    std::cout << std::string(60, '*') << std::endl;
+
+    /* 反序列化（从字符串读取） */
+    JSON::JsonNode::ptr js1;
+    js1 = JSON::fromString(output);
+
+    JSON::PrintFormatter fmt1{
+        JSON::JsonFormatType::NEWLINE,
+        1,
+    };
+    
+    std::string output1 = js1->toString(fmt1);
+    std::cout << output1 << std::endl;
+
+    // 输出到文件
+    JSON::toFile(js1, "../output.json", fmt1);
 
     return 0;
 }

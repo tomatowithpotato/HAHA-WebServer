@@ -1,6 +1,6 @@
 # HAHAWebServer
 
-一个用c++20实现的简易高并发http服务器，支持servlet，目前还在更新中
+一个用c++20实现的高并发http服务器，支持servlet，目前还在更新中
 
 ## 技术特点：
 
@@ -8,31 +8,33 @@
     - 单reactor模型： epoll + 阻塞队列 + 线程池
     - one loop per thread模型，参考项目muduo
 
-* 对线程和锁都进行了封装，用到了互斥锁、读写锁、自旋锁
+* 对锁、线程、线程池、文件操作等基本操作都进行了封装
+
+* 使用自己实现的json解析库：haha_json，支持读取ANSI和unicode格式的json数据
 
 * 采用时间堆管理超时连接
 
 * 利用智能指针进行内存的管理，最大限度避免内存泄漏
 
-* 利用mmap或sendfile进行文件传输
+* 利用mmap（内存映射）或sendfile（DMA）进行文件传输
 
-* 较简陋的日志系统
+* 一套较完善的同步日志系统
 
 ## 目前支持如下功能：
 
 * 支持http1.0、http1.1协议
 
-* 支持cookie和session
+* 支持解析普通文本、url编码、json格式等数据
+
+* 支持cookie和session（目前存储在内存中）
 
 * 支持文件的上传和下载
 
-* 提供servlet编程接口
+* 提供servlet编程接口（有待进一步完善）
 
 ## 未来的计划：
 
-* 加入配置系统
-
-* 优化日志系统，改为异步模式
+* 优化日志系统，改为高效的异步模式
 
 * 添加对https的支持
 
@@ -40,9 +42,9 @@
 
 * 实现更完善的http协议（http2.0、websocket等）
 
-* 实现负载均衡功能
+* 实现RPC
 
-* 加入协程
+* 实现负载均衡功能
 
 * 基于该框架，实现诸如聊天室、email、游戏服务器等功能
 
@@ -65,11 +67,32 @@ cd 当前目录
     运行后，打开浏览器，输入http://你的ip地址:9999/
     例如 http://0.0.0.0:9999/dog.html
 
+## 运行配置
+
+配置文件在bin目录下的configs文件夹中，默认为base_config.json
+
+内容如下所示
+```json
+{
+    "server": {
+        "port": 9999,
+        "timeout": 5
+    },
+    "EventLoopThreadPool":{
+        "threadNum": 4
+    }
+}
+```
+以端口为例，如果要修改端口，把port对应的值修改即可
+
 
 ## 压力测试
 
-单reactor模型在分支single_reactor中，
+单reactor模型在分支single_reactor中
+
 "one loop per thread"模型在分支"one_loop_per_thread"中
+
+main分支采用"one loop per thread"模型，且是完全体版本
 
 ### 测试环境
 - 测试环境是我电脑的虚拟机，webbench和服务器都同时运行在虚拟机上
@@ -108,14 +131,20 @@ HAHA和Tiny每次响应的页面数据量基本接近（TinyWebServer对默认�
 ![img6](./resource/haha-olpt-release-webbench-5000-5.png)
 
 
-* 在上述配置和条件下，取最佳表现，HAHA为4万多QPS，Tiny为1万多QPS，nginx5万多QPS
+* 在上述配置和条件下，取最佳表现:
+
+    | 框架         | qps  | bytes/s   |
+    | -------------- | ---- | --------- |
+    | nginx          | 5W多 | 5000W左右 |
+    | TinyWebServer  | 1W多 | 200W左右 |
+    | HAHA_WEBSERVER | 4W多 | 1700W左右 |
 
 
 ### 结果分析
 
 通过上述结果，可得到如下信息:
 
-- nginx碾压后两者，而且是在每次相应的数据要多于前两者的情况下
+- nginx碾压后两者，无论是qps还是传输数据量
 
 - 不开编译优化的话，HAHA处理的请求数少于TinyWebServer，但实际上处理的数据多于Tiny（因为页面数据更大）
 
@@ -123,13 +152,7 @@ HAHA和Tiny每次响应的页面数据量基本接近（TinyWebServer对默认�
     
 - TinyWebServer开启O2级别编译优化后，性能并没有什么提升，不知是为何
 
-- 采用one loop per thread模型，性能得到了一点提升，但不是很大，可能的原因：
-
-    - 并发量还不够大，只有5000，无法体现优势，以后换更好的机子测
-
-    - 数据读写处理有待优化
-        
-    - 代码写得有问题，跟muduo原版写法还有很多差距
+- 采用one loop per thread模型，性能得到了一点提升
 
 
 ## Servlet使用
