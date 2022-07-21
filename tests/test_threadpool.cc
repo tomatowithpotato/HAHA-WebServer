@@ -1,5 +1,5 @@
-#include "../haha/include/ThreadPool.h"
-#include "../haha/include/base/Log.h"
+#include "base/ThreadPool.h"
+#include "log/Log.h"
 #include <iostream>
 #include <unistd.h>
 #include <set>
