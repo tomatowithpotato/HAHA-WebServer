@@ -16,6 +16,18 @@ public:
     }
 };
 
+template<class T>
+class SingletonPtr : noncopyable{
+public:
+    /**
+     * @brief 返回单例智能指针
+     */
+    static std::shared_ptr<T> GetInstance() {
+        static std::shared_ptr<T> v(new T);
+        return v;
+    }
+};
+
 }
 
 #endif

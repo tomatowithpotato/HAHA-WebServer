@@ -6,6 +6,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <chrono>
+#include <iomanip>
 
 namespace haha{
 
@@ -110,6 +111,19 @@ public:
                     tm_time.tm_hour, tm_time.tm_min, tm_time.tm_sec);
         }
         return buf;
+    }
+
+    static time_t get_TZoffset(){
+        auto now = std::time(nullptr);
+        auto const tm = *std::localtime(&now);
+        std::ostringstream os;
+        os << std::put_time(&tm, "%z");
+        std::string s = os.str();
+        // s is in ISO 8601 format: "±HHMM"
+        int h = std::stoi(s.substr(0,3), nullptr, 10);
+        int m = std::stoi(s[0]+s.substr(3), nullptr, 10);
+
+        return h * 3600 + m * 60;
     }
 
 private:
