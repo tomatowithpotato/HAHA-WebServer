@@ -61,11 +61,22 @@ protected:
     virtual bool onCloseConntection(TcpConnection::ptr);
 
 private:
-    int timeoutInterval_;
+    // 定时器轮询间隔
+    int timerInterval_;
+
+    // 连接超时时间
+    int connTimeOut_;
+
+    // 事件循环线程池
     EventLoopThreadPool *threadPool_;
+
+    // 主事件循环，用于接收连接
     EventLoop::ptr mainLoop_;
+
+    // listen sock
     Socket servSock_;
 
+    // listen channel
     Channel::ptr listenChannel_;
 
     MutexType connMtx_;

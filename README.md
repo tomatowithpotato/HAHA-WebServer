@@ -75,7 +75,8 @@ cd 当前目录
 {
     "server": {
         "port": 9999,
-        "timeout": 5
+        "timeout": 120,
+        "timerInterval": 5
     },
     "EventLoopThreadPool":{
         "threadNum": 4
@@ -89,10 +90,21 @@ cd 当前目录
 
 ### 配置内容解释
     - port: 服务端口号
-    - timeout：
+    - timeout：tcp连接超时时间，单位为秒
+    - timerInterval: 定时器轮询间隔时间，单位为秒
     - threadNum：线程数，不设置的话就默认为cpu核数
     - open：true为打开日志，false为关闭，主要是为了做性能测试
     - default_format：默认的日志输出格式
+        %m -- 消息体
+        %p -- level
+        %c -- 日志名称
+        %t -- 线程id
+        %n -- 回车换行
+        %N -- 线程名称
+        %d -- 时间
+        %f -- 文件名
+        %l -- 行号
+        %T -- tab
 
 
 ## 压力测试

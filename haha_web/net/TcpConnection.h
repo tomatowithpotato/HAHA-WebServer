@@ -20,8 +20,6 @@ public:
     typedef std::shared_ptr<TcpConnection> ptr;
     typedef std::weak_ptr<TcpConnection> weak_ptr;
 
-    static const int TimeOut = 100;
-
     struct status{
         int n;
         int errorNo;

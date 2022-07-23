@@ -5,7 +5,8 @@
 namespace haha{
 
 TcpServer::TcpServer()
-    :timeoutInterval_(config::GET_CONFIG<int>("server.timeout", 5))
+    :timerInterval_(config::GET_CONFIG<int>("server.timerInterval", 5))
+    ,connTimeOut_(config::GET_CONFIG<int>("server.timeout", 120))
     ,threadPool_(&EventLoopThreadPool::getInstance())
     ,mainLoop_(threadPool_->getBaseLoop())
     ,servSock_(Socket::FDTYPE::NONBLOCK)
@@ -30,7 +31,7 @@ void TcpServer::start(const InetAddress &address){
     threadPool_->start();
 
     mainLoop_->addChannel(listenChannel_.get());
-    mainLoop_->loop(timeoutInterval_);
+    mainLoop_->loop(timerInterval_);
 }
 
 void TcpServer::start(){
@@ -89,7 +90,7 @@ void TcpServer::handleConnectionRead(TcpConnection::weak_ptr weak_conn) {
 
     loop->adjustTimer(Timer(
         conn->getFd(),
-        TimeStamp::nowSecond(TcpConnection::TimeOut),
+        TimeStamp::nowSecond(connTimeOut_),
         nullptr
     ));
 
@@ -114,7 +115,7 @@ void TcpServer::handleConnectionWrite(TcpConnection::weak_ptr weak_conn) {
 
     loop->adjustTimer(Timer(
         conn->getFd(),
-        TimeStamp::nowSecond(TcpConnection::TimeOut),
+        TimeStamp::nowSecond(connTimeOut_),
         nullptr
     ));
 
@@ -171,7 +172,7 @@ void TcpServer::onConnect(TcpConnection::weak_ptr weak_conn){
     loop->addChannel(conn->getChannel().get());
     loop->addTimer(Timer(
         connfd,
-        TimeStamp::nowSecond(TcpConnection::TimeOut),
+        TimeStamp::nowSecond(connTimeOut_),
         std::bind(&TcpServer::handleConnectionClose, this, weak_conn)
     ));
 }
