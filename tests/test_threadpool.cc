@@ -9,7 +9,7 @@ haha::ThreadPool &pool = haha::ThreadPool::getInstance();
 void work(int i){
     // sleep(1);
     usleep(100 * 1000);
-    HAHA_LOG_INFO(HAHA_LOG_ROOT());
+    HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT());
 }
 
 int main(){

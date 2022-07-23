@@ -18,11 +18,11 @@ EventLoopThread::~EventLoopThread(){
     if(thread_->joinable()){
         thread_->join();
     }
-    HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "~EventLoopThread";
+    HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "~EventLoopThread";
 }
 
 void EventLoopThread::work(){
-    HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "start work";
+    HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "start work";
     loop_ = std::make_shared<EventLoop>();
     loop_ok_ = true;
     loop_->loop(5);

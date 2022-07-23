@@ -27,7 +27,7 @@ public:
 
     Channel(EventLoop* loop, int fd, bool BlockFd = true);
     ~Channel() {
-        // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "~Channel close fd: " << fd_;
+        // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "~Channel close fd: " << fd_;
         // ::close(fd_);
     }
 

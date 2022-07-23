@@ -19,7 +19,7 @@ void EventLoopThreadPool::start(){
 
     for(size_t i = 0; i < num_thread_; ++i){
         auto t = std::make_unique<EventLoopThread>();
-        HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "create thread: " << t->getName();
+        HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << "create thread: " << t->getName();
         loops_.push_back(t->getLoop());
         threads_.push_back(std::move(t));
     }

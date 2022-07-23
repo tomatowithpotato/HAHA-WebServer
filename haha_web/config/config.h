@@ -56,11 +56,11 @@ private:
     Config() {
         json_ = json::fromFile(defaultConfigFile);
         if(json_ == nullptr){
-            HAHA_LOG_ERROR(HAHA_LOG_ROOT()) << "read file error";
+            HAHA_LOG_ERROR(HAHA_LOG_ASYNC_FILE_ROOT()) << "read file error";
             return;
         }
         if(json_->getType() != json::JsonType::Object){
-            HAHA_LOG_ERROR(HAHA_LOG_ROOT()) << "json should be object";
+            HAHA_LOG_ERROR(HAHA_LOG_ASYNC_FILE_ROOT()) << "json should be object";
             return;
         }
         std::list<std::pair<std::string, json::JsonNode::ptr> > all_nodes;
@@ -70,7 +70,7 @@ private:
             map_.insert({it.first, it.second});
         }
 
-        HAHA_LOG_INFO(HAHA_LOG_ROOT()) << map_.size() << " configuration items detected";
+        HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << map_.size() << " configuration items detected";
     }
 
     // 生成形如a.b.c的键的键值对

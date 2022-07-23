@@ -197,7 +197,7 @@ HttpRequest::RET_STATE HttpRequest::parseRequestContent(){
         }
         else{
             // 不支持其他编码
-            HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "unsupport type other than chunked";
+            HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "unsupport type other than chunked";
             return BAD_REQUEST;
         }
     }
@@ -218,7 +218,7 @@ HttpRequest::RET_STATE HttpRequest::parseRequestContent(){
     }
     // 无法确定内容的末尾，终止交易！！！
     else{
-        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "Unable to determine where the content ends";
+        HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "Unable to determine where the content ends";
         return BAD_REQUEST;
     }
 
@@ -290,7 +290,7 @@ void HttpRequest::parseContentType(){
         }
         else{
             contentType_ = HttpContentType::UNKNOW;
-            HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "unsupport Content-Type";
+            HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << "unsupport Content-Type";
         }
     }
 }

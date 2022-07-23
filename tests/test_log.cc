@@ -13,7 +13,7 @@ void log_info(haha::Logger::ptr logger){
 }
 
 int main(){
-    // HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "hello";
-    log_info(HAHA_LOG_ROOT());
+    // HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << "hello";
+    log_info(HAHA_LOG_ASYNC_FILE_ROOT());
     return 0;
 }

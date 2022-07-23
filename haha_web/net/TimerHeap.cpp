@@ -124,7 +124,7 @@ void TimerHeap::clear() {
 
 void TimerHeap::assertInLoopThread() const{
     if(!isInLoopThread()){
-        HAHA_LOG_ERROR(HAHA_LOG_ROOT()) << "EventLoop was created in threadId_ = "
+        HAHA_LOG_ERROR(HAHA_LOG_ASYNC_FILE_ROOT()) << "EventLoop was created in threadId_ = "
             << threadId_ << ", but current thread id = " << Thread::getCurrentThreadId();
         assert(isInLoopThread());
     }

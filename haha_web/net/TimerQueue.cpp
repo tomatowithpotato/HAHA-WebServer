@@ -52,12 +52,12 @@ void TimerQueue::runForever(const TimeStamp &t) {
 }
 
 void TimerQueue::handleTimeout() {
-    HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "timeout";
+    HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "timeout";
     
     uint64_t one;
     int n = ::read(timeFd_, &one, sizeof(one));
     if(n != sizeof(one)){
-        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "read time fd error?";
+        HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "read time fd error?";
     }
 
     TimeStamp now = TimeStamp::now();

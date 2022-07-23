@@ -44,7 +44,7 @@ public:
     TcpConnection();
 
     ~TcpConnection() {
-        // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "~TcpConnection";
+        // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "~TcpConnection";
     }
 
     status recv();

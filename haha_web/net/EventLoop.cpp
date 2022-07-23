@@ -6,7 +6,7 @@ namespace haha{
 int createEventfd() {
     int evtfd = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
     if (evtfd < 0) {
-        HAHA_LOG_ERROR(HAHA_LOG_ROOT()) << "Failed in create eventfd";
+        HAHA_LOG_ERROR(HAHA_LOG_ASYNC_FILE_ROOT()) << "Failed in create eventfd";
         abort();
     }
     return evtfd;
@@ -38,7 +38,7 @@ void EventLoop::loop(int idle_timeout_){
     }
     addChannel(wakeupChannel_.get());
 
-    HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "start loop";
+    HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << "start loop";
 
     while(!quit_){
         int num_events = epoller_.wait();
@@ -100,7 +100,7 @@ void EventLoop::wakeup() {
     uint64_t one = 1;
     ssize_t n = write(wakeupFd_, (void*)(&one), sizeof(one));
     if (n != sizeof(one)) {
-        HAHA_LOG_ERROR(HAHA_LOG_ROOT()) << "EventLoop::wakeup() writes " << n << " bytes instead of 8";
+        HAHA_LOG_ERROR(HAHA_LOG_ASYNC_FILE_ROOT()) << "EventLoop::wakeup() writes " << n << " bytes instead of 8";
     }
 }
 
@@ -108,7 +108,7 @@ void EventLoop::handleWakeup(){
     uint64_t one = 1;
     ssize_t n = read(wakeupFd_, (void*)(&one), sizeof(one));
     if (n != sizeof(one)) {
-        HAHA_LOG_ERROR(HAHA_LOG_ROOT()) << "EventLoop::wakeup() reads " << n << " bytes instead of 8";
+        HAHA_LOG_ERROR(HAHA_LOG_ASYNC_FILE_ROOT()) << "EventLoop::wakeup() reads " << n << " bytes instead of 8";
     }
 }
 
@@ -150,7 +150,7 @@ void EventLoop::runInLoop(Task task){
 
 void EventLoop::assertInLoopThread(){
     if(!isInLoopThread()){
-        HAHA_LOG_ERROR(HAHA_LOG_ROOT()) << "EventLoop was created in threadId_ = "
+        HAHA_LOG_ERROR(HAHA_LOG_ASYNC_FILE_ROOT()) << "EventLoop was created in threadId_ = "
             << threadId_ << ", but current thread id = " << Thread::getCurrentThreadId();
         assert(isInLoopThread());
     }

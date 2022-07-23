@@ -35,7 +35,7 @@ void TcpServer::start(const InetAddress &address){
 
 void TcpServer::start(){
     InetAddress address(GET_CONFIG(int, "server.port", 9999));
-    HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "server port: " << address.getPort();
+    HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << "server port: " << address.getPort();
     start(address);
 }
 
@@ -73,11 +73,11 @@ void TcpServer::handleServerAccept(){
 
 
 void TcpServer::handleConnectionRead(TcpConnection::weak_ptr weak_conn) {
-    // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "handleConnectionRead";
+    // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "handleConnectionRead";
     TcpConnection::ptr conn = weak_conn.lock();
     // 检查连接是否被析构
     if(!conn){
-        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "conn already destroy";
+        HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "conn already destroy";
         return;
     }
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
@@ -93,16 +93,16 @@ void TcpServer::handleConnectionRead(TcpConnection::weak_ptr weak_conn) {
     ));
 
     loop->runInLoop(std::bind(&TcpServer::onRecv, this, weak_conn));
-    // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << (std::string("ptr count: ") + std::to_string(conn.use_count()));
+    // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << (std::string("ptr count: ") + std::to_string(conn.use_count()));
 }
 
 
 void TcpServer::handleConnectionWrite(TcpConnection::weak_ptr weak_conn) {
-    // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "handleConnectionWrite";
+    // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "handleConnectionWrite";
     TcpConnection::ptr conn = weak_conn.lock();
     // 检查连接是否被析构
     if(!conn){
-        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "conn already destroy";
+        HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "conn already destroy";
         return;
     }
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
@@ -122,11 +122,11 @@ void TcpServer::handleConnectionWrite(TcpConnection::weak_ptr weak_conn) {
 
 
 void TcpServer::handleConnectionClose(TcpConnection::weak_ptr weak_conn) {
-    // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "handleConnectionClose";
+    // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "handleConnectionClose";
     TcpConnection::ptr conn = weak_conn.lock();
     // 检查连接是否被析构
     if(!conn){
-        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "conn already destroy";
+        HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "conn already destroy";
         return;
     }
     if (conn->isDisconnected() || conn->getChannel() == nullptr)
@@ -146,7 +146,7 @@ void TcpServer::handleConnectionClose(TcpConnection::weak_ptr weak_conn) {
         auto it = connects_.find(conn->getFd());
         if(it != connects_.end()){
             connects_.erase(it);
-            // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << (std::string("ptr count: ") + std::to_string(conn.use_count()));
+            // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << (std::string("ptr count: ") + std::to_string(conn.use_count()));
         }
     }
     
@@ -157,7 +157,7 @@ void TcpServer::onConnect(TcpConnection::weak_ptr weak_conn){
     TcpConnection::ptr conn = weak_conn.lock();
     // 检查连接是否被析构
     if(!conn){
-        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "conn already destroy";
+        HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "conn already destroy";
         return;
     }
 
@@ -180,7 +180,7 @@ void TcpServer::onRecv(TcpConnection::weak_ptr weak_conn){
     TcpConnection::ptr conn = weak_conn.lock();
     // 检查连接是否被析构
     if(!conn){
-        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "conn already destroy";
+        HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "conn already destroy";
         return;
     }
     TcpConnection::status status = conn->recv();
@@ -189,7 +189,7 @@ void TcpServer::onRecv(TcpConnection::weak_ptr weak_conn){
     loop->assertInLoopThread();
 
     if(status.type == status.CLOSED || status.type == status.ERROR){
-        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "onRecv: CLOSE or ERROR";
+        HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "onRecv: CLOSE or ERROR";
         /* 关闭连接 */
         loop->delTimer(Timer(
             conn->getFd(),
@@ -210,7 +210,7 @@ void TcpServer::onRecv(TcpConnection::weak_ptr weak_conn){
     }
 
     loop->modChannel(conn->getChannel().get());
-    // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << (std::string("ptr count: ") + std::to_string(conn.use_count()));
+    // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << (std::string("ptr count: ") + std::to_string(conn.use_count()));
 }
 
 
@@ -218,7 +218,7 @@ void TcpServer::onSend(TcpConnection::weak_ptr weak_conn){
     TcpConnection::ptr conn = weak_conn.lock();
     // 检查连接是否被析构
     if(!conn){
-        HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "conn already destroy";
+        HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "conn already destroy";
         return;
     }
 
@@ -235,7 +235,7 @@ void TcpServer::onSend(TcpConnection::weak_ptr weak_conn){
             loop->modChannel(conn->getChannel().get());
         }
         else{
-            // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "onSend: COMPLETED, has write " << status.n;
+            // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "onSend: COMPLETED, has write " << status.n;
             /* 关闭连接 */
             loop->delTimer(Timer(
                 conn->getFd(),
@@ -243,17 +243,17 @@ void TcpServer::onSend(TcpConnection::weak_ptr weak_conn){
                 nullptr
             ));
             handleConnectionClose(conn);
-            // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << (std::string("ptr count: ") + std::to_string(conn.use_count()));
+            // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << (std::string("ptr count: ") + std::to_string(conn.use_count()));
         }
         break;
     case status.AGAIN:
-        // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "onSend: AGAIN ";
+        // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "onSend: AGAIN ";
         /* 没写完，接着写 */
         conn->setEvents(EPOLLOUT | kConnectionEvent);
         loop->modChannel(conn->getChannel().get());
         break;
     default:
-        // HAHA_LOG_DEBUG(HAHA_LOG_ROOT()) << "onSend: CLOSE or ERROR";
+        // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "onSend: CLOSE or ERROR";
         /* 关闭连接 */
         loop->delTimer(Timer(
             conn->getFd(),
@@ -266,17 +266,17 @@ void TcpServer::onSend(TcpConnection::weak_ptr weak_conn){
 }
 
 TcpServer::MESSAGE_STATUS TcpServer::onMessage(TcpConnection::ptr conn){
-    HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onMessage";
+    HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << "onMessage";
     return MESSAGE_STATUS::OK;
 }
 
 bool TcpServer::onCreateConnection(TcpConnection::ptr conn){
-    HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onNewConntection";
+    HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << "onNewConntection";
     return true;
 }
 
 bool TcpServer::onCloseConntection(TcpConnection::ptr conn){
-    HAHA_LOG_INFO(HAHA_LOG_ROOT()) << "onCloseConntection";
+    HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << "onCloseConntection";
     return true;
 }
 
