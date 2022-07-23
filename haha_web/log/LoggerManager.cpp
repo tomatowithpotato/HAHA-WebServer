@@ -23,6 +23,11 @@ namespace log
 // }
 
 Logger::ptr LoggerManager::getLogger(const std::string& name) {
+    static const bool log_open = haha::config::GET_CONFIG<bool>("log.open",true);
+    if(log_open == false){
+        return nullptr;
+    }
+    
     MutexType::RAIILock lock(mutex_);
     auto it = loggers_.find(name);
     if(it != loggers_.end()) {

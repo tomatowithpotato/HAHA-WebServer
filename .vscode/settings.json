@@ -61,6 +61,8 @@
         "codecvt": "cpp",
         "iomanip": "cpp",
         "variant": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "regex": "cpp",
+        "shared_mutex": "cpp"
     }
 }

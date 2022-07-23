@@ -15,7 +15,7 @@ class EventLoopThreadPool : noncopyable{
 public:
     static EventLoopThreadPool& getInstance(){
         static EventLoopThreadPool pool(
-            GET_CONFIG(int, "EventLoopThreadPool.threadNum", std::thread::hardware_concurrency()));
+            config::GET_CONFIG<int>("EventLoopThreadPool.threadNum", std::thread::hardware_concurrency()));
         return pool;
     }
     void start();

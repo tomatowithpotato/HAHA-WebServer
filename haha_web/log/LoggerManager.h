@@ -7,11 +7,11 @@
 #include "base/noncopyable.h"
 #include "base/Mutex.h"
 #include "base/util.h"
+#include "config/config.h"
 #include "Logger.h"
 
-
 #define HAHA_LOG_LEVEL(logger, level) \
-    if(logger->getLevel() <= level) \
+    if(haha::config::GET_CONFIG<bool>("log.open",true) && logger->getLevel() <= level) \
     haha::log::LogInfoWrapper(logger, haha::log::LogInfo::ptr(new haha::log::LogInfo(logger->getName(), level, \
                             __FILE__, __LINE__, 0, haha::GetThreadId(), \
                             std::chrono::system_clock::now()))).getSS()
@@ -24,7 +24,7 @@
 
 
 #define HAHA_LOG_FMT_LEVEL(logger, level, fmt, ...) \
-    if(logger->getLevel() <= level) \
+    if(haha::config::GET_CONFIG<bool>("log.open",true) && logger->getLevel() <= level) \
     haha::log::LogInfoWrapper(logger, haha::log::LogInfo::ptr(new haha::log::LogInfo(logger->getName(), level, \
                             __FILE__, __LINE__, 0, haha::GetThreadId(), \
                             std::chrono::system_clock::now()))).getLogInfo()->format(fmt, __VA_ARGS__)
@@ -79,6 +79,11 @@ public:
 
     // 默认同步日志器 写入到文件
     static Logger::ptr getSyncFileRoot() {
+        static const bool log_open = haha::config::GET_CONFIG<bool>("log.open",true);
+        if(log_open == false){
+            return nullptr;
+        }
+
         static std::shared_ptr<Logger> sync_root = std::make_shared<SyncLogger>(
             "sync_file_root",
             std::make_shared<FileSyncLogAppender>(default_sync_log_file, default_roll_size)
@@ -88,6 +93,11 @@ public:
 
     // 默认异步日志器 写入到文件
     Logger::ptr getAsyncFileRoot() {
+        static const bool log_open = haha::config::GET_CONFIG<bool>("log.open",true);
+        if(log_open == false){
+            return nullptr;
+        }
+
         static std::shared_ptr<Logger> async_root = std::make_shared<AsyncLogger>(
             "async_file_root",
             default_flush_interval,
@@ -98,6 +108,11 @@ public:
 
     // 默认同步日志器 写入到标准输出
     static Logger::ptr getSyncStdoutRoot() {
+        static const bool log_open = haha::config::GET_CONFIG<bool>("log.open",true);
+        if(log_open == false){
+            return nullptr;
+        }
+
         static std::shared_ptr<Logger> sync_root = std::make_shared<SyncLogger>(
             "sync_stdout_root",
             std::make_shared<StdoutSyncLogAppender>()

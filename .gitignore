@@ -33,3 +33,6 @@
 
 # cmake
 build/*
+
+# log
+*.log

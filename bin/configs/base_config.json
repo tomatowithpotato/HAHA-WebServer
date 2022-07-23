@@ -5,5 +5,9 @@
     },
     "EventLoopThreadPool":{
         "threadNum": 4
+    },
+    "log": {
+        "open": true,
+        "default_format": "%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%T[%p]%T[%c]%T%f:%l%T%m%n"
     }
 }

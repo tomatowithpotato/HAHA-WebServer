@@ -3,6 +3,8 @@
 namespace haha
 {
 
+namespace config{
+
 template<>
 const std::string& Config::query<std::string>(const char* query_str, const std::string& default_value){
     auto it = map_.find(query_str);
@@ -61,6 +63,8 @@ const bool& Config::query<bool>(const char* query_str, const bool& default_value
         return p->getValue();
     }
     return default_value;
+}
+
 }
 
 } // namespace haha

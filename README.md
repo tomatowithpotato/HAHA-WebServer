@@ -10,7 +10,9 @@
 
 * 对锁、线程、线程池、文件操作等基本操作都进行了封装
 
-* 使用自己实现的json解析库：haha_json，支持读取ANSI和unicode格式的json数据
+* 使用自己实现的json解析库haha_json(对应目录中的haha_json)，支持读取ANSI和unicode格式的json数据
+
+* 使用自己实现的日志库haha_log(对应目录中的log)，异步模式下单线程每秒能输出接近160万条日志
 
 * 采用时间堆管理超时连接
 
@@ -80,10 +82,20 @@ cd 当前目录
     },
     "EventLoopThreadPool":{
         "threadNum": 4
+    },
+    "log": {
+        "open": true,
+        "default_format": "%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%T[%p]%T[%c]%T%f:%l%T%m%n"
     }
 }
 ```
-以端口为例，如果要修改端口，把port对应的值修改即可
+
+### 配置内容解释
+    - port: 服务端口号
+    - timeout：
+    - threadNum：线程数，不设置的话就默认为cpu核数
+    - open：true为打开日志，false为关闭，主要是为了做性能测试
+    - default_format：默认的日志输出格式
 
 
 ## 压力测试
@@ -124,14 +136,17 @@ HAHA和Tiny每次响应的页面数据量基本接近（TinyWebServer对默认�
 * 用webbench对HAHA-WebServer进行压力测试的结果，单reactor搭配阻塞队列模型，不开启编译优化
 ![img5](./resource/haha-debug-webbench-5000-5.png)
 
-* 用webbench对HAHA-WebServer进行压力测试的结果，单reactor搭配阻塞队列模型，开启O2级别编译优化
+* 用webbench对HAHA-WebServer进行压力测试的结果，单reactor搭配阻塞队列模型，开启O2级别编译优化，关闭日志
 ![img6](./resource/haha-release-webbench-5000-5.png)
 
-* 用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，不开启编译优化
+* 用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，不开启编译优化，关闭日志
 ![img7](./resource/haha-olpt-debug-webbench-5000-5.png)
 
-* 用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，开启O2级别编译优化
+* 用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，开启O2级别编译优化，关闭日志
 ![img8](./resource/haha-olpt-release-webbench-5000-5.png)
+
+* 用webbench对HAHA-WebServer进行压力测试的结果，"one loop per thread" 模型，开启O2级别编译优化，开启异步日志
+![img8](./resource/haha-olpt-asynclog-release-webbench-5000-5.png)
 
 
 * 在上述配置和条件下，取最佳表现:
@@ -157,6 +172,8 @@ HAHA和Tiny每次响应的页面数据量基本接近（TinyWebServer对默认�
 - TinyWebServer开启O2级别编译优化后，性能并没有什么提升，不知是为何
 
 - 采用one loop per thread模型，性能得到了一点提升
+
+- 开启异步日志会带来15%的性能损失，不算很好，但对性能的影响还算可以接收
 
 
 ## Servlet使用

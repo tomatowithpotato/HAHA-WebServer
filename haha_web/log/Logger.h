@@ -6,8 +6,21 @@
 #include <iostream>
 #include "base/Mutex.h"
 #include "base/Thread.h"
+#include "config/config.h"
 #include "log/LogInfo.h"
 #include "log/LogAppender.h"
+
+// %m -- 消息体
+// %p -- level
+// %r -- 启动后的时间
+// %c -- 日志名称
+// %t -- 线程id
+// %n -- 回车换行
+// %N -- 线程名称
+// %d -- 时间
+// %f -- 文件名
+// %l -- 行号
+// %T -- tab
 
 namespace haha{
 
@@ -20,11 +33,9 @@ public:
     typedef MutexLock MutexType;
 
     Logger(const std::string &name = "root", LogAppender::ptr appender = nullptr):name_(name),level_(LogLevel::DEBUG){
-        // formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%F%T[%p]%T[%c]%T%f:%l%T%m%n"));
-        formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%T[%p]%T[%c]%T%f:%l%T%m%n"));
-        // std::string fuck_format("%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n");
-        // formatter_.reset(new LogFormatter(fuck_format));
-        // formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%m%n"));
+        formatter_.reset(new LogFormatter(
+            haha::config::GET_CONFIG<std::string>("log.default_format", "%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%T[%p]%T[%c]%T%f:%l%T%m%n")));
+        
         if(appender){
             if(!appender->getFormatter()){
                 appender->setFormatter(formatter_);

@@ -5,7 +5,7 @@
 namespace haha{
 
 TcpServer::TcpServer()
-    :timeoutInterval_(GET_CONFIG(int, "server.timeout", 5))
+    :timeoutInterval_(config::GET_CONFIG<int>("server.timeout", 5))
     ,threadPool_(&EventLoopThreadPool::getInstance())
     ,mainLoop_(threadPool_->getBaseLoop())
     ,servSock_(Socket::FDTYPE::NONBLOCK)
@@ -34,13 +34,14 @@ void TcpServer::start(const InetAddress &address){
 }
 
 void TcpServer::start(){
-    InetAddress address(GET_CONFIG(int, "server.port", 9999));
+    InetAddress address(config::GET_CONFIG<int>("server.port", 9999));
     HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << "server port: " << address.getPort();
     start(address);
 }
 
 
 void TcpServer::handleServerAccept(){
+    HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "handleServerAccept";
     Socket::ptr sock = servSock_.accept();
     if(sock == nullptr){
         return;
@@ -73,7 +74,7 @@ void TcpServer::handleServerAccept(){
 
 
 void TcpServer::handleConnectionRead(TcpConnection::weak_ptr weak_conn) {
-    // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "handleConnectionRead";
+    HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "handleConnectionRead";
     TcpConnection::ptr conn = weak_conn.lock();
     // 检查连接是否被析构
     if(!conn){
@@ -98,7 +99,7 @@ void TcpServer::handleConnectionRead(TcpConnection::weak_ptr weak_conn) {
 
 
 void TcpServer::handleConnectionWrite(TcpConnection::weak_ptr weak_conn) {
-    // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "handleConnectionWrite";
+    HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "handleConnectionWrite";
     TcpConnection::ptr conn = weak_conn.lock();
     // 检查连接是否被析构
     if(!conn){
@@ -122,7 +123,7 @@ void TcpServer::handleConnectionWrite(TcpConnection::weak_ptr weak_conn) {
 
 
 void TcpServer::handleConnectionClose(TcpConnection::weak_ptr weak_conn) {
-    // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "handleConnectionClose";
+    HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "handleConnectionClose";
     TcpConnection::ptr conn = weak_conn.lock();
     // 检查连接是否被析构
     if(!conn){
@@ -235,7 +236,7 @@ void TcpServer::onSend(TcpConnection::weak_ptr weak_conn){
             loop->modChannel(conn->getChannel().get());
         }
         else{
-            // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "onSend: COMPLETED, has write " << status.n;
+            HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "onSend: COMPLETED, has write " << status.n;
             /* 关闭连接 */
             loop->delTimer(Timer(
                 conn->getFd(),
@@ -253,7 +254,7 @@ void TcpServer::onSend(TcpConnection::weak_ptr weak_conn){
         loop->modChannel(conn->getChannel().get());
         break;
     default:
-        // HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "onSend: CLOSE or ERROR";
+        HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "onSend: CLOSE or ERROR";
         /* 关闭连接 */
         loop->delTimer(Timer(
             conn->getFd(),
