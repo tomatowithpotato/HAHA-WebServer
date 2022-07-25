@@ -10,7 +10,7 @@ HttpResponse::HttpResponse(HttpVersion version, TcpConnection::ptr conn)
     ,keepAlive_(false)
     ,hasSession_(false)
     ,isFileBody_(false)
-    ,isFileStream_(false){
+{
     buffer_ = conn_->getSender();
     header_.add("Server", "HAHA_WEBSERVER");
     header_.add("Date", TimeStamp::getDate());
@@ -23,7 +23,7 @@ HttpResponse::~HttpResponse(){
                     " " + std::to_string(statusCode_) + " "
                     + HttpStatus2Str.at(statusCode_) + "\r\n");
     if(contentLength_ == -1){
-        if(isFileBody_ || isFileStream_){
+        if(isFileBody_){
             contentLength_ = std::filesystem::file_size(file_path_);
         }
         else{
@@ -38,20 +38,7 @@ HttpResponse::~HttpResponse(){
     }
     buffer_->Append("\r\n");
 
-    if(isFileBody_){
-        // 直接把文件内容填入buffer
-        int err;
-        int file = ::open(std::filesystem::absolute(file_path_).c_str(), O_RDONLY | O_NONBLOCK);
-        int n;
-        do{
-            n = buffer_->ReadFd(file, &err);
-        }while(n > 0);
-        ::close(file);
-    }
-    else if(isFileStream_){
-        // 文件内容由文件流直接负责，不必拷贝到buffer中
-    }
-    else{
+    if(!isFileBody_){
         // 普通内容，填入buffer中
         buffer_->Append(body_);
     }

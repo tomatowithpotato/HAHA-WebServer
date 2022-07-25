@@ -38,26 +38,11 @@ void watch_dog(haha::HttpRequest::ptr req, haha::HttpResponse::ptr resp){
             ".html", ".htm", ".txt", ".jpg", ".png"
         };
         if(accpetable_exts.find(ext) != accpetable_exts.end()){
-            // auto fsz = std::filesystem::file_size(p);
-            // // setFileBody是直接用read读取文件内容到缓冲区然后再write发出去
-            // // 这个效率不高，但如果你想你可以用这个，虽然我不知道你为什么会想
-            // // 最好使用setFileStream
-            // // 二者不可以混用！！！
-            // if(fsz <= small_file_limit){
-            //     // 小文件
-            //     resp->setContentType(Ext2HttpContentType.at(ext));
-            //     resp->setFileBody(p.c_str());
-            // }
-            // else{
-            //     // 大文件
-            //     resp->setContentType(HttpContentType::HTML);
-            //     resp->setFileStream(p.c_str());
-            // }
             haha::HttpCookie cookie;
             cookie.add("liming", "hi");
             resp->setCookie(cookie);
             resp->setContentType(haha::Ext2HttpContentType.at(ext));
-            resp->setFileStream(p.c_str());
+            resp->setFileBody(p.c_str());
         }
         else{
             resp->setContentType(haha::HttpContentType::HTML);

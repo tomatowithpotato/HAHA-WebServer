@@ -77,15 +77,15 @@ HttpRequest::RET_STATE HttpRequest::parseRequestLine(){
     std::string_view line = view.substr(0, end);
 
     // 解析method
-    if (line.compare(0, 3, "GET")){
+    if (line.compare(0, 3, "GET") == 0){
         method_ = HttpMethod::GET;
         i += 4;
     }
-    else if (line.compare(0, 4, "POST")){
+    else if (line.compare(0, 4, "POST") == 0){
         method_ = HttpMethod::POST;
         i += 5;
     }
-    else if (line.compare(0, 4, "HEAD")){
+    else if (line.compare(0, 4, "HEAD") == 0){
         method_ = HttpMethod::HEAD;
         i += 5;
     }
@@ -108,13 +108,13 @@ HttpRequest::RET_STATE HttpRequest::parseRequestLine(){
     i += pos + 1;
 
     // 解析version
-    if (line.compare("HTTP/1.0")){
+    if (line.compare("HTTP/1.0") == 0){
         version_ = HttpVersion::HTTP_1_0;
     }
-    else if (line.compare("HTTP/1.1")){
+    else if (line.compare("HTTP/1.1") == 0){
         version_ = HttpVersion::HTTP_1_1;
     }
-    else if (line.compare("HTTP/2.0")){
+    else if (line.compare("HTTP/2.0") == 0){
         version_ = HttpVersion::HTTP_2_0;
     }
     else{
@@ -227,7 +227,7 @@ HttpRequest::RET_STATE HttpRequest::parseRequestContent(){
             std::string eob = "--" + multipart_.getBoundary() + "--\r\n";
             // equal to end_with
             if (body_.size() > eob.size() && 
-                !body_.compare(body_.size()-eob.size(), eob.size(), eob)){
+                !body_.compare(body_.size()-eob.size(), eob.size(), eob) == 0){
                 return AGAIN_REQUEST;
             }
             std::string_view view = body_;
@@ -275,19 +275,19 @@ void HttpRequest::parseContentType(){
     if(ret.exist()){
         hasContentType_ = true;
         std::string val = toLowers(ret.value());
-        if(val.compare(0, 33, "application/x-www-form-urlencoded")){
+        if(val.compare(0, 33, "application/x-www-form-urlencoded") == 0){
             contentType_ = HttpContentType::URLENCODED;
         }
-        else if(val.compare(0, 19, "multipart/form-data")){
+        else if(val.compare(0, 19, "multipart/form-data") == 0){
             contentType_ = HttpContentType::MULTIPART;
         }
-        else if(val.compare(0, 10,"text/plain")){
+        else if(val.compare(0, 10,"text/plain") == 0){
             contentType_ = HttpContentType::PLAIN;
         }
-        else if(val.compare(0, 9, "text/html")){
+        else if(val.compare(0, 9, "text/html") == 0){
             contentType_ = HttpContentType::HTML;
         }
-        else if(val.compare(0, 16, "application/json")){
+        else if(val.compare(0, 16, "application/json") == 0){
             contentType_ = HttpContentType::JSON;
         }
         else{

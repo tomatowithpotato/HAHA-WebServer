@@ -48,19 +48,8 @@ ServletDispatcher::ServletDispatcher(){
                 ".html", ".htm", ".txt", ".jpg", ".png"
             };
             if(accpetable_exts.find(ext) != accpetable_exts.end()){
-                // auto fsz = std::filesystem::file_size(p);
-                // if(fsz <= small_file_limit){
-                //     // 小文件
-                //     resp->setContentType(Ext2HttpContentType.at(ext));
-                //     resp->setFileBody(p.c_str());
-                // }
-                // else{
-                //     // 大文件
-                //     resp->setContentType(HttpContentType::HTML);
-                //     resp->setFileStream(p.c_str());
-                // }
                 resp->setContentType(Ext2HttpContentType.at(ext));
-                resp->setFileStream(p.c_str());
+                resp->setFileBody(p.c_str());
             }
             else{
                 resp->setContentType(HttpContentType::HTML);

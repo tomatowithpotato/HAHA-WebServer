@@ -21,7 +21,7 @@ HttpUrl::STATE HttpUrl::parseFromUrl(){
     std::string_view url_view(url_);
     size_t pos;
 
-    if(url_view.compare(0, 4, "http")){
+    if(url_view.compare(0, 4, "http") == 0){
         // 有host
         // 解析scheme
         pos = url_view.find("://");
@@ -66,7 +66,7 @@ HttpUrl::STATE HttpUrl::parseFromUrl(){
     }
     else{
         // 没host
-        if(!url_view.compare(0, 1, "/")){
+        if(url_view.compare(0, 1, "/") != 0){
             return PARSE_FAIL;
         }
     }
