@@ -1,6 +1,6 @@
 # HAHAWebServer
 
-一个用c++20实现的高并发http服务器，支持servlet，目前还在更新中
+一个用c++17实现的高并发http服务器，支持servlet，目前还在更新中
 
 ## 技术特点：
 
