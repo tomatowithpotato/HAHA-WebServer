@@ -48,7 +48,7 @@ public:
     };
 
     // 根据已有描述符创建一个socket
-    explicit Socket(int fd):fd_(fd) {}
+    explicit Socket(int fd, FDTYPE fdtype);
     // 新生成一个socket
     explicit Socket(FDTYPE fdtype = FDTYPE::BLOCK);
 
@@ -69,7 +69,8 @@ public:
     void bind(const InetAddress &address);
     // 创建缓冲区
     void listen();
-    // 接受连接
+
+    // 接受连接, 默认返回读写阻塞的socket
     virtual Socket::ptr accept();
 
     // 开启地址复用
@@ -94,12 +95,11 @@ protected:
 
 class SslSocket : public Socket{
 public:
-    explicit SslSocket(FDTYPE fdtype = FDTYPE::BLOCK);
-    explicit SslSocket(int fd, std::shared_ptr<SSL_CTX> ctx);
+    explicit SslSocket(int fd, FDTYPE fdtype, std::shared_ptr<SSL_CTX> ctx);
 
     ~SslSocket();
 
-    // 接受连接
+    // 接受连接, 默认返回读写阻塞的socket
     Socket::ptr accept() override;
 
     // 把buff中的数据发到对端

@@ -46,6 +46,7 @@ std::shared_ptr<SSL_CTX> createSslCtx(const std::string &certfile,
 {
     std::shared_ptr<SSL_CTX> ctx = nullptr;
     ctx.reset(::SSL_CTX_new(TLS_server_method()), SSL_CTX_free);
+
     if (!ctx) {
         HAHA_LOG_ERROR(HAHA_LOG_ASYNC_FILE_ROOT()) << "createSslCtx faild !!!";
         ::ERR_print_errors_fp(stderr);
@@ -75,6 +76,18 @@ std::shared_ptr<SSL_CTX> createSslCtx(const std::string &certfile,
     }
 
     return ctx;
+}
+
+
+Socket::Socket(int fd, FDTYPE fdtype)
+    :fd_(fd)
+{
+    if(fdtype == FDTYPE::BLOCK){
+        isBlocked_ = true;
+    }
+    else if(fdtype == FDTYPE::NONBLOCK){
+        isBlocked_ = false;
+    }
 }
 
 
@@ -108,7 +121,7 @@ Socket::ptr Socket::accept() {
     if(connfd <= 0){
         return nullptr;
     }
-    return std::make_shared<Socket>(connfd);
+    return std::make_shared<Socket>(connfd, FDTYPE::NONBLOCK);
 }
 
 void Socket::setNonBlocking(){
@@ -195,8 +208,8 @@ static const _SSLInit s_init;
 
 }
 
-SslSocket::SslSocket(int fd, std::shared_ptr<SSL_CTX> ctx)
-    :Socket(fd),
+SslSocket::SslSocket(int fd, FDTYPE fdtype, std::shared_ptr<SSL_CTX> ctx)
+    :Socket(fd, fdtype),
     ctx_(ctx)
 {
     ssl_ = SSL_new(ctx_.get());
@@ -217,7 +230,7 @@ Socket::ptr SslSocket::accept(){
     if(newfd == -1){
         return nullptr;
     }
-    auto sock = std::make_shared<SslSocket>(newfd, ctx_);
+    auto sock = std::make_shared<SslSocket>(newfd, FDTYPE::BLOCK, ctx_);
     return sock;
 }
 
