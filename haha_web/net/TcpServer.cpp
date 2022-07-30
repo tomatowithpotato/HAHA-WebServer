@@ -49,7 +49,7 @@ void TcpServer::handleServerAccept(){
     }
 
     sock->setNonBlocking();
-    sock->enableIgnoreSIGPIPE(true);
+    sock->ignoreSIGPIPE(true);
 
     int connfd = sock->getFd();
     

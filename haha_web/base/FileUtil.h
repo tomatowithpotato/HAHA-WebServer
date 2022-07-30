@@ -163,7 +163,8 @@ public:
     virtual int send(int *lastLen = nullptr);
     size_t remainBytes() { return remain_bytes_; }
     size_t sendedBytes() { return sended_bytes_; }
-private:
+
+protected:
     File::ptr file_;
     int outfd_;
     bool isBlock_;
@@ -175,8 +176,14 @@ private:
 };
 
 
+/* 目前仅支持mmap方式 */
 class FileSSLSendStream : public FileSendStream{
+    FileSSLSendStream(const char* file_path, SSL *ssl, bool isBlock);
+    FileSSLSendStream(File::ptr file, SSL *ssl, bool isBlock);
     int send(int *lastLen = nullptr) override;
+
+private:
+    SSL *ssl_;
 };
 
 }

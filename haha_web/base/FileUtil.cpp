@@ -167,6 +167,9 @@ void File::close(){
 }
 
 
+/* ============================================================FileSendStream============================================================ */
+
+
 FileSendStream::FileSendStream(const char* file_path, int outfd, bool isBlock, SEND_MOD mod)
     :file_(std::make_shared<File>(file_path))
     ,outfd_(outfd)
@@ -242,8 +245,43 @@ int FileSendStream::send(int *lastLen){
     return n;
 }
 
+
+/* ============================================================FileSSLSendStream============================================================ */
+
+
+FileSSLSendStream::FileSSLSendStream(const char* file_path, SSL *ssl, bool isBlock)
+    :FileSendStream(file_path, SSL_get_fd(ssl), isBlock, SEND_MOD::MMAP)
+{
+
+}
+
+
+FileSSLSendStream::FileSSLSendStream(File::ptr file, SSL *ssl, bool isBlock)
+    :FileSendStream(file, SSL_get_fd(ssl), isBlock, SEND_MOD::MMAP)
+{
+
+}
+
+
 int FileSSLSendStream::send(int *lastLen){
     int n = 0;
+    int ret = 0;
+    if(mmap_){
+        do{
+            auto addr = mmap_->getAddress() + sended_bytes_;
+            ret = SSL_write(ssl_, addr, remain_bytes_);
+            if(ret <= 0){
+                break;
+            }
+            n += ret;
+            remain_bytes_ -= ret;
+            sended_bytes_ += ret;
+        }while(sendable() && !isBlock_);
+    }
+
+    if(lastLen){
+        *lastLen = ret;
+    }
     return n;
 }
 

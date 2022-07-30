@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Jul 25 17:07:59 2022
+# Make data base, printed on Fri Jul 29 16:35:54 2022
 
 # Variables
 
@@ -53,7 +53,7 @@ LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /home/lighthouse
 # environment
-SSH_CONNECTION = 125.216.242.212 50506 10.0.8.17 22
+SSH_CONNECTION = 125.216.242.212 55396 10.0.8.17 22
 # environment
 PATH = /home/lighthouse/.vscode-server/bin/3b889b090b5ad5793f524b5d1d39fda662b96a2a/bin/remote-cli:/home/lighthouse/anaconda3/bin:/home/lighthouse/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
@@ -63,7 +63,7 @@ CONDA_PREFIX = /home/lighthouse/anaconda3
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-13ed7669-966f-40f2-86a2-4323ec560685.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-3e3bf928-15ec-483a-9dfa-74d19b17f859.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -113,7 +113,7 @@ MAKECMDGOALS := all
 # environment
 SHLVL = 0
 # environment
-XDG_SESSION_ID = 24921
+XDG_SESSION_ID = 33359
 # environment
 USER = lighthouse
 # makefile
@@ -135,7 +135,7 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 125.216.242.212 50506 22
+SSH_CLIENT = 125.216.242.212 55396 22
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
@@ -239,6 +239,6 @@ GNUmakefile:
 # strcache performance: lookups = 32 / hit rate = 9%
 # hash-table stats:
 # Load=29/8192=0%, Rehash=0, Collisions=1/32=3%
-# Finished Make data base on Mon Jul 25 17:07:59 2022
+# Finished Make data base on Fri Jul 29 16:35:54 2022
 
  

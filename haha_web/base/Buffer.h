@@ -13,6 +13,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <openssl/ssl.h>
 
 namespace haha{
 
@@ -63,6 +64,9 @@ public:
 
     ssize_t ReadFd(int fd, int* Errno);
     ssize_t WriteFd(int fd, int* Errno);
+
+    ssize_t ReadSsl(SSL *ssl, int* Errno);
+    ssize_t WriteSsl(SSL *ssl, int* Errno);
 
 private:
     char* BeginPtr_();

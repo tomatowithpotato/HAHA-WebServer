@@ -87,6 +87,8 @@ set(
     haha_json
     pthread
     uuid
+    ssl         # openssl的
+    crypto      # 这也是openssl的
 )
 
 add_executable(httpServerTest.out tests/test_httpServer.cc)             # 设置要生成可执行文件的代码

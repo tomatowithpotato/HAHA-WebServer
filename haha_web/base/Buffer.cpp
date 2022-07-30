@@ -130,6 +130,30 @@ ssize_t Buffer::WriteFd(int fd, int* saveErrno) {
     return len;
 }
 
+
+ssize_t Buffer::ReadSsl(SSL *ssl, int* saveErrno) {
+    char buff[65535];
+    int len = SSL_read(ssl, buff, sizeof(buff));
+    if(len < 0){
+        *saveErrno = errno;
+        return len;
+    }
+    Append(buff, len);
+    return len;
+}
+
+ssize_t Buffer::WriteSsl(SSL *ssl, int* saveErrno) {
+    size_t readSize = ReadableBytes();
+    ssize_t len = SSL_write(ssl, Peek(), readSize);
+    if(len < 0) {
+        *saveErrno = errno;
+        return len;
+    } 
+    readPos_ += len;
+    return len;
+}
+
+
 char* Buffer::BeginPtr_() {
     return &*buffer_.begin();
 }
