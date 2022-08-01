@@ -109,18 +109,18 @@ void LogFile::append_unlocked(const char* logline, int len)
         ++count_;
         if (count_ >= checkEveryN_)
         {
-        count_ = 0;
-        time_t now = ::time(NULL);
-        time_t thisPeriod_ = now / kRollPerSeconds_ * kRollPerSeconds_;
-        if (thisPeriod_ != startOfPeriod_)
-        {
-            rollFile();
-        }
-        else if (now - lastFlush_ > flushInterval_)
-        {
-            lastFlush_ = now;
-            file_->flush();
-        }
+            count_ = 0;
+            time_t now = ::time(NULL);
+            time_t thisPeriod_ = now / kRollPerSeconds_ * kRollPerSeconds_;
+            if (thisPeriod_ != startOfPeriod_)
+            {
+                rollFile();
+            }
+            else if (now - lastFlush_ > flushInterval_)
+            {
+                lastFlush_ = now;
+                file_->flush();
+            }
         }
     }
 }

@@ -49,7 +49,7 @@ public:
 
     // 根据已有描述符创建一个socket
     explicit Socket(int fd, FDTYPE fdtype);
-    // 新生成一个socket
+    // 新生成一个socket，默认读写阻塞
     explicit Socket(FDTYPE fdtype = FDTYPE::BLOCK);
 
     virtual ~Socket();
