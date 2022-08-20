@@ -160,7 +160,10 @@ public:
     explicit FileSendStream(const char* file_path, int outfd, bool isBlock, SEND_MOD mod = SENDFILE);
     explicit FileSendStream(File::ptr file, int outfd, bool isBlock, SEND_MOD mod = SENDFILE);
     bool sendable() { return remain_bytes_ > 0; }
+
+    /* lastLen 表示最后一次调用后的返回值，用来判断状态 */
     virtual int send(int *lastLen = nullptr);
+
     size_t remainBytes() { return remain_bytes_; }
     size_t sendedBytes() { return sended_bytes_; }
 
@@ -180,6 +183,8 @@ protected:
 class FileSSLSendStream : public FileSendStream{
     FileSSLSendStream(const char* file_path, SSL *ssl, bool isBlock);
     FileSSLSendStream(File::ptr file, SSL *ssl, bool isBlock);
+
+    /* lastLen 表示最后一次调用后的返回值，用来判断状态 */
     int send(int *lastLen = nullptr) override;
 
 private:

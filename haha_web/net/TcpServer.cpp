@@ -1,6 +1,7 @@
 #include "TcpServer.h"
 #include <iostream>
 #include <signal.h>
+#include <filesystem>
 
 namespace haha{
 
@@ -9,10 +10,23 @@ TcpServer::TcpServer()
     ,connTimeOut_(config::GET_CONFIG<int>("server.timeout", 120))
     ,threadPool_(&EventLoopThreadPool::getInstance())
     ,mainLoop_(threadPool_->getBaseLoop())
-    ,servSock_(Socket::FDTYPE::NONBLOCK)
+    ,enable_https(config::GET_CONFIG<bool>("server.https.enable", false))
 {
-    servSock_.enableReuseAddr(true);
-    servSock_.enableReusePort(true);
+
+    if(enable_https){
+        std::cout << "open https" << std::endl;
+        std::string certfile = config::GET_CONFIG<std::string>("server.https.cert_file", "");
+        std::string pkfile = config::GET_CONFIG<std::string>("server.https.private_key_file", "");
+        std::string password = config::GET_CONFIG<std::string>("server.https.password", "");
+        sslCtx_ = sockops::createSslCtx(certfile, pkfile, password);
+        servSock_ = std::make_unique<SslSocket>(sockops::createNBSocket(), Socket::FDTYPE::NONBLOCK, sslCtx_);
+    }
+    else{
+        servSock_ = std::make_unique<Socket>(Socket::FDTYPE::NONBLOCK);
+    }
+
+    servSock_->enableReuseAddr(true);
+    servSock_->enableReusePort(true);
 }
 
 
@@ -22,9 +36,9 @@ void TcpServer::start(const InetAddress &address){
     sigaddset(&set, SIGPIPE);
     pthread_sigmask(SIG_BLOCK, &set, NULL);
 
-    servSock_.bind(address);
-    servSock_.listen();
-    listenChannel_ = std::make_shared<Channel>(mainLoop_.get(), servSock_.getFd(), false);
+    servSock_->bind(address);
+    servSock_->listen();
+    listenChannel_ = std::make_shared<Channel>(mainLoop_.get(), servSock_->getFd(), false);
     listenChannel_->setReadCallback(std::bind(&TcpServer::handleServerAccept, this));
     listenChannel_->setEvents(EPOLLIN | kServerEvent);
 
@@ -43,7 +57,7 @@ void TcpServer::start(){
 
 void TcpServer::handleServerAccept(){
     HAHA_LOG_DEBUG(HAHA_LOG_ASYNC_FILE_ROOT()) << "handleServerAccept";
-    Socket::ptr sock = servSock_.accept();
+    Socket::ptr sock = servSock_->accept();
     if(sock == nullptr){
         return;
     }

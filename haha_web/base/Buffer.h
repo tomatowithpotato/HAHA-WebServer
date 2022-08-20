@@ -1,6 +1,7 @@
 #ifndef __HAHA_BUFFER_H__
 #define __HAHA_BUFFER_H__
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <atomic>

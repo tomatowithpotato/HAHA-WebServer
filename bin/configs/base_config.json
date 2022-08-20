@@ -1,12 +1,20 @@
 {
     "server": {
+        "https": {
+            "enable": false,
+            "cert_file": "../ssl/cert.crt",
+            "private_key_file": "../ssl/rsa_private.key",
+            "password": ""
+        },
         "port": 9999,
         "timeout": 120,
         "timerInterval": 5
     },
+
     "EventLoopThreadPool":{
         "threadNum": 4
     },
+
     "log": {
         "open": true,
         "default_format": "%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%T[%p]%T[%c]%T%f:%l%T%m%n"

@@ -1,4 +1,5 @@
 #include "base/Buffer.h"
+#include <openssl/err.h>
 
 namespace haha{
 
@@ -135,6 +136,12 @@ ssize_t Buffer::ReadSsl(SSL *ssl, int* saveErrno) {
     char buff[65535];
     int len = SSL_read(ssl, buff, sizeof(buff));
     if(len < 0){
+        // unsigned long ulErr = ERR_get_error(); // 获取错误号
+        // char szErrMsg[1024] = {0};
+        // char *pTmp = NULL;
+        // pTmp = ERR_error_string(ulErr,szErrMsg); // 格式：error:errId:库:函数:原因
+        // std::cout << pTmp << std::endl;
+        ::ERR_print_errors_fp(stderr);
         *saveErrno = errno;
         return len;
     }

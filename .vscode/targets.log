@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jul 29 16:35:54 2022
+# Make data base, printed on Fri Aug 19 16:04:54 2022
 
 # Variables
 
@@ -37,9 +37,9 @@ CURDIR := /home/lighthouse/MyCode/linux/linux_network/HAHAWebServer
 # makefile
 SHELL = /bin/sh
 # environment
-VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{"*":"zh-cn"},"_languagePackId":"1d735750dbb1b9066c7513078396ba0f.zh-cn","_translationsConfigFile":"/home/lighthouse/.vscode-server/data/clp/1d735750dbb1b9066c7513078396ba0f.zh-cn/tcf.json","_cacheRoot":"/home/lighthouse/.vscode-server/data/clp/1d735750dbb1b9066c7513078396ba0f.zh-cn","_resolvedLanguagePackCoreLocation":"/home/lighthouse/.vscode-server/data/clp/1d735750dbb1b9066c7513078396ba0f.zh-cn/3b889b090b5ad5793f524b5d1d39fda662b96a2a","_corruptedFile":"/home/lighthouse/.vscode-server/data/clp/1d735750dbb1b9066c7513078396ba0f.zh-cn/corrupted.info","_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{"*":"zh-cn"},"_languagePackId":"08bdb29c43b4c03defdaaecc51ad48b6.zh-cn","_translationsConfigFile":"/home/lighthouse/.vscode-server/data/clp/08bdb29c43b4c03defdaaecc51ad48b6.zh-cn/tcf.json","_cacheRoot":"/home/lighthouse/.vscode-server/data/clp/08bdb29c43b4c03defdaaecc51ad48b6.zh-cn","_resolvedLanguagePackCoreLocation":"/home/lighthouse/.vscode-server/data/clp/08bdb29c43b4c03defdaaecc51ad48b6.zh-cn/da76f93349a72022ca4670c1b84860304616aaa2","_corruptedFile":"/home/lighthouse/.vscode-server/data/clp/08bdb29c43b4c03defdaaecc51ad48b6.zh-cn/corrupted.info","_languagePackSupport":true}
 # environment
-_ = /home/lighthouse/.vscode-server/bin/3b889b090b5ad5793f524b5d1d39fda662b96a2a/node
+_ = /home/lighthouse/.vscode-server/bin/da76f93349a72022ca4670c1b84860304616aaa2/node
 # makefile
 MAKEFILE_LIST := 
 # 'override' directive
@@ -53,9 +53,9 @@ LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /home/lighthouse
 # environment
-SSH_CONNECTION = 125.216.242.212 55396 10.0.8.17 22
+SSH_CONNECTION = 125.216.242.212 7080 10.0.8.17 22
 # environment
-PATH = /home/lighthouse/.vscode-server/bin/3b889b090b5ad5793f524b5d1d39fda662b96a2a/bin/remote-cli:/home/lighthouse/anaconda3/bin:/home/lighthouse/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /home/lighthouse/.vscode-server/bin/da76f93349a72022ca4670c1b84860304616aaa2/bin/remote-cli:/home/lighthouse/anaconda3/bin:/home/lighthouse/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 XDG_RUNTIME_DIR = /run/user/1001
 # environment
@@ -63,7 +63,7 @@ CONDA_PREFIX = /home/lighthouse/anaconda3
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-3e3bf928-15ec-483a-9dfa-74d19b17f859.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1001/vscode-ipc-f58a653d-313c-4351-bb0b-5ae754c88ec0.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -113,7 +113,7 @@ MAKECMDGOALS := all
 # environment
 SHLVL = 0
 # environment
-XDG_SESSION_ID = 33359
+XDG_SESSION_ID = 68967
 # environment
 USER = lighthouse
 # makefile
@@ -135,11 +135,11 @@ MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # environment
-SSH_CLIENT = 125.216.242.212 55396 22
+SSH_CLIENT = 125.216.242.212 7080 22
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
-BROWSER = /home/lighthouse/.vscode-server/bin/3b889b090b5ad5793f524b5d1d39fda662b96a2a/bin/helpers/browser.sh
+BROWSER = /home/lighthouse/.vscode-server/bin/da76f93349a72022ca4670c1b84860304616aaa2/bin/helpers/browser.sh
 # environment
 VSCODE_HANDLES_SIGPIPE = true
 # default
@@ -239,6 +239,6 @@ GNUmakefile:
 # strcache performance: lookups = 32 / hit rate = 9%
 # hash-table stats:
 # Load=29/8192=0%, Rehash=0, Collisions=1/32=3%
-# Finished Make data base on Fri Jul 29 16:35:54 2022
+# Finished Make data base on Fri Aug 19 16:04:54 2022
 
  

@@ -40,7 +40,7 @@ InetAddress sockops::getSockName(int fd) {
 }
 
 
-std::shared_ptr<SSL_CTX> createSslCtx(const std::string &certfile, 
+std::shared_ptr<SSL_CTX> sockops::createSslCtx(const std::string &certfile, 
                                         const std::string &pkfile,
                                         const std::string &password)
 {
@@ -58,7 +58,7 @@ std::shared_ptr<SSL_CTX> createSslCtx(const std::string &certfile,
                             SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION);
     
     ::SSL_CTX_set_default_passwd_cb_userdata(
-    ctx.get(), password.empty() ? nullptr : (void *)password.c_str());
+        ctx.get(), password.empty() ? nullptr : (void *)password.c_str());
 
     if (::SSL_CTX_use_certificate_file(ctx.get(), certfile.c_str(),
                                         SSL_FILETYPE_PEM) <= 0) {
@@ -226,11 +226,18 @@ Socket::ptr SslSocket::accept(){
         HAHA_LOG_ERROR(HAHA_LOG_ASYNC_FILE_ROOT()) << "bad accpet, please loadCertificate at first !!!";
         return nullptr;
     }
-    int newfd = ::accept(fd_, nullptr, nullptr);
+    sockaddr_in addr;
+    socklen_t len = sizeof(addr);
+    int newfd = ::accept(fd_, (sockaddr *)&addr, &len);
     if(newfd == -1){
         return nullptr;
     }
     auto sock = std::make_shared<SslSocket>(newfd, FDTYPE::BLOCK, ctx_);
+    int ret = SSL_accept(sock->ssl_); // 勿忘SSL握手
+    if (ret < 1) {
+        ::ERR_print_errors_fp(stderr);
+        return nullptr;
+    }
     return sock;
 }
 

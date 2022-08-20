@@ -3,6 +3,9 @@
 
 #include <memory>
 #include <unordered_map>
+#include <openssl/err.h>
+#include <openssl/ssl.h>
+
 #include "log/Log.h"
 #include "config/config.h"
 #include "base/Mutex.h"
@@ -33,6 +36,8 @@ public:
     void start();
 
     EventLoop::ptr getMainLoop() { return mainLoop_; }
+
+    bool isHttps() const { return enable_https; }
 
 private:
     void handleServerAccept();
@@ -73,8 +78,14 @@ private:
     // 主事件循环，用于接收连接
     EventLoop::ptr mainLoop_;
 
+    // 是否开启https
+    bool enable_https;
+
+    // ssl连接上下文
+    std::shared_ptr<SSL_CTX> sslCtx_;
+
     // listen sock
-    Socket servSock_;
+    std::unique_ptr<Socket> servSock_;
 
     // listen channel
     Channel::ptr listenChannel_;
