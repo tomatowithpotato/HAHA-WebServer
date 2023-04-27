@@ -10,7 +10,7 @@
 
 * 对锁、线程、线程池、文件操作等基本操作都进行了封装
 
-* 使用自己实现的json解析库haha_json(对应目录中的haha_json)，支持读取ANSI和unicode格式的json数据
+* 使用自己实现的json解析库[haha_json](https://github.com/tomatowithpotato/haha_json)，支持读取ANSI和unicode格式的json数据
 
 * 使用自己实现的日志库haha_log(对应目录中的log)，异步模式下单线程每秒能输出接近160万条日志
 
