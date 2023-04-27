@@ -157,7 +157,7 @@ JsonNode::ptr parse_array(std::string_view &str){
         }
         arr->add(jv);
         str = util::skip_CtrlAndSpace(str);
-    }while(!str.empty() && check_func());
+    } while(!str.empty() && check_func());
 
     if(str[0] != ']'){
         return nullptr;

@@ -45,8 +45,22 @@ int main(){
     std::string output1 = js1->toString(fmt1);
     std::cout << output1 << std::endl;
 
+    std::cout << std::string(60, '*') << std::endl;
+
+    // 直接通过基类[]方法访问
+    JsonNode& conf = (*js1)["configurations"];
+    std::cout << conf.toString() << std::endl;
+
+    std::cout << std::string(60, '*') << std::endl;
+
+    JsonNode& name = conf[0]["name"];
+    std::cout << name.toString() << std::endl;
+
     // 输出到文件
     JSON::toFile(js1, "../output.json", fmt1);
+
+    // 异常测试
+    conf["yyk"];
 
     return 0;
 }

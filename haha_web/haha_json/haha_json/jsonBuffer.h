@@ -38,7 +38,7 @@ public:
         }
         int fsz = std::filesystem::file_size(filePath);
         if(fsz > max_size){
-            throw JsonError("unsupport file size bigger than 4M !!!");
+            throw HAHA_JSON_ERROR("unsupport file size bigger than 4M !!!");
         }
 
         if (sbuffer_) {

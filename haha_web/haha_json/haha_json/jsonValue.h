@@ -6,6 +6,7 @@
 #include <variant>
 #include <map>
 #include "jsonUtil.h"
+#include "jsonError.h"
 
 
 namespace haha
@@ -83,13 +84,18 @@ public:
         return toString({fmt, indent});
     }
 
+    virtual JsonNode& operator[](const std::string &key){
+        throw HAHA_JSON_ERROR("do not support operator[]");
+    }
+    virtual JsonNode& operator[](unsigned key){
+        throw HAHA_JSON_ERROR("do not support operator[]");
+    }
+
 protected:
     JsonNode::ptr copyFrom(JsonNode::ptr src);
 
 protected:
     JsonType type_;
-
-protected:
     std::variant<bool, int, double,
                 decltype(nullptr),
                 std::string,
@@ -205,6 +211,10 @@ public:
     }
 
     JsonArray& operator=(const JsonArray& another);
+
+    JsonNode& operator[](unsigned key){
+        return *getValue()[key];
+    }
 };
 
 
@@ -286,6 +296,10 @@ public:
     }
 
     JsonObject& operator=(const JsonObject &another);
+
+    JsonNode& operator[](const std::string& key){
+        return get(key);
+    }
 };
 
 

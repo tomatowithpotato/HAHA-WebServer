@@ -65,7 +65,6 @@ JsonNode::JsonNode(const JsonNode& jsvb){
     type_ = jsvb.type_;
 }
 
-
 JsonArray::JsonArray(const JsonArray &another){
     val_ = std::vector<JsonNode::ptr>();
     auto &arr = std::get<std::vector<JsonNode::ptr>>(val_);
